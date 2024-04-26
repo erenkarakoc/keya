@@ -12,6 +12,4 @@
   "include": [
     "src"
   ],
-  "skipLibCheck": true,
-  "strict": true,
 }
