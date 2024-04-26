@@ -1,5 +1,5 @@
 import React, {FC} from 'react'
-import {DisableSidebar, PageTitle} from '../../../_metronic/layout/core'
+import {DisableSidebar, PageTitle} from '../../../../_metronic/layout/core'
 import {BuilderPage} from './BuilderPage'
 
 const BuilderPageWrapper: FC = () => {
