@@ -13,7 +13,7 @@ import { Logout, AuthPage, useAuth } from "../modules/auth"
 import { App } from "../App"
 
 // Frontend
-import { Home } from "../pages/frontend/home/HomePage"
+import { Home } from "../pages/frontend/homepage/HomePage"
 
 /**
  * Base URL of the website.
@@ -28,9 +28,26 @@ const AppRoutes: FC = () => {
     <BrowserRouter basename={BASE_URL}>
       <Routes>
         <Route element={<App />}>
+          {/* ################ */}
+          {/* #### COMMON #### */}
+          {/* ################ */}
+
+          {/* ERRORS */}
           <Route path="error/*" element={<ErrorsPage />} />
-          <Route path="logout" element={<Logout />} />
+
+          {/* ################### */}
+          {/* #### FRONT END #### */}
+          {/* ################### */}
+
+          {/* HOME */}
           <Route path="/" element={<Home />} />
+
+          {/* ################## */}
+          {/* #### BACK END #### */}
+          {/* ################## */}
+
+          {/* AUTH */}
+          <Route path="logout" element={<Logout />} />
           {currentUser ? (
             <>
               <Route path="/*" element={<PrivateRoutes />} />
