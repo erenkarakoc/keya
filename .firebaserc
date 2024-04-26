@@ -1,5 +1,11 @@
 {
   "projects": {
     "default": "alert-port-421202"
+  },
+  "targets": {},
+  "etags": {
+    "alert-port-421202": {
+      "extensionInstances": {}
+    }
   }
 }

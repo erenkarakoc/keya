@@ -11,5 +11,7 @@
   "compileOnSave": true,
   "include": [
     "src"
-  ]
+  ],
+  "skipLibCheck": true,
+  "strict": true,
 }
