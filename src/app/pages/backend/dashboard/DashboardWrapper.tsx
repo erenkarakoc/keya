@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+// import { useEffect, useState } from "react"
 import { EnableSidebar, PageTitle } from "../../../../_metronic/layout/core"
 import {
   ListsWidget4,
@@ -8,14 +8,8 @@ import {
   MixedWidget14,
   MixedWidget15,
 } from "../../../../_metronic/partials/widgets"
-import { initializeApp } from "firebase/app"
-import {
-  getFirestore,
-  collection,
-  getDocs,
-  setDoc,
-  doc,
-} from "firebase/firestore"
+// import { collection, getDocs, setDoc, doc } from "firebase/firestore"
+// import { firestore } from "../../../../firebase/BaseConfig"
 
 const DashboardPage = () => (
   <>
@@ -70,73 +64,58 @@ const DashboardPage = () => (
   </>
 )
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCQ6cweycst3ntAMTmB4bd48PTYOh6olts",
-  authDomain: "alert-port-421202.firebaseapp.com",
-  databaseURL:
-    "https://alert-port-421202-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "alert-port-421202",
-  storageBucket: "alert-port-421202.appspot.com",
-  messagingSenderId: "978894257631",
-  appId: "1:978894257631:web:5ccae8619a0a31524a986a",
-  measurementId: "G-MT26H1MXVS",
-}
+// const MyComponent: React.FC = () => {
+//   const [inputValue, setInputValue] = useState<string>("")
 
-const app = initializeApp(firebaseConfig)
-const db = getFirestore(app)
+//   const handleSubmit = async () => {
+//     try {
+//       await setDoc(doc(firestore, "users", "user4"), {
+//         email: inputValue,
+//         password: "hashedpassword4",
+//         username: "exampleuser4",
+//       })
 
-const MyComponent: React.FC = () => {
-  const [inputValue, setInputValue] = useState<string>("")
+//       console.log("Document successfully added!")
 
-  const handleSubmit = async () => {
-    try {
-      await setDoc(doc(db, "users", "user4"), {
-        email: inputValue,
-        password: "hashedpassword4",
-        username: "exampleuser4",
-      })
+//       setInputValue("")
+//     } catch (error) {
+//       console.error("Error adding document: ", error)
+//     }
+//   }
 
-      console.log("Document successfully added!")
-
-      setInputValue("")
-    } catch (error) {
-      console.error("Error adding document: ", error)
-    }
-  }
-
-  return (
-    <div>
-      {/* Input field */}
-      <input
-        type="text"
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
-      />
-      {/* Button to submit */}
-      <button onClick={handleSubmit}>Submit</button>
-    </div>
-  )
-}
+//   return (
+//     <div>
+//       {/* Input field */}
+//       <input
+//         type="text"
+//         value={inputValue}
+//         onChange={(e) => setInputValue(e.target.value)}
+//       />
+//       {/* Button to submit */}
+//       <button onClick={handleSubmit}>Submit</button>
+//     </div>
+//   )
+// }
 
 const DashboardWrapper = () => {
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "users"))
-        querySnapshot.forEach((doc) => {
-          console.log(doc.data())
-        })
-      } catch (error) {
-        console.error("Error getting documents: ", error)
-      }
-    }
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const querySnapshot = await getDocs(collection(firestore, "users"))
+  //       querySnapshot.forEach((doc) => {
+  //         console.log(doc.data())
+  //       })
+  //     } catch (error) {
+  //       console.error("Error getting documents: ", error)
+  //     }
+  //   }
 
-    fetchData()
-  }, [])
+  //   fetchData()
+  // }, [])
 
   return (
     <EnableSidebar>
-      <MyComponent />
+      {/* <MyComponent /> */}
       <PageTitle description="You’ve got 24 New Sales" breadcrumbs={[]}>
         Hello Paul
       </PageTitle>

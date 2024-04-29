@@ -7,13 +7,38 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
-import {onRequest} from "firebase-functions/v2/https";
-import * as logger from "firebase-functions/logger";
+// import {onRequire} from "firebase-functions/v2/https";
+// import * as logger from "firebase-functions/logger";
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
+import * as admin from "firebase-admin";
+import * as jwt from "jsonwebtoken";
+import {getAuth, signInWithCustomToken} from "firebase/auth";
 
-export const helloWorld = onRequest((request, response) => {
-  logger.info("Hello logs!", {structuredData: true});
-  response.send("Hello from Firebase!");
+import {onCall, HttpsError} from "firebase-functions/v2/https";
+
+admin.initializeApp();
+
+export const login = onCall(async (req) => {
+  try {
+    const {email, DATABASE_SECRET} = req.data;
+    const userRecord = await admin.auth().getUserByEmail(email);
+    const payload = {uid: userRecord.uid};
+    const customToken = jwt.sign(payload, DATABASE_SECRET, {expiresIn: "1h"});
+    return {api_token: customToken};
+  } catch (error) {
+    console.error("Error getting user:", error);
+    throw new HttpsError("internal", "Internal Server Error");
+  }
+});
+
+export const verifyToken = onCall(async (req) => {
+  try {
+    const {apiToken} = req.data;
+    const auth = getAuth();
+    const userCredential = await signInWithCustomToken(auth, apiToken);
+    return userCredential.user;
+  } catch (error) {
+    console.error("Error verifying token:", error);
+    throw new HttpsError("internal", "Internal Server Error");
+  }
 });
