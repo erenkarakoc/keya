@@ -1,8 +1,3 @@
-export interface AuthModel {
-  api_token: string
-  refreshToken?: string
-}
-
 export interface UserAddressModel {
   addressLine: string
   city: string
@@ -44,24 +39,27 @@ export interface UserSocialNetworksModel {
 }
 
 export interface UserModel {
-  id: number
-  username: string
-  password: string | undefined
+  id: string
+  uid: string
   email: string
+  emailVerified: boolean
   first_name: string
   last_name: string
   fullname?: string
+  providerData?: {
+    providerId: string
+    uid: string
+    displayName: string | null
+    email: string
+    phoneNumber: string | null
+    photoURL: string | null
+  }[]
   occupation?: string
-  companyName?: string
   phone?: string
   roles?: Array<number>
   pic?: string
-  language?: "en" | "de" | "es" | "fr" | "ja" | "zh" | "ru" | "tr"
-  timeZone?: string
-  website?: "https://keenthemes.com"
   emailSettings?: UserEmailSettingsModel
-  auth?: AuthModel
-  communication?: UserCommunicationModel
   address?: UserAddressModel
-  socialNetworks?: UserSocialNetworksModel
+  createdAt: string
+  lastLoginAt: string
 }

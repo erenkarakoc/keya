@@ -1,100 +1,166 @@
-import axios from "axios"
-import { AuthModel, UserModel } from "./_models"
+import { UserModel } from "./_models"
 
-import { getFunctions, httpsCallable } from "firebase/functions"
 import { firebaseConfig } from "../../../../firebase/BaseConfig"
 import { initializeApp } from "firebase/app"
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth"
 
-const API_URL = import.meta.env.VITE_APP_API_URL
-const FIREBASE_FUNCTIONS_URL = import.meta.env.VITE_APP_FIREBASE_FUNCTIONS_LOCAL_URL
-const DATABASE_SECRET = import.meta.env.VITE_APP_FIREBASE_DATABASE_SECRET
-
-const functions = getFunctions()
-
-export const GET_USER_BY_ACCESSTOKEN_URL = `${FIREBASE_FUNCTIONS_URL}/verifyToken`
-export const LOGIN_URL = `${FIREBASE_FUNCTIONS_URL}/login`
-export const REGISTER_URL = `${API_URL}/register`
-export const REQUEST_PASSWORD_URL = `${API_URL}/forgot_password`
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  collection,
+  addDoc,
+} from "firebase/firestore"
 
 initializeApp(firebaseConfig)
+const db = getFirestore()
 
-// Server should return AuthModel
-export async function login(email: string, password: string) {
+export async function login(
+  email: string,
+  password: string
+): Promise<UserModel> {
+  const auth = getAuth()
+
   try {
-    const loginCallable = httpsCallable(functions, "login")
-    const result = (await loginCallable({
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
       email,
-      password,
-      DATABASE_SECRET,
-    })) as { data: { api_token: string } }
+      password
+    )
+    const user = userCredential.user
 
-    const authData: AuthModel = { api_token: result.data.api_token }
+    const userDocRef = doc(db, "users", user.uid)
+    const userDocSnapshot = await getDoc(userDocRef)
+    const userDataFromFirestore = userDocSnapshot.data()
 
-    return authData
+    const userData: UserModel = {
+      id: userDataFromFirestore?.id || 0,
+      uid: userDataFromFirestore?.uid || user.uid,
+      email: userDataFromFirestore?.email || user.email || "",
+      emailVerified:
+        userDataFromFirestore?.emailVerified || user.emailVerified || false,
+      first_name: userDataFromFirestore?.first_name || "",
+      last_name: userDataFromFirestore?.last_name || "",
+      fullname: userDataFromFirestore?.fullname || "",
+      providerData: userDataFromFirestore?.providerData || [],
+      occupation: userDataFromFirestore?.occupation || "",
+      phone: userDataFromFirestore?.phone || "",
+      roles: userDataFromFirestore?.roles || [],
+      pic: userDataFromFirestore?.pic || "",
+      emailSettings: {
+        emailNotification:
+          userDataFromFirestore?.emailSettings?.emailNotification || true,
+        sendCopyToPersonalEmail:
+          userDataFromFirestore?.emailSettings?.sendCopyToPersonalEmail ||
+          false,
+        activityRelatesEmail: {
+          youHaveNewNotifications:
+            userDataFromFirestore?.emailSettings?.activityRelatesEmail
+              ?.youHaveNewNotifications || true,
+          youAreSentADirectMessage:
+            userDataFromFirestore?.emailSettings?.activityRelatesEmail
+              ?.youAreSentADirectMessage || true,
+          someoneAddsYouAsAsAConnection:
+            userDataFromFirestore?.emailSettings?.activityRelatesEmail
+              ?.someoneAddsYouAsAsAConnection || true,
+          uponNewOrder:
+            userDataFromFirestore?.emailSettings?.activityRelatesEmail
+              ?.uponNewOrder || false,
+          newMembershipApproval:
+            userDataFromFirestore?.emailSettings?.activityRelatesEmail
+              ?.newMembershipApproval || true,
+          memberRegistration:
+            userDataFromFirestore?.emailSettings?.activityRelatesEmail
+              ?.memberRegistration || false,
+        },
+      },
+      address: {
+        addressLine: userDataFromFirestore?.address?.addressLine || "",
+        city: userDataFromFirestore?.address?.city || "",
+        state: userDataFromFirestore?.address?.state || "",
+        postCode: userDataFromFirestore?.address?.postCode || "",
+      },
+      createdAt: userDataFromFirestore?.createdAt || "",
+      lastLoginAt: userDataFromFirestore?.lastLoginAt || "",
+    }
+
+    return userData
   } catch (error) {
     console.error("Error when logging in:", error)
     throw error
   }
 }
 
-// Server should return AuthModel
-export function register(
+export async function register(
   email: string,
-  firstname: string,
-  lastname: string,
+  first_name: string,
+  last_name: string,
   password: string,
   password_confirmation: string
-) {
-  return axios.post(REGISTER_URL, {
-    email,
-    first_name: firstname,
-    last_name: lastname,
-    password,
-    password_confirmation,
-  })
+): Promise<void> {
+  const auth = getAuth()
+  const db = getFirestore()
+
+  try {
+    if (password !== password_confirmation) {
+      throw new Error("Passwords do not match")
+    }
+
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    )
+    const user = userCredential.user
+    const usersCollectionRef = collection(db, "users")
+
+    await addDoc(usersCollectionRef, {
+      first_name,
+      last_name,
+      email: user.email || "",
+      emailVerified: user.emailVerified || false,
+      id: user.uid,
+      uid: user.uid,
+      providerData: user.providerData || [],
+      createdAt: user.metadata.creationTime || "",
+      lastLoginAt: user.metadata.lastSignInTime || "",
+      occupation: "",
+      phone: "",
+      roles: [],
+      pic: "",
+      emailSettings: {
+        emailNotification: true,
+        sendCopyToPersonalEmail: false,
+        activityRelatesEmail: {
+          youHaveNewNotifications: true,
+          youAreSentADirectMessage: true,
+          someoneAddsYouAsAsAConnection: true,
+          uponNewOrder: false,
+          newMembershipApproval: true,
+          memberRegistration: false,
+        },
+      },
+      address: {
+        addressLine: "",
+        city: "",
+        state: "",
+        postCode: "",
+      },
+    })
+  } catch (error) {
+    console.error("Error when registering user:", error)
+    throw error // Let the error propagate naturally
+  }
 }
 
 // Server should return object => { result: boolean } (Is Email in DB)
 export function requestPassword(email: string) {
-  return axios.post<{ result: boolean }>(REQUEST_PASSWORD_URL, {
-    email,
-  })
-}
-
-export async function getUserByToken(token: string) {
-  try {
-    const verifyTokenCallable = httpsCallable(functions, "verifyToken")
-    const result = await verifyTokenCallable({ token })
-
-    verifyTokenCallable({ apiToken: token }).then((result) => {
-      // const userData: UserModel = {
-      //   id: result.id,
-      //   username: result.username,
-      //   password: result.password,
-      //   email: result.email,
-      //   first_name: result.first_name,
-      //   last_name: result.last_name,
-      //   fullname: result.fullname,
-      //   occupation: result.occupation,
-      //   companyName: result.companyName,
-      //   phone: result.phone,
-      //   roles: result.roles,
-      //   pic: result.pic,
-      //   language: result.language,
-      //   timeZone: result.timeZone,
-      //   website: result.website,
-      //   emailSettings: result.emailSettings,
-      //   auth: result.auth,
-      //   communication: result.communication,
-      //   address: result.address,
-      //   socialNetworks: result.socialNetworks,
-      // }
-      return result
-    })
-  } catch (error) {
-    console.error("Error when logging in:", error)
-    throw error
-  }
+  console.log(email)
+  return false
 }
 
 // FIRESTORE GETTING USER

@@ -3,8 +3,9 @@ import * as Yup from "yup"
 import clsx from "clsx"
 import { Link } from "react-router-dom"
 import { useFormik } from "formik"
-import { getUserByToken, login } from "../core/_requests"
 import { toAbsoluteUrl } from "../../../../_metronic/helpers"
+
+import { login } from "../core/_requests"
 import { useAuth } from "../core/Auth"
 
 const loginSchema = Yup.object().shape({
@@ -32,7 +33,7 @@ const initialValues = {
 
 export function Login() {
   const [loading, setLoading] = useState(false)
-  const { saveAuth, setCurrentUser } = useAuth()
+  const { setCurrentUser } = useAuth()
 
   const formik = useFormik({
     initialValues,
@@ -40,14 +41,12 @@ export function Login() {
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       setLoading(true)
       try {
-        const auth = (await login(values.email, values.password)) as any
-        saveAuth(auth)
-        const user = (await getUserByToken(auth.api_token)) as any
+        const user = await login(values.email, values.password)
         setCurrentUser(user)
       } catch (error) {
         console.error(error)
-        saveAuth(undefined)
         setStatus("The login details are incorrect")
+      } finally {
         setSubmitting(false)
         setLoading(false)
       }
