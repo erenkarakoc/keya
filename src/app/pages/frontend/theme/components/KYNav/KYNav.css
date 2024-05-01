@@ -1,0 +1,10 @@
+.ky-nav ul {
+  display: flex;
+  align-items: center;
+  list-style-type: none;
+  margin: 0;
+}
+
+.ky-nav .ky-button {
+  margin-left: 30px;
+}

@@ -1,0 +1,61 @@
+.ky-text,
+.ky-text * {
+  color: var(--light);
+  margin: 0;
+  padding: 0;
+}
+.ky-text a {
+  transition: all 0.1s ease-out;
+}
+
+.ky-text.ky-heading,
+.ky-text.ky-heading * {
+  font-family: var(--SFProDisplay);
+  font-weight: 700;
+  font-size: 48px;
+}
+
+.ky-text.ky-title,
+.ky-text.ky-title * {
+  font-family: var(--SFProDisplay);
+  font-size: 40px;
+  font-weight: 700;
+}
+
+.ky-text.ky-subtitle,
+.ky-text.ky-subtitle * {
+  font-family: var(--SFProDisplay);
+  font-size: 24px;
+  font-weight: 700;
+}
+.ky-text.ky-subtitle .ky-text-highlight,
+.ky-text.ky-subtitle .ky-text-highlight * {
+  font-weight: 900;
+}
+
+.ky-text.ky-caption,
+.ky-text.ky-caption * {
+  font-family: var(--SFProText);
+  color: var(--ky-midnight);
+  font-size: 14px;
+  font-weight: 500;
+}
+.ky-text.ky-caption a {
+  text-decoration: underline !important;
+}
+.ky-text.ky-caption a:hover {
+  color: var(--ky-light-3);
+}
+
+.ky-text.ky-paragraph,
+.ky-text.ky-paragraph * {
+  font-family: var(--SFProText);
+}
+
+.ky-text-highlight {
+  color: var(--ky-red);
+  background: var(--ky-red-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

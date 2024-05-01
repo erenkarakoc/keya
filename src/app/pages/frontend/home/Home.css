@@ -1,0 +1,9 @@
+.ky-home-wrapper section {
+  position: relative;
+  padding-top: 200px;
+  z-index: 1;
+}
+
+.ky-home-wrapper section.ky-services-section {
+  padding-top: 150px;
+}

@@ -1,0 +1,57 @@
+.ky-button {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  padding: 0 25px;
+  border-radius: 10px;
+  background: var(--ky-midnight-4);
+  transition: background-image 0.5s linear;
+  z-index: 1;
+  outline: none;
+}
+
+.ky-button:hover {
+  background: var(--ky-midnight-3);
+}
+
+.ky-button a,
+.ky-button button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: var(--ky-light);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Secondary */
+.ky-button-secondary {
+  background-image: var(--ky-red-gradient);
+}
+.ky-button-secondary:hover {
+  background-image: var(--ky-red-gradient);
+}
+.ky-button-secondary::before {
+  position: absolute;
+  content: "";
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 10px;
+  background-image: var(--ky-red-gradient);
+  z-index: -1;
+  transition: opacity 0.1s linear;
+  transform: scaleX(-1);
+  opacity: 0;
+}
+
+.ky-button-secondary:hover::before {
+  opacity: 1;
+}

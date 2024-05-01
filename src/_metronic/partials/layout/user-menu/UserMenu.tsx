@@ -16,7 +16,7 @@ const UserMenu = () => {
         <div className='menu-content d-flex align-items-center px-3'>
           {/* begin::Avatar */}
           <div className='symbol symbol-50px me-5'>
-            <img alt='Logo' src={toAbsoluteUrl('media/avatars/300-1.jpg')} />
+            <img alt='Keya Real Estate' src={toAbsoluteUrl('media/avatars/300-1.jpg')} />
           </div>
           {/* end::Avatar */}
 

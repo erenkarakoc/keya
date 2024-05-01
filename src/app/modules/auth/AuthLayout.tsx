@@ -63,7 +63,7 @@ const AuthLayout = () => {
           {/* begin::Logo */}
           <Link to="/" className="mb-12">
             <img
-              alt="Logo"
+              alt="Keya Real Estate"
               src={toAbsoluteUrl("media/logos/custom-1.png")}
               className="h-75px"
             />

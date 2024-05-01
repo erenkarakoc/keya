@@ -1,0 +1,22 @@
+.ky-hero-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.ky-hero-section .ky-heading {
+  max-width: 700px;
+  text-align: center;
+}
+
+.ky-hero-section .ky-hero-search-input {
+  margin-top: 40px;
+}
+
+.ky-hero-section .ky-caption {
+  margin-top: 40px;
+}
+
+.ky-hero-section .ky-bg-pattern {
+  top: -290px;
+}

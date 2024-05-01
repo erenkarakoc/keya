@@ -1,8 +1,8 @@
-import React from 'react'
-import {Link} from 'react-router-dom'
-import {useLocation} from 'react-router'
-import clsx from 'clsx'
-import {checkIsActive, KTIcon} from '../../../helpers'
+import React from "react"
+import { Link } from "react-router-dom"
+import { useLocation } from "react-router"
+import clsx from "clsx"
+import { checkIsActive, KTIcon } from "../../../helpers"
 
 type Props = {
   to: string
@@ -21,40 +21,40 @@ const MenuItem: React.FC<Props> = ({
   hasArrow = false,
   hasBullet = false,
 }) => {
-  const {pathname} = useLocation()
+  const { pathname } = useLocation()
 
   return (
-    <div className='menu-item me-lg-1'>
+    <div className="menu-item me-lg-1">
       <Link
-        className={clsx('menu-link py-3', {
+        className={clsx("menu-link py-3", {
           active: checkIsActive(pathname, to),
         })}
         to={to}
       >
         {hasBullet && (
-          <span className='menu-bullet'>
-            <span className='bullet bullet-dot'></span>
+          <span className="menu-bullet">
+            <span className="bullet bullet-dot"></span>
           </span>
         )}
 
         {icon && (
-          <span className='menu-icon'>
-            <KTIcon iconName={icon} className='fs-2' />
+          <span className="menu-icon">
+            <KTIcon iconName={icon} className="fs-2" />
           </span>
         )}
 
         {fontIcon && (
-          <span className='menu-icon'>
-            <i className={clsx('bi fs-3', fontIcon)}></i>
+          <span className="menu-icon">
+            <i className={clsx("bi fs-3", fontIcon)}></i>
           </span>
         )}
 
-        <span className='menu-title'>{title}</span>
+        <span className="menu-title">{title}</span>
 
-        {hasArrow && <span className='menu-arrow'></span>}
+        {hasArrow && <span className="menu-arrow"></span>}
       </Link>
     </div>
   )
 }
 
-export {MenuItem}
+export { MenuItem }

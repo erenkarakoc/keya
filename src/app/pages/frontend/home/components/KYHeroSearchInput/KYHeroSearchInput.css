@@ -1,0 +1,105 @@
+.ky-hero-search-input {
+  position: relative;
+  height: 75px;
+  width: 855px;
+  transition: all 0.2s ease-out;
+}
+
+.ky-hero-search-input-hovered,
+.ky-hero-search-input-has-value,
+.ky-hero-search-input-focused {
+  transform: translateY(-2px);
+}
+
+.ky-hero-search-input .ky-icon-search {
+  position: absolute;
+  top: 50%;
+  left: 30px;
+  transform: translateY(-50%);
+}
+
+#KYHeroSearchInput {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  padding: 0 120px 0 90px;
+  border: 2px solid var(--ky-midnight-3);
+  border-radius: 24px;
+  color: var(--ky-light);
+  font-family: var(--SFProDisplay);
+  font-size: 20px;
+  font-weight: 400;
+  background-color: var(--ky-midnight-4);
+  box-shadow: 0px 40px 20px -30px rgba(0, 0, 0, 0.5);
+  outline: none;
+  transition: all 0.1s ease-out;
+}
+
+.ky-hero-search-input-hovered #KYHeroSearchInput,
+.ky-hero-search-input-has-value #KYHeroSearchInput,
+#KYHeroSearchInput:focus {
+  border-color: var(--ky-midnight-3);
+  box-shadow: 0px 40px 25px -30px rgba(0, 0, 0, 0.5);
+}
+
+#KYHeroSearchInput::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+
+#KYHeroSearchInput::placeholder {
+  color: var(--ky-midnight-2);
+  font-weight: 500;
+}
+
+#KYHeroSearchFilter {
+  position: absolute;
+  top: 50%;
+  right: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background-color: transparent;
+  transform: translateY(-50%);
+  transition: all 0.15s ease-out;
+}
+#KYHeroSearchFilter:not(:focus) {
+  outline: none;
+}
+#KYHeroSearchFilter .ky-icon-gear {
+  position: relative;
+  transition: all 0.1s ease-out;
+}
+#KYHeroSearchFilter:hover .ky-icon-gear {
+  filter: invert(1);
+}
+.ky-hero-search-input-has-value #KYHeroSearchFilter {
+  transform: translateY(-50%) rotate(30deg);
+}
+
+#KYHeroSearchButton {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  height: 55px;
+  padding: 0 30px;
+  border: none;
+  border-radius: 20px;
+  color: var(--ky-light-2);
+  font-family: var(--SFProDisplay);
+  font-size: 20px;
+  font-weight: 600;
+  background-color: var(--ky-midnight-3);
+  z-index: 1;
+  transition: all 0.2s ease-out;
+}
+#KYHeroSearchButton:not(:focus) {
+  outline: none;
+}
+#KYHeroSearchButton:hover {
+  background-color: var(--ky-midnight-3);
+}

@@ -1,0 +1,21 @@
+.ky-nav-item {
+  margin: 0;
+  padding: 0 10px;
+}
+
+.ky-nav-item a {
+  padding: 0 !important;
+  color: var(--ky-light);
+  font-family: var(--SFProText);
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.1s ease-out;
+}
+
+.ky-nav-item a:hover {
+  color: var(--ky-light-red);
+}
+
+.ky-nav-item a.active {
+  color: var(--ky-light-red);
+}

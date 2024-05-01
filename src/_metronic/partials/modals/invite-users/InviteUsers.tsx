@@ -134,7 +134,7 @@ const InviteUsers: FC = () => {
 
             <div className='btn btn-light-primary fw-bolder w-100 mb-8'>
               <img
-                alt='Logo'
+                alt='Keya Real Estate'
                 src={toAbsoluteUrl('media/svg/brand-logos/google-icon.svg')}
                 className='h-20px me-3'
               />

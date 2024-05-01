@@ -1,0 +1,11 @@
+.ky-header {
+  width: 100%;
+  padding: 20px 100px;
+  z-index: 100;
+}
+
+.ky-header-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

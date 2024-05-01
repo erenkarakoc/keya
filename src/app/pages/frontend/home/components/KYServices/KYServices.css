@@ -1,0 +1,92 @@
+.ky-services-section {
+  position: relative;
+}
+
+.ky-services-section .ky-bg-pattern {
+  left: 20%;
+  bottom: -40%;
+}
+
+.ky-services-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 720px;
+  margin: 0 auto;
+  padding: 50px 0 70px;
+  border: 2px solid var(--ky-midnight-3);
+  border-radius: 20px;
+  background-image: var(--ky-midnight-gradient);
+  transition: all 6s ease-out;
+  box-shadow: 0px 40px 25px -30px rgba(0, 0, 0, 0.5);
+}
+
+.ky-services-wrapper .ky-subtitle {
+  max-width: 220px;
+  text-align: center;
+}
+
+.ky-services-wrapper .ky-paragraph {
+  max-width: 430px;
+  margin-top: 20px;
+  color: var(--ky-midnight);
+  text-align: center;
+}
+
+.ky-services {
+  display: flex;
+  align-items: center;
+  grid-gap: 10px;
+  margin-top: 50px;
+}
+
+.ky-services-item {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  width: 190px;
+  border: 2px solid var(--ky-midnight-3);
+  border-radius: 10px;
+  background-color: var(--ky-midnight-4);
+  transition: all 0.1s ease-out;
+  overflow: hidden;
+}
+
+.ky-services-item svg,
+.ky-services-item .ky-icon {
+  position: absolute;
+  top: 50%;
+  left: 30px;
+  transform: translateY(-50%);
+  color: var(--ky-midnight-2);
+  transition: all 0.15s ease-out;
+}
+
+.ky-services-item:hover svg {
+  color: var(--ky-light);
+}
+
+.ky-services-item a {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  padding: 0 0 0 70px;
+  color: var(--ky-light);
+  font-family: var(--SFProDisplay);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.ky-services-wrapper:hover {
+  transform: translateY(15px);
+  box-shadow: 0px 20px 25px -30px rgba(0, 0, 0, 0.5);
+}
+.ky-services-item:hover {
+  transform: translateY(-2px);
+}

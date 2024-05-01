@@ -7,12 +7,11 @@
 
 import { FC } from "react"
 import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom"
+import { PublicRoutes } from "./PublicRoutes"
 import { PrivateRoutes } from "./PrivateRoutes"
 import { ErrorsPage } from "../modules/errors/ErrorsPage"
 import { Logout, AuthPage, useAuth } from "../modules/auth"
 import { App } from "../App"
-
-import { PublicRoutes } from "./PublicRoutes"
 
 /**
  * Base URL of the website.
@@ -32,7 +31,7 @@ const AppRoutes: FC = () => {
 
           {currentUser ? (
             <>
-              <Route path="dashboard" element={<PrivateRoutes />} />
+              <Route path="dashboard/*" element={<PrivateRoutes />} />
               <Route path="auth/*" element={<Navigate to="/dashboard" />} />
             </>
           ) : (

@@ -1,0 +1,31 @@
+:root {
+  --ky-dark: #101010;
+  --ky-light: #f5f5f5;
+  --ky-light-2: #b0b0b0;
+  --ky-light-3: #8f8f8f;
+  --ky-midnight: #6c6c6c;
+  --ky-midnight-2: #525252;
+  --ky-midnight-3: #272727;
+  --ky-midnight-4: #1a1a1a;
+  --ky-light-red: #ff4969;
+  --ky-red: #ea0029;
+  --ky-dark-gradient: linear-gradient(90deg, #101010 0%, #040404 100%);
+  --ky-midnight-gradient: linear-gradient(#1b1b1b 0%, #0e0e0e 100%);
+  --ky-light-gradient: linear-gradient(90deg, #c4c4c4 0%, #f1f1f1 100%);
+  --ky-red-gradient: linear-gradient(90deg, #ff4969 0%, #ea0029 100%);
+  --ky-light-red-gradient: linear-gradient(90deg, #ff8585 0%, #ff002d 100%);
+}
+
+.ky-layout {
+  min-width: 100vh;
+  background: var(--ky-dark);
+  color: var(--light);
+}
+
+.ky-light-layout {
+  background-color: var(--ky-light);
+}
+
+.ky-layout * {
+  font-family: var(--SFProDisplay);
+}
