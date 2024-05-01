@@ -54,9 +54,9 @@ export interface UserModel {
     phoneNumber: string | null
     photoURL: string | null
   }[]
-  occupation?: string
   phone?: string
-  roles?: Array<number>
+  role?: string
+  permissions?: Array<number>
   pic?: string
   emailSettings?: UserEmailSettingsModel
   address?: UserAddressModel

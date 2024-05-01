@@ -10,10 +10,10 @@ import {
 
 import {
   getFirestore,
-  doc,
-  getDoc,
   collection,
-  addDoc,
+  setDoc,
+  getDoc,
+  doc,
 } from "firebase/firestore"
 
 initializeApp(firebaseConfig)
@@ -33,62 +33,67 @@ export async function login(
     )
     const user = userCredential.user
 
-    const userDocRef = doc(db, "users", user.uid)
-    const userDocSnapshot = await getDoc(userDocRef)
-    const userDataFromFirestore = userDocSnapshot.data()
+    const userRef = doc(db, "users", user.uid)
+    const userDocSnapshot = await getDoc(userRef)
 
-    const userData: UserModel = {
-      id: userDataFromFirestore?.id || 0,
-      uid: userDataFromFirestore?.uid || user.uid,
-      email: userDataFromFirestore?.email || user.email || "",
-      emailVerified:
-        userDataFromFirestore?.emailVerified || user.emailVerified || false,
-      first_name: userDataFromFirestore?.first_name || "",
-      last_name: userDataFromFirestore?.last_name || "",
-      fullname: userDataFromFirestore?.fullname || "",
-      providerData: userDataFromFirestore?.providerData || [],
-      occupation: userDataFromFirestore?.occupation || "",
-      phone: userDataFromFirestore?.phone || "",
-      roles: userDataFromFirestore?.roles || [],
-      pic: userDataFromFirestore?.pic || "",
-      emailSettings: {
-        emailNotification:
-          userDataFromFirestore?.emailSettings?.emailNotification || true,
-        sendCopyToPersonalEmail:
-          userDataFromFirestore?.emailSettings?.sendCopyToPersonalEmail ||
-          false,
-        activityRelatesEmail: {
-          youHaveNewNotifications:
-            userDataFromFirestore?.emailSettings?.activityRelatesEmail
-              ?.youHaveNewNotifications || true,
-          youAreSentADirectMessage:
-            userDataFromFirestore?.emailSettings?.activityRelatesEmail
-              ?.youAreSentADirectMessage || true,
-          someoneAddsYouAsAsAConnection:
-            userDataFromFirestore?.emailSettings?.activityRelatesEmail
-              ?.someoneAddsYouAsAsAConnection || true,
-          uponNewOrder:
-            userDataFromFirestore?.emailSettings?.activityRelatesEmail
-              ?.uponNewOrder || false,
-          newMembershipApproval:
-            userDataFromFirestore?.emailSettings?.activityRelatesEmail
-              ?.newMembershipApproval || true,
-          memberRegistration:
-            userDataFromFirestore?.emailSettings?.activityRelatesEmail
-              ?.memberRegistration || false,
+    if (userDocSnapshot.exists()) {
+      const userDataFromFirestore = userDocSnapshot.data()
+
+      const userData: UserModel = {
+        id: userDataFromFirestore?.id || user.uid,
+        uid: userDataFromFirestore?.uid || user.uid,
+        email: userDataFromFirestore?.email || user.email || "",
+        emailVerified:
+          userDataFromFirestore?.emailVerified || user.emailVerified || false,
+        first_name: userDataFromFirestore?.first_name || "",
+        last_name: userDataFromFirestore?.last_name || "",
+        providerData: userDataFromFirestore?.providerData || [],
+        phone: userDataFromFirestore?.phone || "",
+        role: userDataFromFirestore?.role || "",
+        permissions: userDataFromFirestore?.permissions || [],
+        pic: userDataFromFirestore?.pic || "",
+        emailSettings: {
+          emailNotification:
+            userDataFromFirestore?.emailSettings?.emailNotification || true,
+          sendCopyToPersonalEmail:
+            userDataFromFirestore?.emailSettings?.sendCopyToPersonalEmail ||
+            false,
+          activityRelatesEmail: {
+            youHaveNewNotifications:
+              userDataFromFirestore?.emailSettings?.activityRelatesEmail
+                ?.youHaveNewNotifications || true,
+            youAreSentADirectMessage:
+              userDataFromFirestore?.emailSettings?.activityRelatesEmail
+                ?.youAreSentADirectMessage || true,
+            someoneAddsYouAsAsAConnection:
+              userDataFromFirestore?.emailSettings?.activityRelatesEmail
+                ?.someoneAddsYouAsAsAConnection || true,
+            uponNewOrder:
+              userDataFromFirestore?.emailSettings?.activityRelatesEmail
+                ?.uponNewOrder || false,
+            newMembershipApproval:
+              userDataFromFirestore?.emailSettings?.activityRelatesEmail
+                ?.newMembershipApproval || true,
+            memberRegistration:
+              userDataFromFirestore?.emailSettings?.activityRelatesEmail
+                ?.memberRegistration || false,
+          },
         },
-      },
-      address: {
-        addressLine: userDataFromFirestore?.address?.addressLine || "",
-        city: userDataFromFirestore?.address?.city || "",
-        state: userDataFromFirestore?.address?.state || "",
-        postCode: userDataFromFirestore?.address?.postCode || "",
-      },
-      createdAt: userDataFromFirestore?.createdAt || "",
-      lastLoginAt: userDataFromFirestore?.lastLoginAt || "",
-    }
+        address: {
+          addressLine: userDataFromFirestore?.address?.addressLine || "",
+          city: userDataFromFirestore?.address?.city || "",
+          state: userDataFromFirestore?.address?.state || "",
+          postCode: userDataFromFirestore?.address?.postCode || "",
+        },
+        createdAt: userDataFromFirestore?.createdAt || "",
+        lastLoginAt: userDataFromFirestore?.lastLoginAt || "",
+      }
 
-    return userData
+      return userData
+    } else {
+      console.log("User document doesn't exist in Firestore")
+      throw new Error("User document not found")
+    }
   } catch (error) {
     console.error("Error when logging in:", error)
     throw error
@@ -116,21 +121,22 @@ export async function register(
       password
     )
     const user = userCredential.user
+
     const usersCollectionRef = collection(db, "users")
 
-    await addDoc(usersCollectionRef, {
-      first_name,
-      last_name,
-      email: user.email || "",
-      emailVerified: user.emailVerified || false,
+    await setDoc(doc(usersCollectionRef, user.uid), {
       id: user.uid,
       uid: user.uid,
-      providerData: user.providerData || [],
+      email,
+      emailVerified: user.emailVerified || false,
+      first_name,
+      last_name,
+      providerData: [],
       createdAt: user.metadata.creationTime || "",
       lastLoginAt: user.metadata.lastSignInTime || "",
-      occupation: "",
       phone: "",
-      roles: [],
+      role: "",
+      permissions: [],
       pic: "",
       emailSettings: {
         emailNotification: true,
@@ -153,7 +159,7 @@ export async function register(
     })
   } catch (error) {
     console.error("Error when registering user:", error)
-    throw error // Let the error propagate naturally
+    throw error
   }
 }
 

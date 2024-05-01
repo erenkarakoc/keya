@@ -59,6 +59,7 @@ export function Registration() {
           values.password,
           values.confirmpassword
         )
+
         const user = await login(values.email, values.password)
         setCurrentUser(user)
       } catch (error) {

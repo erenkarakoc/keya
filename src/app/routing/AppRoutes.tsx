@@ -12,8 +12,7 @@ import { ErrorsPage } from "../modules/errors/ErrorsPage"
 import { Logout, AuthPage, useAuth } from "../modules/auth"
 import { App } from "../App"
 
-// Frontend
-import { Home } from "../pages/frontend/homepage/HomePage"
+import { PublicRoutes } from "./PublicRoutes"
 
 /**
  * Base URL of the website.
@@ -25,43 +24,26 @@ const { BASE_URL } = import.meta.env
 const AppRoutes: FC = () => {
   const { currentUser } = useAuth()
 
-  console.log(currentUser)
-
   return (
     <BrowserRouter basename={BASE_URL}>
       <Routes>
         <Route element={<App />}>
-          {/* ################ */}
-          {/* #### COMMON #### */}
-          {/* ################ */}
+          <Route path="/*" element={<PublicRoutes />} />
 
-          {/* ERRORS */}
-          <Route path="error/*" element={<ErrorsPage />} />
-
-          {/* ################### */}
-          {/* #### FRONT END #### */}
-          {/* ################### */}
-
-          {/* HOME */}
-          <Route path="/" element={<Home />} />
-
-          {/* ################## */}
-          {/* #### BACK END #### */}
-          {/* ################## */}
-
-          {/* AUTH */}
-          <Route path="logout" element={<Logout />} />
           {currentUser ? (
             <>
-              <Route path="/*" element={<PrivateRoutes />} />
-              <Route index element={<Navigate to="/dashboard" />} />
+              <Route path="dashboard" element={<PrivateRoutes />} />
+              <Route path="auth/*" element={<Navigate to="/dashboard" />} />
             </>
           ) : (
             <>
+              <Route path="dashboard/*" element={<Navigate to="/auth" />} />
               <Route path="auth/*" element={<AuthPage />} />
-              <Route path="*" element={<Navigate to="/" />} />
             </>
           )}
+
+          <Route path="error/*" element={<ErrorsPage />} />
+          <Route path="logout" element={<Logout />} />
         </Route>
       </Routes>
     </BrowserRouter>

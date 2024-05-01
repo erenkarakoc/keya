@@ -8,8 +8,7 @@ import {
   MixedWidget14,
   MixedWidget15,
 } from "../../../../_metronic/partials/widgets"
-// import { collection, getDocs, setDoc, doc } from "firebase/firestore"
-// import { firestore } from "../../../../firebase/BaseConfig"
+import { useAuth } from "../../../modules/auth/core/Auth"
 
 const DashboardPage = () => (
   <>
@@ -64,60 +63,13 @@ const DashboardPage = () => (
   </>
 )
 
-// const MyComponent: React.FC = () => {
-//   const [inputValue, setInputValue] = useState<string>("")
-
-//   const handleSubmit = async () => {
-//     try {
-//       await setDoc(doc(firestore, "users", "user4"), {
-//         email: inputValue,
-//         password: "hashedpassword4",
-//         username: "exampleuser4",
-//       })
-
-//       console.log("Document successfully added!")
-
-//       setInputValue("")
-//     } catch (error) {
-//       console.error("Error adding document: ", error)
-//     }
-//   }
-
-//   return (
-//     <div>
-//       {/* Input field */}
-//       <input
-//         type="text"
-//         value={inputValue}
-//         onChange={(e) => setInputValue(e.target.value)}
-//       />
-//       {/* Button to submit */}
-//       <button onClick={handleSubmit}>Submit</button>
-//     </div>
-//   )
-// }
-
 const DashboardWrapper = () => {
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const querySnapshot = await getDocs(collection(firestore, "users"))
-  //       querySnapshot.forEach((doc) => {
-  //         console.log(doc.data())
-  //       })
-  //     } catch (error) {
-  //       console.error("Error getting documents: ", error)
-  //     }
-  //   }
-
-  //   fetchData()
-  // }, [])
+  const { currentUser } = useAuth()
 
   return (
     <EnableSidebar>
-      {/* <MyComponent /> */}
       <PageTitle description="You’ve got 24 New Sales" breadcrumbs={[]}>
-        Hello Paul
+        {currentUser && "Merhaba " + currentUser?.first_name}
       </PageTitle>
       <DashboardPage />
     </EnableSidebar>

@@ -1,9 +1,9 @@
-import React, { createContext, useState, useEffect, useContext } from "react"
+import { FC, useState, useEffect, createContext, useContext } from "react"
 import { LayoutSplashScreen } from "../../../../_metronic/layout/core"
 import { UserModel } from "./_models"
-import { onAuthStateChanged, signOut } from "firebase/auth"
+import { onAuthStateChanged, signOut, getAuth } from "firebase/auth"
 import { firebaseAuth } from "../../../../firebase/BaseConfig"
-import { getFirestore, doc, getDoc } from "firebase/firestore"
+import { getFirestore, getDoc, doc } from "firebase/firestore"
 
 const db = getFirestore()
 
@@ -13,7 +13,13 @@ type AuthContextProps = {
   logout: () => void
 }
 
-const AuthContext = createContext<AuthContextProps | null>(null)
+const initAuthContextPropsState = {
+  currentUser: undefined,
+  setCurrentUser: () => {},
+  logout: () => {},
+}
+
+const AuthContext = createContext<AuthContextProps>(initAuthContextPropsState)
 
 const useAuth = () => {
   const context = useContext(AuthContext)
@@ -27,12 +33,14 @@ interface WithChildren {
   children: React.ReactNode
 }
 
-const AuthProvider: React.FC<WithChildren> = ({ children }) => {
+const AuthProvider: FC<WithChildren> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<UserModel | undefined>()
   const [showSplashScreen, setShowSplashScreen] = useState(true)
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(firebaseAuth, async (user) => {
+    const auth = getAuth()
+
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
           const userDocRef = doc(db, "users", user.uid)
@@ -76,8 +84,17 @@ const AuthProvider: React.FC<WithChildren> = ({ children }) => {
   )
 }
 
-const AuthInit: React.FC<WithChildren> = ({ children }) => {
-  return <AuthProvider>{children}</AuthProvider>
+const AuthInit: FC<WithChildren> = ({ children }) => {
+  const { currentUser } = useAuth()
+  const [showSplashScreen, setShowSplashScreen] = useState(true)
+
+  useEffect(() => {
+    setShowSplashScreen(false)
+  }, [currentUser])
+
+  // Show splash screen until authentication is initialized
+  return showSplashScreen ? <LayoutSplashScreen /> : <>{children}</>
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export { AuthProvider, AuthInit, useAuth }

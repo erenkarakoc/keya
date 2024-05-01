@@ -25,7 +25,7 @@ const AsideUserMenu: FC = () => {
               {currentUser?.first_name} {currentUser?.last_name}
             </a>
             <span className="text-muted fw-bold d-block fs-7 lh-1">
-              Python Dev
+              {currentUser?.role}
             </span>
           </div>
           {/* end::User info */}
