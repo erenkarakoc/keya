@@ -22,7 +22,7 @@
   position: absolute;
   height: 100%;
   width: 100%;
-  padding: 0 120px 0 90px;
+  padding: 0 150px 0 80px;
   border: 2px solid var(--ky-midnight-3);
   border-radius: 24px;
   color: var(--ky-light);
@@ -39,7 +39,7 @@
 .ky-hero-search-input-has-value #KYHeroSearchInput,
 #KYHeroSearchInput:focus {
   border-color: var(--ky-midnight-3);
-  box-shadow: 0px 40px 25px -30px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 50px 25px -30px rgba(0, 0, 0, 0.5);
 }
 
 #KYHeroSearchInput::-webkit-search-cancel-button {

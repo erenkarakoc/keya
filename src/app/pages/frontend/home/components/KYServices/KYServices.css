@@ -4,7 +4,7 @@
 
 .ky-services-section .ky-bg-pattern {
   left: 20%;
-  bottom: -40%;
+  bottom: -30%;
 }
 
 .ky-services-wrapper {
@@ -84,9 +84,22 @@
 }
 
 .ky-services-wrapper:hover {
-  transform: translateY(15px);
+  transform: translateY(-15px);
   box-shadow: 0px 20px 25px -30px rgba(0, 0, 0, 0.5);
 }
 .ky-services-item:hover {
   transform: translateY(-2px);
+}
+
+.ky-services-note {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 24px;
+  width: fit-content;
+  margin: 20px auto 0;
+  padding: 0 20px;
+  border: 1px solid var(--ky-midnight-4);
+  border-radius: 24px;
 }

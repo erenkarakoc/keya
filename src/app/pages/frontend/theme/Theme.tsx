@@ -5,7 +5,8 @@ const Theme = () => {
   return (
     <>
       <KYText variant="heading">
-        Hayalindeki <span className="ky-text-highlight">mülkü bulmak</span> hiç bu kadar kolay olmamıştı!
+        Hayalindeki <span className="ky-text-highlight">mülkü bulmak</span> hiç
+        bu kadar kolay olmamıştı!
       </KYText>
     </>
   )

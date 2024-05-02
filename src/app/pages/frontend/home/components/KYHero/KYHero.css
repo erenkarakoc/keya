@@ -4,6 +4,7 @@
   justify-content: center;
   align-items: center;
 }
+
 .ky-hero-section .ky-heading {
   max-width: 700px;
   text-align: center;
@@ -14,7 +15,22 @@
 }
 
 .ky-hero-section .ky-caption {
+  position: relative;
   margin-top: 40px;
+}
+
+.ky-hero-caption-more + svg {
+  position: absolute;
+  top: 50%;
+  right: -16px;
+  transform: translateY(-50%);
+  color: var(--ky-midnight);
+  transition: all 0.1s ease-out;
+}
+
+.ky-hero-caption-more:hover + svg {
+  color: var(--ky-light);
+  transform: translate(3px, -50%);
 }
 
 .ky-hero-section .ky-bg-pattern {

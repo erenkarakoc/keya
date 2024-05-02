@@ -42,6 +42,15 @@
 
   <div id="root-modals"></div>
   <script type="module" src="/src/main.tsx"></script>
+  <script>
+    const setFrontendLayout = () => {
+      let isKyDarkLayout = document.querySelector("#ky-dark-layout")
+
+      if (isKyDarkLayout) {
+        document.querySelector("#kt_body").style.backgroundColor = "#101010"
+      }
+    }
+  </script>
 </body>
 
 </html>

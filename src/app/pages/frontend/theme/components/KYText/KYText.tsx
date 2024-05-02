@@ -31,7 +31,7 @@ const KYText: React.FC<KYTextProps> = ({
 
   return (
     <Tag
-      className={`ky-text ky-${variant} ${className}`}
+      className={`ky-text ky-${variant}${className ? " " + className : ""}`}
       style={{
         color,
         fontSize,

@@ -36,6 +36,12 @@ const KYServices = () => {
           </div>
         </div>
       </div>
+
+      <div className="ky-services-note">
+        <KYText variant="caption" fontSize={12}>
+          Aradığın şeyi bulamadıysan, <Link to="/iletisim" style={{fontSize: 12}}>iletişime geç</Link>.
+        </KYText>
+      </div>
       <KYBGPattern type={8} />
     </section>
   )

@@ -50,6 +50,9 @@
 .ky-text.ky-paragraph,
 .ky-text.ky-paragraph * {
   font-family: var(--SFProText);
+  color: var(--ky-midnight);
+  font-size: 20px;
+  font-weight: 500;
 }
 
 .ky-text-highlight {

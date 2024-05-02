@@ -19,11 +19,16 @@
 .ky-layout {
   min-width: 100vh;
   background: var(--ky-dark);
-  color: var(--light);
+  color: var(--ky-light);
+}
+
+.ky-dark-layout {
+  background-color: var(--ky-dark);
+  color: var(--ky-light);
 }
 
 .ky-light-layout {
-  background-color: var(--ky-light);
+  background-color: var(--ky-dark);
 }
 
 .ky-layout * {

@@ -1,4 +1,5 @@
 import "./Home.css"
+import { KYFooter } from "./components/KYFooter/KYFooter"
 
 import { KYHeader } from "./components/KYHeader/KYHeader"
 import { KYHero } from "./components/KYHero/KYHero"
@@ -12,6 +13,7 @@ const Home = () => {
         <KYHero />
         <KYServices />
       </main>
+      <KYFooter />
     </>
   )
 }
