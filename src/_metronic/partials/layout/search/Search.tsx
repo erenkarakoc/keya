@@ -95,7 +95,7 @@ const Search: FC<Props> = ({className = '', mobileToggleBtnClass = ''}) => {
           type='text'
           className='form-control bg-transparent ps-13 fs-7 h-40px'
           name='search'
-          placeholder='Quick Search'
+          placeholder='Hızlı Arama'
           data-kt-search-element='input'
         />
 

@@ -1,7 +1,7 @@
 import "./KYFooter.css"
 
 import { Link } from "react-router-dom"
-import { KYText } from "../../../../components/KYText/KYText"
+import { KYText } from "../KYText/KYText"
 
 const KYFooter = () => {
   return (
@@ -71,21 +71,6 @@ const KYFooter = () => {
             </li>
           </ul>
           <ul className="ky-footer-list">
-            <li className="ky-footer-item">İlanlar</li>
-            <li className="ky-footer-item">
-              <Link to="/konut">Konut</Link>
-            </li>
-            <li className="ky-footer-item">
-              <Link to="/proje">Proje</Link>
-            </li>
-            <li className="ky-footer-item">
-              <Link to="/ticari">Ticari</Link>
-            </li>
-            <li className="ky-footer-item">
-              <Link to="/arsa">Arsa</Link>
-            </li>
-          </ul>
-          <ul className="ky-footer-list">
             <li className="ky-footer-item">Keya Ekibi</li>
             <li className="ky-footer-item">
               <Link to="/offices">Ofislerimiz</Link>
@@ -94,7 +79,7 @@ const KYFooter = () => {
               <Link to="/danismanlar">Danışmanlarımız</Link>
             </li>
             <li className="ky-footer-item">
-              <Link to="/auth">Giriş Yap</Link>
+              <Link to="/giris">Giriş Yap</Link>
             </li>
           </ul>
           <ul className="ky-footer-list">

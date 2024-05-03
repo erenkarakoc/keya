@@ -47,11 +47,10 @@ export async function login(
           userDataFromFirestore?.emailVerified || user.emailVerified || false,
         first_name: userDataFromFirestore?.first_name || "",
         last_name: userDataFromFirestore?.last_name || "",
-        providerData: userDataFromFirestore?.providerData || [],
-        phone: userDataFromFirestore?.phone || "",
+        photoURL: userDataFromFirestore?.photoURL || "",
+        phoneNumber: userDataFromFirestore?.phone || "",
         role: userDataFromFirestore?.role || "",
         permissions: userDataFromFirestore?.permissions || [],
-        pic: userDataFromFirestore?.pic || "",
         emailSettings: {
           emailNotification:
             userDataFromFirestore?.emailSettings?.emailNotification || true,
@@ -131,13 +130,10 @@ export async function register(
       emailVerified: user.emailVerified || false,
       first_name,
       last_name,
-      providerData: [],
-      createdAt: user.metadata.creationTime || "",
-      lastLoginAt: user.metadata.lastSignInTime || "",
-      phone: "",
+      photoURL: "",
+      phoneNumber: "",
       role: "",
       permissions: [],
-      pic: "",
       emailSettings: {
         emailNotification: true,
         sendCopyToPersonalEmail: false,
@@ -156,6 +152,8 @@ export async function register(
         state: "",
         postCode: "",
       },
+      createdAt: user.metadata.creationTime || "",
+      lastLoginAt: user.metadata.lastSignInTime || "",
     })
   } catch (error) {
     console.error("Error when registering user:", error)

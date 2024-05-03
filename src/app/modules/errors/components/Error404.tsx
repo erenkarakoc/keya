@@ -1,6 +1,7 @@
 import { FC } from "react"
-import { Link } from "react-router-dom"
+import { KYButton } from "../../../frontend/components/KYButton/KYButton"
 import { toAbsoluteUrl } from "../../../../_metronic/helpers"
+import "./Error.css"
 
 const Error404: FC = () => {
   return (
@@ -32,9 +33,13 @@ const Error404: FC = () => {
 
       {/* begin::Link */}
       <div className="mb-0">
-        <Link to="/" className="btn btn-sm btn-primary">
-          Ana Sayfa'ya dön
-        </Link>
+        <KYButton
+          link
+          width="fit-content"
+          to="/"
+          text="Ana Sayfa'ya dön"
+          className="ky-error-page-button mx-auto"
+        />
       </div>
       {/* end::Link */}
     </>

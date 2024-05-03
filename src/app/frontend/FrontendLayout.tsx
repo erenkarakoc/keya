@@ -1,21 +1,17 @@
-import { Link, Outlet } from "react-router-dom"
+import { Outlet } from "react-router-dom"
 
 import "../../_metronic/assets/fonts/fonts.css"
 import "../../_metronic/assets/theme.css"
 
+import { KYFooter } from "./components/KYFooter/KYFooter"
+import { KYHeader } from "./components/KYHeader/KYHeader"
+
 const FrontendLayout = () => {
   return (
     <div className={`ky-layout ky-dark-layout`}>
+      <KYHeader />
       <Outlet />
-
-      <div
-        style={{ display: "flex", flexDirection: "column", gridGap: "20px" }}
-      >
-        <Link to="/">Ana Sayfa</Link>
-        <Link to="/offices">Ofislerimiz</Link>
-        <Link to="/theme">Theme</Link>
-        <Link to="/auth">Giriş Yap</Link>
-      </div>
+      <KYFooter />
     </div>
   )
 }

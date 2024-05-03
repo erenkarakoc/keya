@@ -1,7 +1,7 @@
 import {Column} from 'react-table'
 import {UserInfoCell} from './UserInfoCell'
 import {UserLastLoginCell} from './UserLastLoginCell'
-import {UserTwoStepsCell} from './UserTwoStepsCell'
+// import {UserTwoStepsCell} from './UserTwoStepsCell'
 import {UserActionsCell} from './UserActionsCell'
 import {UserSelectionCell} from './UserSelectionCell'
 import {UserCustomHeader} from './UserCustomHeader'
@@ -20,28 +20,21 @@ const usersColumns: ReadonlyArray<Column<User>> = [
     Cell: ({...props}) => <UserInfoCell user={props.data[props.row.index]} />,
   },
   {
-    Header: (props) => <UserCustomHeader tableProps={props} title='Role' className='min-w-125px' />,
+    Header: (props) => <UserCustomHeader tableProps={props} title='Ünvan' className='min-w-125px' />,
     accessor: 'role',
   },
   {
     Header: (props) => (
-      <UserCustomHeader tableProps={props} title='Last login' className='min-w-125px' />
+      <UserCustomHeader tableProps={props} title='Son Giriş' className='min-w-125px' />
     ),
-    id: 'last_login',
-    Cell: ({...props}) => <UserLastLoginCell last_login={props.data[props.row.index].last_login} />,
+    id: 'lastLoginAt',
+    Cell: ({...props}) => <UserLastLoginCell last_login={props.data[props.row.index].lastLogin} />,
   },
   {
     Header: (props) => (
-      <UserCustomHeader tableProps={props} title='Two steps' className='min-w-125px' />
+      <UserCustomHeader tableProps={props} title='Kayıt Tarihi' className='min-w-125px' />
     ),
-    id: 'two_steps',
-    Cell: ({...props}) => <UserTwoStepsCell two_steps={props.data[props.row.index].two_steps} />,
-  },
-  {
-    Header: (props) => (
-      <UserCustomHeader tableProps={props} title='Joined day' className='min-w-125px' />
-    ),
-    accessor: 'joined_day',
+    accessor: 'createdAt',
   },
   {
     Header: (props) => (

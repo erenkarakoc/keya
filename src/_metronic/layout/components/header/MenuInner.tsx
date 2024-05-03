@@ -191,7 +191,7 @@ export function MenuInner() {
         </MenuInnerWithSub>
         <MenuItem
           icon="shield-tick"
-          to="/apps/user-management/users"
+          to="/kullanici-yonetimi/kullanicilar"
           title="User management"
         />
       </MenuInnerWithSub>

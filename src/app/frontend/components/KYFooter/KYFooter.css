@@ -52,7 +52,7 @@
 }
 
 .ky-footer-item:not(:last-of-type):not(:first-of-type) {
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
 .ky-footer-item:not(:first-of-type) a {

@@ -48,7 +48,7 @@ const MixedWidget13: FC<Props> = ({className, backGroundColor, chartHeight}) => 
         <div className='d-flex flex-column flex-grow-1'>
           {/* begin::Title                    */}
           <a href='#' className='text-gray-900 text-hover-primary fw-bolder fs-3'>
-            Earnings
+            Kazançlar
           </a>
           {/* end::Title */}
 

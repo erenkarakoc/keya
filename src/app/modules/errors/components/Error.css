@@ -1,0 +1,6 @@
+.ky-error-page-button,
+.ky-error-page-button * {
+  background: var(--ky-light);
+  color: var(--ky-midnight-4) !important;
+  font-weight: 600 !important;
+}

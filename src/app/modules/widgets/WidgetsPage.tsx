@@ -10,7 +10,7 @@ import {Statistics} from './components/Statistics'
 const widgetsBreadCrumbs: Array<PageLink> = [
   {
     title: 'Widgets',
-    path: '/crafted/widgets/charts',
+    path: 'crafted/widgets/charts',
     isSeparator: false,
     isActive: false,
   },

@@ -38,26 +38,17 @@ export interface UserSocialNetworksModel {
   instagram: string
 }
 
-export interface UserModel {
+export type UserModel = {
   id: string
   uid: string
   email: string
   emailVerified: boolean
   first_name: string
   last_name: string
-  fullname?: string
-  providerData?: {
-    providerId: string
-    uid: string
-    displayName: string | null
-    email: string
-    phoneNumber: string | null
-    photoURL: string | null
-  }[]
-  phone?: string
+  photoURL?: string
+  phoneNumber?: string
   role?: string
   permissions?: Array<number>
-  pic?: string
   emailSettings?: UserEmailSettingsModel
   address?: UserAddressModel
   createdAt: string

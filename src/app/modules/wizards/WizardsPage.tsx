@@ -6,7 +6,7 @@ import {Horizontal} from './components/Horizontal'
 const wizardsBreadCrumbs: Array<PageLink> = [
   {
     title: 'Wizards',
-    path: '/crafted/pages/wizards/horizontal',
+    path: 'crafted/pages/wizards/horizontal',
     isSeparator: false,
     isActive: false,
   },

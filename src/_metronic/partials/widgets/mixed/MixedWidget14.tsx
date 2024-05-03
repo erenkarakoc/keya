@@ -47,7 +47,7 @@ const MixedWidget14: FC<Props> = ({className, backGroundColor, chartHeight = '15
         <div className='d-flex flex-column flex-grow-1'>
           {/* begin::Title                    */}
           <a href='#' className='text-gray-900 text-hover-primary fw-bolder fs-3'>
-            Contributors
+            Katkılar
           </a>
 
           {/* end::Title */}

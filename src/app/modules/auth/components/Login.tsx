@@ -4,31 +4,24 @@ import clsx from "clsx"
 import { Link } from "react-router-dom"
 import { useFormik } from "formik"
 import { login } from "../core/_requests"
-import { toAbsoluteUrl } from "../../../../_metronic/helpers"
 import { useAuth } from "../core/Auth"
 
 const loginSchema = Yup.object().shape({
   email: Yup.string()
-    .email("Wrong email format")
-    .min(3, "Minimum 3 symbols")
-    .max(50, "Maximum 50 symbols")
-    .required("Email is required"),
+    .email("Geçerli bir e-posta adresi gir")
+    .min(3, "E-posta en az 3 karakterden oluşmalı")
+    .max(50, "E-posta en fazla 50 karakterden oluşmalı")
+    .required("E-posta alanı zorunludur."),
   password: Yup.string()
-    .min(3, "Minimum 3 symbols")
-    .max(50, "Maximum 50 symbols")
-    .required("Password is required"),
+    .min(3, "Şifre en az 3 karakterden oluşmalı")
+    .max(50, "Şifre en fazla 50 karakterden oluşmalı")
+    .required("Şifre alanı zorunludur"),
 })
 
 const initialValues = {
   email: "erenkarakocw@gmail.com",
   password: "123456",
 }
-
-/*
-  Formik+YUP+Typescript:
-  https://jaredpalmer.com/formik/docs/tutorial#getfieldprops
-  https://medium.com/@maurice.de.beijer/yup-validation-and-typescript-and-formik-6c342578a20e
-*/
 
 export function Login() {
   const [loading, setLoading] = useState(false)
@@ -44,7 +37,7 @@ export function Login() {
         setCurrentUser(user)
       } catch (error) {
         console.error(error)
-        setStatus("The login details are incorrect")
+        setStatus("E-posta veya şifre yanlış. Lütfen tekrar deneyin.")
         setSubmitting(false)
         setLoading(false)
       }
@@ -60,65 +53,12 @@ export function Login() {
     >
       {/* begin::Heading */}
       <div className="text-center mb-11">
-        <h1 className="text-gray-900 fw-bolder mb-3">Sign In</h1>
+        <h1 className="text-gray-900 fw-bolder mb-3">Giriş Yap</h1>
         <div className="text-gray-500 fw-semibold fs-6">
-          Your Social Campaigns
+          Bireysel veya kurumsal Keya hesabına giriş yap.
         </div>
       </div>
       {/* begin::Heading */}
-
-      {/* begin::Login options */}
-      <div className="row g-3 mb-9">
-        {/* begin::Col */}
-        <div className="col-md-6">
-          {/* begin::Google link */}
-          <a
-            href="#"
-            className="btn btn-flex btn-outline btn-text-gray-700 btn-active-color-primary bg-state-light flex-center text-nowrap w-100"
-          >
-            <img
-              alt="Keya Real Estate"
-              src={toAbsoluteUrl("media/svg/brand-logos/google-icon.svg")}
-              className="h-15px me-3"
-            />
-            Sign in with Google
-          </a>
-          {/* end::Google link */}
-        </div>
-        {/* end::Col */}
-
-        {/* begin::Col */}
-        <div className="col-md-6">
-          {/* begin::Google link */}
-          <a
-            href="#"
-            className="btn btn-flex btn-outline btn-text-gray-700 btn-active-color-primary bg-state-light flex-center text-nowrap w-100"
-          >
-            <img
-              alt="Keya Real Estate"
-              src={toAbsoluteUrl("media/svg/brand-logos/apple-black.svg")}
-              className="theme-light-show h-15px me-3"
-            />
-            <img
-              alt="Keya Real Estate"
-              src={toAbsoluteUrl("media/svg/brand-logos/apple-black-dark.svg")}
-              className="theme-dark-show h-15px me-3"
-            />
-            Sign in with Apple
-          </a>
-          {/* end::Google link */}
-        </div>
-        {/* end::Col */}
-      </div>
-      {/* end::Login options */}
-
-      {/* begin::Separator */}
-      <div className="separator separator-content my-14">
-        <span className="w-125px text-gray-500 fw-semibold fs-7">
-          Or with email
-        </span>
-      </div>
-      {/* end::Separator */}
 
       {formik.status ? (
         <div className="mb-lg-15 alert alert-danger">
@@ -127,15 +67,17 @@ export function Login() {
       ) : (
         <div className="mb-10 bg-light-info p-8 rounded">
           <div className="text-info">
-            Use account <strong>admin@demo.com</strong> and password{" "}
-            <strong>demo</strong> to continue.
+            Keya ailesinin bir üyesiysen, sana özel arayüzüne giriş yap ve
+            işlemlerini <strong>kolayca gerçekleştir.</strong>
           </div>
         </div>
       )}
 
       {/* begin::Form group */}
       <div className="fv-row mb-8">
-        <label className="form-label fs-6 fw-bolder text-gray-900">Email</label>
+        <label className="form-label fs-6 fw-bolder text-gray-900">
+          E-posta
+        </label>
         <input
           placeholder="Email"
           {...formik.getFieldProps("email")}
@@ -161,7 +103,7 @@ export function Login() {
       {/* begin::Form group */}
       <div className="fv-row mb-3">
         <label className="form-label fw-bolder text-gray-900 fs-6 mb-0">
-          Password
+          Şifre
         </label>
         <input
           type="password"
@@ -192,8 +134,8 @@ export function Login() {
         <div />
 
         {/* begin::Link */}
-        <Link to="/auth/forgot-password" className="link-primary">
-          Forgot Password ?
+        <Link to="/giris/sifremi-unuttum" className="link-primary">
+          Şifreni mi unuttun?
         </Link>
         {/* end::Link */}
       </div>
@@ -207,10 +149,10 @@ export function Login() {
           className="btn btn-primary"
           disabled={formik.isSubmitting || !formik.isValid}
         >
-          {!loading && <span className="indicator-label">Continue</span>}
+          {!loading && <span className="indicator-label">Giriş Yap</span>}
           {loading && (
             <span className="indicator-progress" style={{ display: "block" }}>
-              Please wait...
+              Lütfen bekleyin...
               <span className="spinner-border spinner-border-sm align-middle ms-2"></span>
             </span>
           )}
@@ -219,10 +161,12 @@ export function Login() {
       {/* end::Action */}
 
       <div className="text-gray-500 text-center fw-semibold fs-6">
-        Not a Member yet?{" "}
-        <Link to="/auth/registration" className="link-primary">
-          Sign up
-        </Link>
+        Keya ailesinin bir parçası olmak için bizimle{" "}
+        <Link to="/iletisim" className="link-primary">
+          iletişime
+        </Link>{" "}
+        geçin.
+        <br />
       </div>
     </form>
   )

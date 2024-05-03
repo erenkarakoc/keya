@@ -10,6 +10,8 @@ interface KYButtonProps {
   action?: () => void
   text: string
   secondary?: boolean
+  width?: string
+  className?: string
 }
 
 const KYButton: React.FC<KYButtonProps> = ({
@@ -18,11 +20,20 @@ const KYButton: React.FC<KYButtonProps> = ({
   action,
   text,
   secondary,
+  width,
+  className,
+  ...props
 }) => {
   const { pathname } = useLocation()
 
   return (
-    <div className={`ky-button${secondary && " ky-button-secondary"}`}>
+    <div
+      className={`ky-button${secondary ? " ky-button-secondary" : ""}${
+        className ? " " + className : ""
+      }`}
+      style={{ width: width ? width : "" }}
+      {...props}
+    >
       {link ? (
         <Link
           className={clsx("menu-link py-3", {

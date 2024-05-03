@@ -46,22 +46,24 @@ export function ForgotPassword() {
       onSubmit={formik.handleSubmit}
     >
       <div className="text-center mb-10">
-        <h1 className="text-gray-900 fw-bolder mb-3">Forgot Password ?</h1>
+        <h1 className="text-gray-900 fw-bolder mb-3">Şifreni mi unuttun?</h1>
         <div className="text-gray-500 fw-semibold fs-6">
-          Enter your email to reset your password.
+          Şifreni sıfırlamak için e-posta adresini gir.
         </div>
       </div>
 
       {resetSuccess && (
         <div className="mb-10 bg-light-info p-8 rounded">
           <div className="text-info">
-            Password reset email sent. Please check your email.
+            Sıfırlama bağlantısı gönderildi. Gelen kutunu kontrol et.
           </div>
         </div>
       )}
 
       <div className="fv-row mb-8">
-        <label className="form-label fw-bolder text-gray-900 fs-6">Email</label>
+        <label className="form-label fw-bolder text-gray-900 fs-6">
+          E-posta
+        </label>
         <input
           type="email"
           placeholder=""
@@ -86,7 +88,7 @@ export function ForgotPassword() {
           className="btn btn-primary me-4"
           disabled={loading}
         >
-          <span className="indicator-label">Submit</span>
+          <span className="indicator-label">Gönder</span>
           {loading && (
             <span className="indicator-progress">
               Please wait...
@@ -94,13 +96,13 @@ export function ForgotPassword() {
             </span>
           )}
         </button>
-        <Link to="/auth/login">
+        <Link to="/giris">
           <button
             type="button"
             className="btn btn-light"
             disabled={formik.isSubmitting || !formik.isValid || loading}
           >
-            Cancel
+            Geri Dön
           </button>
         </Link>
       </div>

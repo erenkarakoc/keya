@@ -17,7 +17,6 @@
 }
 
 .ky-layout {
-  min-width: 100vh;
   background: var(--ky-dark);
   color: var(--ky-light);
 }

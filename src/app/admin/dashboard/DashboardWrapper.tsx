@@ -1,5 +1,5 @@
 // import { useEffect, useState } from "react"
-import { EnableSidebar, PageTitle } from "../../../../_metronic/layout/core"
+import { EnableSidebar, PageTitle } from "../../../_metronic/layout/core"
 import {
   ListsWidget4,
   ListsWidget5,
@@ -7,8 +7,8 @@ import {
   MixedWidget13,
   MixedWidget14,
   MixedWidget15,
-} from "../../../../_metronic/partials/widgets"
-import { useAuth } from "../../../modules/auth/core/Auth"
+} from "../../../_metronic/partials/widgets"
+import { useAuth } from "../../modules/auth/core/Auth"
 
 const DashboardPage = () => (
   <>
@@ -68,7 +68,7 @@ const DashboardWrapper = () => {
 
   return (
     <EnableSidebar>
-      <PageTitle description="You’ve got 24 New Sales" breadcrumbs={[]}>
+      <PageTitle description="" breadcrumbs={[]}>
         {currentUser && "Merhaba " + currentUser?.first_name}
       </PageTitle>
       <DashboardPage />
