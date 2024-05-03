@@ -1,9 +1,9 @@
 import { Navigate, Route, Routes } from "react-router-dom"
-import { FrontendLayout } from "../pages/frontend/FrontendLayout"
+import { FrontendLayout } from "../frontend/FrontendLayout"
 
-import { Home } from "../pages/frontend/home/Home"
-import { Offices } from "../pages/frontend/offices/Offices"
-import { Theme } from "../pages/frontend/theme/Theme"
+import { Home } from "../frontend/pages/home/Home"
+import { Offices } from "../frontend/pages/offices/Offices"
+import { Theme } from "../frontend/pages/theme/Theme"
 
 const PublicRoutes = () => {
   return (

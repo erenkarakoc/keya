@@ -1,7 +1,7 @@
 import { Link, Outlet } from "react-router-dom"
 
-import "../../../_metronic/assets/fonts/fonts.css"
-import "./theme/Theme.css"
+import "../../_metronic/assets/fonts/fonts.css"
+import "../../_metronic/assets/theme.css"
 
 const FrontendLayout = () => {
   return (

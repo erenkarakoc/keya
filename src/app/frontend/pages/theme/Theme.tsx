@@ -1,5 +1,5 @@
-import "./Theme.css"
-import { KYText } from "./components/KYText/KYText"
+import "../../../../_metronic/assets/theme.css"
+import { KYText } from "../../components/KYText/KYText"
 
 const Theme = () => {
   return (

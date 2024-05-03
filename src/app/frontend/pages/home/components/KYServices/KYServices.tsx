@@ -2,8 +2,8 @@ import "./KYServices.css"
 
 import { Link } from "react-router-dom"
 
-import { KYBGPattern } from "../../../theme/components/KYBGPattern/KYBGPattern"
-import { KYText } from "../../../theme/components/KYText/KYText"
+import { KYBGPattern } from "../../../../components/KYBGPattern/KYBGPattern"
+import { KYText } from "../../../../components/KYText/KYText"
 
 const KYServices = () => {
   return (

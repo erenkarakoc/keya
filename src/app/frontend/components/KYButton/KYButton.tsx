@@ -2,7 +2,7 @@ import "./KYButton.css"
 import { useLocation } from "react-router"
 import { Link } from "react-router-dom"
 import clsx from "clsx"
-import { checkIsActive } from "../../../../../../_metronic/helpers"
+import { checkIsActive } from "../../../../_metronic/helpers"
 
 interface KYButtonProps {
   link?: boolean

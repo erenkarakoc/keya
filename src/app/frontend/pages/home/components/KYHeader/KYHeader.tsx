@@ -2,9 +2,9 @@ import "./KYHeader.css"
 
 import { Link } from "react-router-dom"
 
-import { KYNav } from "../../../theme/components/KYNav/KYNav"
-import { KYNavItem } from "../../../theme/components/KYNavItem/KYNavItem"
-import { KYButton } from "../../../theme/components/KYButton/KYButton"
+import { KYNav } from "../../../../components/KYNav/KYNav"
+import { KYNavItem } from "../../../../components/KYNavItem/KYNavItem"
+import { KYButton } from "../../../../components/KYButton/KYButton"
 
 const KYHeader = () => {
 

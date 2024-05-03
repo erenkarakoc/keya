@@ -3,8 +3,8 @@ import "./KYHero.css"
 import { Link } from "react-router-dom"
 import { useState } from "react"
 
-import { KYText } from "../../../theme/components/KYText/KYText"
-import { KYBGPattern } from "../../../theme/components/KYBGPattern/KYBGPattern"
+import { KYText } from "../../../../components/KYText/KYText"
+import { KYBGPattern } from "../../../../components/KYBGPattern/KYBGPattern"
 import { KYHeroSearchInput } from "../KYHeroSearchInput/KYHeroSearchInput"
 
 const KYHero = () => {
