@@ -1,4 +1,4 @@
-import { toAbsoluteUrl } from "../../../../../../_metronic/helpers"
+import { toAbsoluteUrl } from "../../../../_metronic/helpers"
 
 interface KYIconProps {
   name: string

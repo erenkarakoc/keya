@@ -2,7 +2,7 @@ import { FC, useState } from "react"
 import * as Yup from "yup"
 import { useFormik } from "formik"
 import { isNotEmpty, toAbsoluteUrl } from "../../../../../../_metronic/helpers"
-import { initialUser, User } from "../core/_models"
+import { User } from "../core/_models"
 import clsx from "clsx"
 import { useListView } from "../core/ListViewProvider"
 import { UsersListLoading } from "../components/loading/UsersListLoading"
@@ -160,18 +160,18 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
               name="name"
               className={clsx(
                 "form-control form-control-solid mb-3 mb-lg-0",
-                { "is-invalid": formik.touched.name && formik.errors.name },
+                { "is-invalid": formik.touched.first_name && formik.errors.first_name },
                 {
-                  "is-valid": formik.touched.name && !formik.errors.name,
+                  "is-valid": formik.touched.first_name && !formik.errors.first_name,
                 }
               )}
               autoComplete="off"
               disabled={formik.isSubmitting || isUserLoading}
             />
-            {formik.touched.name && formik.errors.name && (
+            {formik.touched.first_name && formik.errors.first_name && (
               <div className="fv-plugins-message-container">
                 <div className="fv-help-block">
-                  <span role="alert">{formik.errors.name}</span>
+                  <span role="alert">{formik.errors.first_name}</span>
                 </div>
               </div>
             )}
@@ -191,9 +191,9 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
               {...formik.getFieldProps("email")}
               className={clsx(
                 "form-control form-control-solid mb-3 mb-lg-0",
-                { "is-invalid": formik.touched.email && formik.errors.email },
+                { "is-invalid": formik.touched.email && formik.errors.first_name },
                 {
-                  "is-valid": formik.touched.email && !formik.errors.email,
+                  "is-valid": formik.touched.email && !formik.errors.first_name,
                 }
               )}
               type="email"
@@ -202,9 +202,9 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
               disabled={formik.isSubmitting || isUserLoading}
             />
             {/* end::Input */}
-            {formik.touched.email && formik.errors.email && (
+            {formik.touched.email && formik.errors.first_name && (
               <div className="fv-plugins-message-container">
-                <span role="alert">{formik.errors.email}</span>
+                <span role="alert">{formik.errors.first_name}</span>
               </div>
             )}
           </div>
