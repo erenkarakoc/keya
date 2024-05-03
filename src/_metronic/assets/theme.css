@@ -27,9 +27,10 @@
 }
 
 .ky-light-layout {
-  background-color: var(--ky-dark);
+  background-color: var(--ky-light);
 }
 
 .ky-layout * {
-  font-family: var(--SFProDisplay);
+  font-family: var(--switzer);
+  letter-spacing: 0.2px;
 }

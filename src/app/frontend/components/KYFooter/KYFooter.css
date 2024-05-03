@@ -23,6 +23,7 @@
 .ky-footer-left .ky-paragraph {
   max-width: 500px;
   margin-top: 30px;
+  font-weight: 600 !important;
 }
 
 .ky-footer-right {
@@ -44,20 +45,20 @@
 }
 
 .ky-footer-item:first-of-type {
-  margin-bottom: 30px;
+  margin-bottom: 25px;
   color: var(--ky-light);
-  font-family: var(--SFProDisplay);
+  font-family: var(--switzer);
   font-size: 16px;
   font-weight: 600;
 }
 
 .ky-footer-item:not(:last-of-type):not(:first-of-type) {
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 .ky-footer-item:not(:first-of-type) a {
   color: var(--ky-light-2);
-  font-family: var(--SFProDisplay);
+  font-family: var(--switzer);
   font-size: 14px;
   font-weight: 500;
   transition: all 0.1s ease-out;
@@ -73,14 +74,15 @@
   right: -15px;
   color: var(--ky-light-2);
 }
-.ky-footer-item a:hover + .ky-external-link {
+
+.ky-footer-item a:hover+.ky-external-link {
   color: var(--ky-light);
 }
 
 .ky-footer-copy {
   margin: 150px auto 0;
   color: var(--ky-midnight);
-  font-family: var(--SFProDisplay);
+  font-family: var(--switzer);
   font-weight: 500;
   font-family: 14px;
   text-align: center;

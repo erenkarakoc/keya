@@ -6,9 +6,10 @@
 .ky-nav-item a {
   padding: 0 !important;
   color: var(--ky-light);
-  font-family: var(--SFProText);
+  font-family: var(--switzer);
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
+  letter-spacing: 0.4px;
   transition: all 0.1s ease-out;
 }
 

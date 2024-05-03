@@ -10,32 +10,32 @@
 
 .ky-text.ky-heading,
 .ky-text.ky-heading * {
-  font-family: var(--SFProDisplay);
-  font-weight: 700;
+  font-family: var(--switzer);
+  font-weight: 600;
   font-size: 48px;
 }
 
 .ky-text.ky-title,
 .ky-text.ky-title * {
-  font-family: var(--SFProDisplay);
+  font-family: var(--switzer);
   font-size: 40px;
   font-weight: 700;
 }
 
 .ky-text.ky-subtitle,
 .ky-text.ky-subtitle * {
-  font-family: var(--SFProDisplay);
+  font-family: var(--switzer);
   font-size: 24px;
-  font-weight: 700;
+  font-weight: 600;
 }
 .ky-text.ky-subtitle .ky-text-highlight,
 .ky-text.ky-subtitle .ky-text-highlight * {
-  font-weight: 900;
+  font-weight: 700;
 }
 
 .ky-text.ky-caption,
 .ky-text.ky-caption * {
-  font-family: var(--SFProText);
+  font-family: var(--switzer);
   color: var(--ky-midnight);
   font-size: 14px;
   font-weight: 500;
@@ -49,7 +49,7 @@
 
 .ky-text.ky-paragraph,
 .ky-text.ky-paragraph * {
-  font-family: var(--SFProText);
+  font-family: var(--switzer);
   color: var(--ky-midnight);
   font-size: 20px;
   font-weight: 500;

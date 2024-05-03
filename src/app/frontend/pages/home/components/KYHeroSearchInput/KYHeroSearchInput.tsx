@@ -81,7 +81,7 @@ const KYHeroSearchInput = () => {
         </svg>
       </button>
       <button type="submit" id="KYHeroSearchButton">
-        Ara
+        <span>Ara</span>
       </button>
     </form>
   )

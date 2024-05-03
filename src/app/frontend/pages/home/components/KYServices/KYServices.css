@@ -30,6 +30,7 @@
 .ky-services-wrapper .ky-paragraph {
   max-width: 430px;
   margin-top: 20px;
+  font-weight: 600 !important;
   color: var(--ky-midnight);
   text-align: center;
 }
@@ -77,7 +78,7 @@
   width: 100%;
   padding: 0 0 0 70px;
   color: var(--ky-light);
-  font-family: var(--SFProDisplay);
+  font-family: var(--switzer);
   font-size: 16px;
   font-weight: 500;
   line-height: 1;

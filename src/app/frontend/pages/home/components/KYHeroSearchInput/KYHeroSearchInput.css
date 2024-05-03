@@ -26,9 +26,9 @@
   border: 2px solid var(--ky-midnight-3);
   border-radius: 24px;
   color: var(--ky-light);
-  font-family: var(--SFProDisplay);
+  font-family: var(--switzer);
   font-size: 20px;
-  font-weight: 400;
+  font-weight: 500;
   background-color: var(--ky-midnight-4);
   box-shadow: 0px 40px 20px -30px rgba(0, 0, 0, 0.5);
   outline: none;
@@ -48,7 +48,6 @@
 
 #KYHeroSearchInput::placeholder {
   color: var(--ky-midnight-2);
-  font-weight: 500;
 }
 
 #KYHeroSearchFilter {
@@ -66,16 +65,20 @@
   transform: translateY(-50%);
   transition: all 0.15s ease-out;
 }
+
 #KYHeroSearchFilter:not(:focus) {
   outline: none;
 }
+
 #KYHeroSearchFilter .ky-icon-gear {
   position: relative;
   transition: all 0.1s ease-out;
 }
+
 #KYHeroSearchFilter:hover .ky-icon-gear {
   filter: invert(1);
 }
+
 .ky-hero-search-input-has-value #KYHeroSearchFilter {
   transform: translateY(-50%) rotate(45deg);
 }
@@ -90,16 +93,44 @@
   border: none;
   border-radius: 20px;
   color: var(--ky-light-2);
-  font-family: var(--SFProDisplay);
+  font-family: var(--switzer);
   font-size: 20px;
   font-weight: 600;
   background-color: var(--ky-midnight-3);
   z-index: 1;
   transition: all 0.2s ease-out;
 }
+
 #KYHeroSearchButton:not(:focus) {
   outline: none;
 }
-#KYHeroSearchButton:hover {
-  background-color: var(--ky-midnight-3);
+
+#KYHeroSearchButton span {
+  position: relative;
+  transition: all 0.1s ease-out;
+  z-index: 1;
+}
+
+.ky-hero-search-input-has-value #KYHeroSearchButton span,
+#KYHeroSearchButton:hover span {
+  color: var(--ky-light);
+}
+
+#KYHeroSearchButton::before {
+  content: "";
+  opacity: 0;
+  position: absolute;
+  inset: 0;
+  display: block;
+  height: 100%;
+  width: 100%;
+  border-radius: 20px;
+  background: var(--ky-red-gradient);
+  transition: all 0.1s ease-out;
+  z-index: 0;
+}
+
+#KYHeroSearchButton:hover::before,
+.ky-hero-search-input-has-value #KYHeroSearchButton::before {
+  opacity: 1;
 }
