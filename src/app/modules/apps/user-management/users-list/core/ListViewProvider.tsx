@@ -7,7 +7,7 @@ import {
   groupingOnSelect,
   initialListView,
   ListViewContextProps,
-  groupingOnSelectAll,
+  // groupingOnSelectAll,
   WithChildren,
 } from '../../../../../../_metronic/helpers'
 import {useQueryResponse, useQueryResponseData} from './QueryResponseProvider'
@@ -34,7 +34,7 @@ const ListViewProvider: FC<WithChildren> = ({children}) => {
           groupingOnSelect(id, selected, setSelected)
         },
         onSelectAll: () => {
-          groupingOnSelectAll(isAllSelected, setSelected, data)
+          // groupingOnSelectAll(isAllSelected, setSelected, data)
         },
         clearSelected: () => {
           setSelected([])

@@ -1,8 +1,8 @@
 import {Column} from 'react-table'
 import {UserInfoCell} from './UserInfoCell'
-import {UserLastLoginCell} from './UserLastLoginCell'
+// import {UserLastLoginCell} from './UserLastLoginCell'
 // import {UserTwoStepsCell} from './UserTwoStepsCell'
-import {UserActionsCell} from './UserActionsCell'
+// import {UserActionsCell} from './UserActionsCell'
 import {UserSelectionCell} from './UserSelectionCell'
 import {UserCustomHeader} from './UserCustomHeader'
 import {UserSelectionHeader} from './UserSelectionHeader'
@@ -23,13 +23,13 @@ const usersColumns: ReadonlyArray<Column<User>> = [
     Header: (props) => <UserCustomHeader tableProps={props} title='Ünvan' className='min-w-125px' />,
     accessor: 'role',
   },
-  {
-    Header: (props) => (
-      <UserCustomHeader tableProps={props} title='Son Giriş' className='min-w-125px' />
-    ),
-    id: 'lastLoginAt',
-    Cell: ({...props}) => <UserLastLoginCell last_login={props.data[props.row.index].lastLogin} />,
-  },
+  // {
+  //   Header: (props) => (
+  //     <UserCustomHeader tableProps={props} title='Son Giriş' className='min-w-125px' />
+  //   ),
+  //   id: 'lastLoginAt',
+  //   Cell: ({...props}) => <UserLastLoginCell last_login={props.data[props.row.index].lastLogin} />,
+  // },
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='Kayıt Tarihi' className='min-w-125px' />
@@ -41,7 +41,7 @@ const usersColumns: ReadonlyArray<Column<User>> = [
       <UserCustomHeader tableProps={props} title='Actions' className='text-end min-w-100px' />
     ),
     id: 'actions',
-    Cell: ({...props}) => <UserActionsCell id={props.data[props.row.index].id} />,
+    // Cell: ({...props}) => <UserActionsCell id={props.data[props.row.index].id} />,
   },
 ]
 
