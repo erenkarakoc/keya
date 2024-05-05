@@ -9,10 +9,29 @@
 
 // import {onRequire} from "firebase-functions/v2/https";
 // import * as logger from "firebase-functions/logger";
-// import * as admin from "firebase-admin"
-// import serviceAccount from "./serviceAccountKey.json"
+import * as functions from "firebase-functions";
+import * as admin from "firebase-admin";
 
-// const credential = admin.credential.cert(
-// serviceAccount as admin.ServiceAccount
-// )
-// admin.initializeApp({ credential })
+import * as serviceAccount from "./serviceAccountKey.json";
+
+const serviceAccountConfig: admin.ServiceAccount =
+  serviceAccount as admin.ServiceAccount;
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccountConfig),
+  databaseURL:
+    "https://alert-port-421202-default-rtdb." +
+    "europe-west1.firebasedatabase.app",
+});
+
+export const deleteUser = functions.https.onCall(async (data) => {
+  try {
+    await admin.auth().deleteUser(data.uid);
+    const userDocRef = admin.firestore().collection("users").doc(data.uid);
+    await userDocRef.delete();
+    console.log(`Successfully deleted user with UID: ${data.uid}`);
+  } catch (error) {
+    console.error(`Error deleting user: ${data.uid}`, error);
+    throw error;
+  }
+});

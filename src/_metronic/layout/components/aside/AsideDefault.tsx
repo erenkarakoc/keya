@@ -36,7 +36,7 @@ const AsideDefault = () => {
           {mode === "dark" && (
             <img
               alt="Keya Real Estate"
-              className="h-20px logo theme-dark-show ms-3"
+              className="h-20px logo theme-dark-show"
               src={toAbsoluteUrl("media/logos/logo-dark.svg")}
             />
           )}

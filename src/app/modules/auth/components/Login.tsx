@@ -67,8 +67,8 @@ export function Login() {
       ) : (
         <div className="mb-10 bg-light-info p-8 rounded">
           <div className="text-info">
-            Keya ailesinin bir üyesiysen, sana özel arayüzüne giriş yap ve
-            işlemlerini <strong>kolayca gerçekleştir.</strong>
+            Sana özel Keya arayüzüne giriş yapabilir, işlemlerini{" "}
+            <strong>kolayca</strong> gerçekleştirebilirsin.
           </div>
         </div>
       )}
