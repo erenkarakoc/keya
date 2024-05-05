@@ -26,19 +26,30 @@ const deleteUserFromFirebase = httpsCallable(functions, "deleteUser")
 
 const API_URL = import.meta.env.VITE_APP_THEME_API_URL
 const USER_URL = `${API_URL}/user`
+const GET_USERS_URL = `${API_URL}/users/query`
+
+const getUsersOld = async (query: string): Promise<UsersQueryResponse> => {
+  return axios
+    .get(`${GET_USERS_URL}?${query}`)
+    .then((d: AxiosResponse<UsersQueryResponse>) => d.data)
+}
 
 const getUsers = async (queryString: string): Promise<UsersQueryResponse> => {
   try {
     const params = new URLSearchParams(queryString)
     const page = parseInt(params.get("page") || "1", 10)
-    const itemsPerPage = parseInt(params.get("items_per_page") || "10", 10)
+    const itemsPerPage = parseInt(params.get("items_per_page") || "10", 10) as
+      | 10
+      | 30
+      | 50
+      | 100
 
     const db = getFirestore()
     const usersCollection = collection(db, "users")
 
     const offset = (page - 1) * itemsPerPage
 
-    let q = query(usersCollection, orderBy("createdAt"))
+    let q
 
     if (offset > 0) {
       q = query(
@@ -62,11 +73,23 @@ const getUsers = async (queryString: string): Promise<UsersQueryResponse> => {
 
     return {
       data: users,
+      payload: {
+        pagination: {
+          page: page,
+          items_per_page: itemsPerPage,
+        },
+      },
     }
   } catch (error) {
     console.error("Error fetching users:", error)
     return {
       data: [],
+      payload: {
+        pagination: {
+          page: 0,
+          items_per_page: 10,
+        },
+      },
     }
   }
 }
@@ -128,6 +151,7 @@ const deleteSelectedUsers = async (userIds: Array<ID>): Promise<void> => {
 
 export {
   getUsers,
+  getUsersOld,
   deleteUser,
   deleteSelectedUsers,
   getUserById,

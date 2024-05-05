@@ -7,5 +7,6 @@
     "alert-port-421202": {
       "extensionInstances": {}
     }
-  }
+  },
+  "dataconnectEmulatorConfig": {}
 }

@@ -1,5 +1,5 @@
 const Offices = () => {
-  return <div>Offices</div>
+  return <div>Ofislerimiz</div>
 }
 
 export { Offices }

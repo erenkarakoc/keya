@@ -14,7 +14,14 @@ const AsideUserMenu: FC = () => {
         <div className="d-flex align-items-center">
           {/* begin::Avatar */}
           <div className="symbol symbol-circle symbol-40px">
-            <img src={toAbsoluteUrl("media/avatars/300-1.jpg")} alt="avatar" />
+            <img
+              src={
+                currentUser?.photoURL
+                  ? currentUser?.photoURL
+                  : toAbsoluteUrl("media/svg/avatars/blank.svg")
+              }
+              alt="avatar"
+            />
           </div>
           {/* end::Avatar */}
           {/* begin::User info */}

@@ -86,6 +86,7 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
       setSubmitting(true)
       try {
         if (isNotEmpty(values.id)) {
+          values.photoURL = userForEdit.photoURL
           if (uploadedImage) {
             try {
               const storageRef = ref(
@@ -99,7 +100,6 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
               console.error("Error uploading image:", error)
             }
           }
-          values.photoURL = userForEdit.photoURL
           await updateUser(values)
           updateEmail({ uid: values.uid, newEmail: values.email })
         } else {
@@ -148,7 +148,11 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
               {/* begin::Preview existing avatar */}
               <div
                 className="image-input-wrapper w-125px h-125px"
-                style={{ backgroundImage: `url('${uploadedImageUrl ? uploadedImageUrl : blankImg}')` }}
+                style={{
+                  backgroundImage: `url('${
+                    uploadedImageUrl ? uploadedImageUrl : blankImg
+                  }')`,
+                }}
               ></div>
               {/* end::Preview existing avatar */}
 
