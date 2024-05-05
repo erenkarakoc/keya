@@ -25,18 +25,18 @@ const Footer: FC = () => {
         {/* begin::Menu */}
         <ul className="menu menu-gray-600 menu-hover-primary fw-bold order-1">
           <li className="menu-item">
-            <a href="#" className="menu-link px-2">
-              About
+            <a href="/hakkimizda" className="menu-link px-2" target="_blank">
+              Hakkımızda
             </a>
           </li>
           <li className="menu-item">
-            <a href="#" className="menu-link px-2">
-              Contact
+            <a href="/egitimlerimiz" className="menu-link px-2" target="_blank">
+              Eğitimlerimiz
             </a>
           </li>
           <li className="menu-item">
-            <a href="#" className="menu-link px-2">
-              Purchase
+            <a href="iletisim" className="menu-link px-2" target="_blank">
+              İletişim
             </a>
           </li>
         </ul>

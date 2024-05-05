@@ -104,7 +104,7 @@ const UsersListPagination = () => {
               })}
             >
               <a onClick={() => updatePage(1)} style={{cursor: 'pointer'}} className='page-link'>
-                First
+                İlk Sayfa
               </a>
             </li>
             {paginationLinks
@@ -117,14 +117,14 @@ const UsersListPagination = () => {
                   className={clsx('page-item', {
                     active: pagination.page === link.page,
                     disabled: isLoading,
-                    previous: link.label === 'Previous',
-                    next: link.label === 'Next',
+                    previous: link.label === 'Önceki',
+                    next: link.label === 'Sonraki',
                   })}
                 >
                   <a
                     className={clsx('page-link', {
-                      'page-text': link.label === 'Previous' || link.label === 'Next',
-                      'me-5': link.label === 'Previous',
+                      'page-text': link.label === 'Önceki' || link.label === 'Sonraki',
+                      'me-5': link.label === 'Önceki',
                     })}
                     onClick={() => updatePage(link.page)}
                     style={{cursor: 'pointer'}}
@@ -143,7 +143,7 @@ const UsersListPagination = () => {
                 style={{cursor: 'pointer'}}
                 className='page-link'
               >
-                Last
+                Son Sayfa
               </a>
             </li>
           </ul>

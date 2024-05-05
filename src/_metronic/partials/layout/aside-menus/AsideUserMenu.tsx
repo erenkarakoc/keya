@@ -2,6 +2,7 @@ import { FC } from "react"
 import { useAuth } from "../../../../app/modules/auth"
 import { KTIcon, toAbsoluteUrl } from "../../../helpers"
 import { UserMenu } from "../user-menu/UserMenu"
+import { getUserRoleText } from "../../../helpers/kyHelpers"
 
 const AsideUserMenu: FC = () => {
   const { currentUser } = useAuth()
@@ -25,7 +26,7 @@ const AsideUserMenu: FC = () => {
               {currentUser?.first_name} {currentUser?.last_name}
             </a>
             <span className="text-muted fw-bold d-block fs-7 lh-1">
-              {currentUser?.role}
+              {getUserRoleText(currentUser?.role as string)}
             </span>
           </div>
           {/* end::User info */}

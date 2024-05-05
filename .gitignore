@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+functions/lib/serviceAccountKey.json
+functions/src/serviceAccountKey.json

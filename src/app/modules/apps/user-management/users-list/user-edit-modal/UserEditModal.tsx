@@ -25,7 +25,7 @@ const UserEditModal = () => {
           <div className='modal-content'>
             <UserEditModalHeader />
             {/* begin::Modal body */}
-            <div className='modal-body scroll-y mx-5 mx-xl-15 my-7'>
+            <div className='modal-body mx-5 mx-xl-15 my-7'>
               <UserEditModalFormWrapper />
             </div>
             {/* end::Modal body */}

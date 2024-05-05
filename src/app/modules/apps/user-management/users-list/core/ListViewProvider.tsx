@@ -31,10 +31,10 @@ const ListViewProvider: FC<WithChildren> = ({children}) => {
         disabled,
         isAllSelected,
         onSelect: (id: ID) => {
-          console.log(id)
           groupingOnSelect(id, selected, setSelected)
         },
         onSelectAll: () => {
+          console.log(data)
           groupingOnSelectAll(isAllSelected, setSelected, data)
         },
         clearSelected: () => {

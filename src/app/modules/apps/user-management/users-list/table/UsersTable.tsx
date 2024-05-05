@@ -1,55 +1,26 @@
-import { useMemo, useState, useEffect } from "react"
+import { useMemo } from "react"
 import { useTable, ColumnInstance, Row } from "react-table"
 import { CustomHeaderColumn } from "./columns/CustomHeaderColumn"
 import { CustomRow } from "./columns/CustomRow"
-import { getFirestore, collection, getDocs } from "firebase/firestore"
 import { usersColumns } from "./columns/_columns"
 import { User } from "../core/_models"
 import { UsersListLoading } from "../components/loading/UsersListLoading"
 import { UsersListPagination } from "../components/pagination/UsersListPagination"
 import { KTCardBody } from "../../../../../../_metronic/helpers"
+import {
+  useQueryResponseData,
+  useQueryResponseLoading,
+} from "../core/QueryResponseProvider"
 
 const UsersTable = () => {
-  const [users, setUsers] = useState<User[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const db = getFirestore()
-        const usersCollection = collection(db, "users")
-        const usersSnapshot = await getDocs(usersCollection)
-        const usersData = usersSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          uid: doc.data().uid,
-          email: doc.data().email,
-          emailVerified: doc.data().emailVerified,
-          first_name: doc.data().first_name,
-          last_name: doc.data().last_name,
-          photoURL: doc.data().photoURL,
-          phoneNumber: doc.data().phoneNumber,
-          role: doc.data().role,
-          permissions: doc.data().permissions,
-          emailSettings: doc.data().emailSettings,
-          address: doc.data().address,
-          createdAt: doc.data().createdAt,
-          lastLoginAt: doc.data().lastLoginAt,
-        }))
-        setUsers(usersData)
-        setIsLoading(false)
-      } catch (error) {
-        console.error("Error fetching users:", error)
-      }
-    }
-
-    fetchUsers()
-  }, [])
-
+  const users = useQueryResponseData()
+  const isLoading = useQueryResponseLoading()
+  const data = useMemo(() => users, [users])
   const columns = useMemo(() => usersColumns, [])
   const { getTableProps, getTableBodyProps, headers, rows, prepareRow } =
     useTable({
       columns,
-      data: users,
+      data,
     })
 
   return (
