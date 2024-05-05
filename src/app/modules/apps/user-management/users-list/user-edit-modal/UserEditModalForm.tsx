@@ -1,4 +1,4 @@
-import { FC, useState } from "react"
+import { FC, useState, ChangeEvent } from "react"
 import * as Yup from "yup"
 import { useFormik } from "formik"
 import { isNotEmpty, toAbsoluteUrl } from "../../../../../../_metronic/helpers"
@@ -9,12 +9,21 @@ import { UsersListLoading } from "../components/loading/UsersListLoading"
 import { createUser, updateUser } from "../core/_requests"
 import { useQueryResponse } from "../core/QueryResponseProvider"
 
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
+import { firebaseApp } from "../../../../../../firebase/BaseConfig"
+import { httpsCallable, getFunctions } from "firebase/functions"
+
+const storage = getStorage(firebaseApp)
+const functions = getFunctions()
+const updateEmail = httpsCallable(functions, "updateEmail")
+
 type Props = {
   isUserLoading: boolean
   user: User
 }
 
 const editUserSchema = Yup.object().shape({
+  avatar: Yup.string(),
   first_name: Yup.string()
     .min(3, "Ad en az 3 karakterden oluşmalı")
     .max(50, "Ad fazla 50 karakterden oluşmalı")
@@ -33,10 +42,35 @@ const editUserSchema = Yup.object().shape({
 const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
   const { setItemIdForUpdate } = useListView()
   const { refetch } = useQueryResponse()
-
-  const [userForEdit] = useState<User>({
+  const [uploadedImage, setUploadedImage] = useState<File | string | null>(null)
+  const [userForEdit, setUserForEdit] = useState<User>({
     ...user,
   })
+  const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(
+    userForEdit.photoURL as string
+  )
+  const blankImg = toAbsoluteUrl("media/svg/avatars/blank.svg")
+
+  const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.[0]) {
+      const selectedFile = e.target.files[0]
+      setUploadedImage(selectedFile)
+      setUploadedImageUrl(URL.createObjectURL(selectedFile))
+      setUserForEdit((prevUser) => ({
+        ...prevUser,
+        photoURL: URL.createObjectURL(selectedFile),
+      }))
+    }
+  }
+
+  const handleImageRemove = () => {
+    setUploadedImage(null)
+    setUploadedImageUrl(null)
+    setUserForEdit((prevUser) => ({
+      ...prevUser,
+      photoURL: null,
+    }))
+  }
 
   const cancel = (withRefresh?: boolean) => {
     if (withRefresh) {
@@ -45,9 +79,6 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
     setItemIdForUpdate(undefined)
   }
 
-  const blankImg = toAbsoluteUrl("media/svg/avatars/blank.svg")
-  const userAvatarImg = toAbsoluteUrl(`media/${userForEdit.photoURL}`)
-
   const formik = useFormik({
     initialValues: userForEdit,
     validationSchema: editUserSchema,
@@ -55,14 +86,29 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
       setSubmitting(true)
       try {
         if (isNotEmpty(values.id)) {
+          if (uploadedImage) {
+            try {
+              const storageRef = ref(
+                storage,
+                `images/avatars/avatar-${userForEdit.uid}`
+              )
+              await uploadBytes(storageRef, uploadedImage as File)
+              const downloadURL = await getDownloadURL(storageRef)
+              values.photoURL = downloadURL
+            } catch (error) {
+              console.error("Error uploading image:", error)
+            }
+          }
+          values.photoURL = userForEdit.photoURL
           await updateUser(values)
+          updateEmail({ uid: values.uid, newEmail: values.email })
         } else {
           await createUser(values)
         }
       } catch (ex) {
         console.error(ex)
       } finally {
-        setSubmitting(true)
+        setSubmitting(false)
         cancel(true)
       }
     },
@@ -95,14 +141,14 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
               data-kt-image-input="true"
               style={{
                 backgroundImage: `url('${
-                  user.photoURL ? user.photoURL : blankImg
+                  userForEdit.photoURL ? userForEdit.photoURL : blankImg
                 }')`,
               }}
             >
               {/* begin::Preview existing avatar */}
               <div
                 className="image-input-wrapper w-125px h-125px"
-                style={{ backgroundImage: `url('${userAvatarImg}')` }}
+                style={{ backgroundImage: `url('${uploadedImageUrl ? uploadedImageUrl : blankImg}')` }}
               ></div>
               {/* end::Preview existing avatar */}
 
@@ -115,8 +161,13 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
               >
                 <i className="bi bi-pencil-fill fs-7"></i>
 
-                <input type="file" name="avatar" accept=".png, .jpg, .jpeg" />
-                <input type="hidden" name="avatar_remove" />
+                <input
+                  type="file"
+                  name="avatar"
+                  accept=".png, .jpg, .jpeg"
+                  onChange={handleImageChange}
+                />
+                {/* <input type="hidden" name="avatar_remove" /> */}
               </label>
               {/* end::Label */}
 
@@ -137,6 +188,7 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
                 data-kt-image-input-action="remove"
                 data-bs-toggle="tooltip"
                 title="Remove avatar"
+                onClick={handleImageRemove}
               >
                 <i className="bi bi-x fs-2"></i>
               </span>

@@ -60,8 +60,6 @@ const getUsers = async (queryString: string): Promise<UsersQueryResponse> => {
       }
     })
 
-    console.log({ data: users })
-
     return {
       data: users,
     }

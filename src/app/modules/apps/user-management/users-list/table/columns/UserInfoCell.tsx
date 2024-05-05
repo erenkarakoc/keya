@@ -1,6 +1,5 @@
 import clsx from "clsx"
 import { FC } from "react"
-import { toAbsoluteUrl } from "../../../../../../../_metronic/helpers"
 import { User } from "../../core/_models"
 
 type Props = {
@@ -21,7 +20,7 @@ const UserInfoCell: FC<Props> = ({ user }) => {
           {user.photoURL ? (
             <div className="symbol-label">
               <img
-                src={toAbsoluteUrl(`media/${user.photoURL}`)}
+                src={`${user.photoURL}`}
                 alt={user.first_name}
                 className="w-100"
               />

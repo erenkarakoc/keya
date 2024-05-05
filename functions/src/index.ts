@@ -35,3 +35,11 @@ export const deleteUser = functions.https.onCall(async (data) => {
     throw error;
   }
 });
+
+export const updateEmail = functions.https.onCall(async (data) => {
+  const userRecord = await admin.auth().getUser(data.uid);
+  await admin.auth().updateUser(data.uid, {
+    email: data.newEmail,
+    emailVerified: userRecord.emailVerified,
+  });
+});

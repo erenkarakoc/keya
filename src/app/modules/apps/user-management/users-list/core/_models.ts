@@ -34,7 +34,7 @@ export type User = {
   emailVerified: boolean
   first_name: string
   last_name: string
-  photoURL?: string
+  photoURL?: string | null
   phoneNumber?: string
   role?: string
   permissions?: Array<number>

@@ -7,7 +7,9 @@ type Props = {
 
 const UserBadgeCell: FC<Props> = ({ text }) => {
   return (
-    <div className="badge badge-light fw-bolder">{getUserRoleText(text)}</div>
+    <div className="badge badge-light fw-bolder">
+      {getUserRoleText(text as string)}
+    </div>
   )
 }
 
