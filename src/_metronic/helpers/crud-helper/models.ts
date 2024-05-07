@@ -1,16 +1,21 @@
-import {Dispatch, SetStateAction} from 'react'
+import { Dispatch, SetStateAction } from "react"
 
 export type ID = undefined | null | number | string
 
 export type PaginationState = {
   page: number
   items_per_page: 10 | 30 | 50 | 100
-  links?: Array<{label: string; active: boolean; url: string | null; page: number | null}>
+  links?: Array<{
+    label: string
+    active: boolean
+    url: string | null
+    page: number | null
+  }>
 }
 
 export type SortState = {
   sort?: string
-  order?: 'asc' | 'desc'
+  order?: "asc" | "desc"
 }
 
 export type FilterState = {
@@ -56,7 +61,11 @@ export type QueryResponseContextProps<T> = {
   query: string
 }
 
-export const initialQueryResponse = {refetch: () => {}, isLoading: false, query: ''}
+export const initialQueryResponse = {
+  refetch: () => {},
+  isLoading: false,
+  query: "",
+}
 
 export type ListViewContextProps = {
   selected: Array<ID>
@@ -67,7 +76,9 @@ export type ListViewContextProps = {
   // NUMBER => (EDIT MODE) | MODAL IS OPENED
   // UNDEFINED => MODAL IS CLOSED
   itemIdForUpdate?: ID
+  itemIdForDelete?: ID
   setItemIdForUpdate: Dispatch<SetStateAction<ID>>
+  setItemIdForDelete: Dispatch<SetStateAction<ID>>
   isAllSelected: boolean
   disabled: boolean
 }
@@ -78,6 +89,7 @@ export const initialListView: ListViewContextProps = {
   onSelectAll: () => {},
   clearSelected: () => {},
   setItemIdForUpdate: () => {},
+  setItemIdForDelete: () => {},
   isAllSelected: false,
   disabled: false,
 }

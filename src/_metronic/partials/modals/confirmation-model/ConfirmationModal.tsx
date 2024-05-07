@@ -1,5 +1,5 @@
 import "./ConfirmationModal.css"
-import React from "react"
+import React, { ReactNode } from "react"
 
 interface ConfirmationModalProps {
   id: string
@@ -7,7 +7,7 @@ interface ConfirmationModalProps {
   description?: string
   onApproval?: () => void
   onDecline?: () => void
-  ExtraComponent?: React.ComponentType
+  children?: ReactNode
 }
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
@@ -16,7 +16,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   description,
   onApproval,
   onDecline,
-  ExtraComponent,
+  children,
 }) => {
   return (
     <div className="modal fade" id={id} aria-hidden="true">
@@ -31,7 +31,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
             <br />
 
-            {ExtraComponent && <ExtraComponent />}
+            {children}
           </div>
 
           <div className="modal-footer">

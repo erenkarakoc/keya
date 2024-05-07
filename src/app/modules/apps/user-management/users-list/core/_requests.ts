@@ -20,6 +20,7 @@ import {
   limit,
 } from "firebase/firestore"
 import { getFunctions, httpsCallable } from "firebase/functions"
+import { UserModel } from "../../../../auth"
 
 initializeApp(firebaseConfig)
 const db = getFirestore()
@@ -163,6 +164,32 @@ const getUserById = async (id: ID): Promise<User | undefined> => {
   }
 }
 
+const getUsersById = async (ids: string[]): Promise<UserModel[]> => {
+  try {
+    if (!ids || ids.length === 0) {
+      return []
+    }
+
+    const db = getFirestore()
+    const users: UserModel[] = []
+
+    for (const id of ids) {
+      const userDocRef = doc(db, "users", id)
+      const userDocSnapshot = await getDoc(userDocRef)
+
+      if (userDocSnapshot.exists()) {
+        const userData = userDocSnapshot.data() as UserModel
+        users.push(userData)
+      }
+    }
+
+    return users
+  } catch (error) {
+    console.error("Error fetching users:", error)
+    return []
+  }
+}
+
 const createUser = (user: User): Promise<User | undefined> => {
   return axios
     .put(USER_URL, user)
@@ -203,6 +230,7 @@ export {
   deleteUser,
   deleteSelectedUsers,
   getUserById,
+  getUsersById,
   createUser,
   updateUser,
 }
