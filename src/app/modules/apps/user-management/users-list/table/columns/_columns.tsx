@@ -1,7 +1,7 @@
 import {Column} from 'react-table'
 import {UserInfoCell} from './UserInfoCell'
 import {UserBadgeCell} from './UserBadgeCell'
-import {UserActionsCell} from './UserActionsCell'
+import { UserActionsCell } from "./UserActionsCell"
 import {UserSelectionCell} from './UserSelectionCell'
 import {UserCustomHeader} from './UserCustomHeader'
 import {UserSelectionHeader} from './UserSelectionHeader'
@@ -35,7 +35,7 @@ const usersColumns: ReadonlyArray<Column<User>> = [
       <UserCustomHeader tableProps={props} title='Kayıt Tarihi' className='min-w-125px' />
     ),
     accessor: 'createdAt',
-    Cell: ({...props}) => <UserBadgeCell text={props.data[props.row.index].createdAt} />,
+    Cell: ({...props}) => <UserBadgeCell text={`test${props.data[props.row.index].createdAt}`} />,
   },
   {
     Header: (props) => (

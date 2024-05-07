@@ -2,6 +2,8 @@ import axios, { AxiosResponse } from "axios"
 import { ID, Response } from "../../../../../../_metronic/helpers"
 import { User, UsersQueryResponse } from "./_models"
 
+import { slugify } from "../../../../../../_metronic/helpers/kyHelpers"
+
 import { firebaseConfig } from "../../../../../../firebase/BaseConfig"
 import { initializeApp } from "firebase/app"
 import {
@@ -13,6 +15,7 @@ import {
   getDocs,
   getDoc,
   doc,
+  where,
   updateDoc,
   limit,
 } from "firebase/firestore"
@@ -26,13 +29,6 @@ const deleteUserFromFirebase = httpsCallable(functions, "deleteUser")
 
 const API_URL = import.meta.env.VITE_APP_THEME_API_URL
 const USER_URL = `${API_URL}/user`
-const GET_USERS_URL = `${API_URL}/users/query`
-
-const getUsersOld = async (query: string): Promise<UsersQueryResponse> => {
-  return axios
-    .get(`${GET_USERS_URL}?${query}`)
-    .then((d: AxiosResponse<UsersQueryResponse>) => d.data)
-}
 
 const getUsers = async (queryString: string): Promise<UsersQueryResponse> => {
   try {
@@ -43,23 +39,40 @@ const getUsers = async (queryString: string): Promise<UsersQueryResponse> => {
       | 30
       | 50
       | 100
+    const sortField = params.get("sort") || "createdAt" // Default sort field
+    const sortOrder = params.get("order") || "asc" // Default sort order
+    const searchQuery = params.get("search") || "" // Search input value
 
     const db = getFirestore()
     const usersCollection = collection(db, "users")
 
-    const offset = (page - 1) * itemsPerPage
+    let q = query(usersCollection)
 
-    let q
+    // Apply search filter if search query is provided
+    if (searchQuery) {
+      const slugifiedSearchQuery = slugify(searchQuery)
 
-    if (offset > 0) {
+      console.log(slugifiedSearchQuery)
+
       q = query(
         usersCollection,
-        orderBy("createdAt"),
-        startAfter(offset),
-        limit(itemsPerPage)
+        where("searchIndex", ">=", slugifiedSearchQuery),
+        where("searchIndex", "<=", slugifiedSearchQuery + "\uf8ff")
       )
+    }
+
+    // Apply sorting
+    q = query(q, orderBy(sortField, sortOrder as "asc" | "desc"))
+
+    // Paginate results
+    const offset = (page - 1) * itemsPerPage
+    if (offset > 0) {
+      const lastVisibleDoc = await getDocs(q).then(
+        (snapshot) => snapshot.docs[offset - 1]
+      )
+      q = query(q, startAfter(lastVisibleDoc), limit(itemsPerPage))
     } else {
-      q = query(usersCollection, orderBy("createdAt"), limit(itemsPerPage))
+      q = query(q, limit(itemsPerPage))
     }
 
     const snapshot = await getDocs(q)
@@ -71,12 +84,47 @@ const getUsers = async (queryString: string): Promise<UsersQueryResponse> => {
       }
     })
 
+    // Calculate pagination metadata
+    const totalUsersQuery = await getDocs(collection(db, "users"))
+    const totalUsers = totalUsersQuery.size
+    const totalPages = Math.ceil(totalUsers / itemsPerPage)
+    const nextPage = page < totalPages ? page + 1 : null
+    const prevPage = page > 1 ? page - 1 : null
+
+    // Generate pagination links
+    const links = []
+    if (prevPage !== null) {
+      links.push({
+        url: `/?page=${prevPage}&items_per_page=${itemsPerPage}&sort=${sortField}&order=${sortOrder}&search=${searchQuery}`,
+        label: "&laquo; Previous",
+        active: false,
+        page: prevPage,
+      })
+    }
+    for (let i = 1; i <= totalPages; i++) {
+      links.push({
+        url: `/?page=${i}&items_per_page=${itemsPerPage}&sort=${sortField}&order=${sortOrder}&search=${searchQuery}`,
+        label: `${i}`,
+        active: i === page,
+        page: i,
+      })
+    }
+    if (nextPage !== null) {
+      links.push({
+        url: `/?page=${nextPage}&items_per_page=${itemsPerPage}&sort=${sortField}&order=${sortOrder}&search=${searchQuery}`,
+        label: "Next &raquo;",
+        active: false,
+        page: nextPage,
+      })
+    }
+
     return {
       data: users,
       payload: {
         pagination: {
           page: page,
           items_per_page: itemsPerPage,
+          links: links,
         },
       },
     }
@@ -86,8 +134,9 @@ const getUsers = async (queryString: string): Promise<UsersQueryResponse> => {
       data: [],
       payload: {
         pagination: {
-          page: 0,
+          page: 1,
           items_per_page: 10,
+          links: [],
         },
       },
     }
@@ -151,7 +200,6 @@ const deleteSelectedUsers = async (userIds: Array<ID>): Promise<void> => {
 
 export {
   getUsers,
-  getUsersOld,
   deleteUser,
   deleteSelectedUsers,
   getUserById,

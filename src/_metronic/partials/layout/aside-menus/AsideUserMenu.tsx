@@ -21,6 +21,7 @@ const AsideUserMenu: FC = () => {
                   : toAbsoluteUrl("media/svg/avatars/blank.svg")
               }
               alt="avatar"
+              style={{ objectFit: "cover" }}
             />
           </div>
           {/* end::Avatar */}

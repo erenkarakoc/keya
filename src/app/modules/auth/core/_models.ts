@@ -53,4 +53,5 @@ export type UserModel = {
   address?: UserAddressModel
   createdAt: string
   lastLoginAt: string
+  searchIndex: string
 }

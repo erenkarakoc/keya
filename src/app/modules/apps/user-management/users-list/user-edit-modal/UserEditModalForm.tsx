@@ -12,8 +12,10 @@ import { useQueryResponse } from "../core/QueryResponseProvider"
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import { firebaseApp } from "../../../../../../firebase/BaseConfig"
 import { httpsCallable, getFunctions } from "firebase/functions"
+import { getAuth } from "@firebase/auth"
 
 const storage = getStorage(firebaseApp)
+const auth = getAuth()
 const functions = getFunctions()
 const updateEmail = httpsCallable(functions, "updateEmail")
 
@@ -86,6 +88,10 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
       setSubmitting(true)
       try {
         if (isNotEmpty(values.id)) {
+          if (!auth.currentUser) {
+            console.log("User is not authenticated. Please sign in.")
+            return
+          }
           values.photoURL = userForEdit.photoURL
           if (uploadedImage) {
             try {

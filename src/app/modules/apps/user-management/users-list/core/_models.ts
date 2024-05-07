@@ -42,6 +42,7 @@ export type User = {
   address?: UserAddressModel
   createdAt: string
   lastLoginAt: string
+  searchIndex: string
 }
 
 export const initialUser: User = {
@@ -75,6 +76,7 @@ export const initialUser: User = {
   },
   createdAt: "",
   lastLoginAt: "",
+  searchIndex: "test@mail.com testuser",
 }
 
 export type UsersQueryResponse = Response<Array<User>>

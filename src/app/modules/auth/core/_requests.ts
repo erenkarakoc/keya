@@ -15,6 +15,7 @@ import {
   getDoc,
   doc,
 } from "firebase/firestore"
+import { slugify } from "../../../../_metronic/helpers/kyHelpers"
 
 initializeApp(firebaseConfig)
 const db = getFirestore()
@@ -86,6 +87,12 @@ export async function login(
         },
         createdAt: userDataFromFirestore?.createdAt || "",
         lastLoginAt: userDataFromFirestore?.lastLoginAt || "",
+        searchIndex:
+          userDataFromFirestore?.email +
+          " " +
+          slugify(
+            userDataFromFirestore?.first_name + userDataFromFirestore?.last_name
+          ),
       }
 
       return userData
@@ -154,6 +161,7 @@ export async function register(
       },
       createdAt: user.metadata.creationTime || "",
       lastLoginAt: user.metadata.lastSignInTime || "",
+      searchIndex: email + " " + slugify(first_name + last_name),
     })
   } catch (error) {
     console.error("Error when registering user:", error)
@@ -166,70 +174,3 @@ export function requestPassword(email: string) {
   console.log(email)
   return false
 }
-
-// FIRESTORE GETTING USER
-
-// import { signInWithEmailAndPassword } from "firebase/auth"
-// import { firebaseAuth, firebaseConfig } from "../../../../firebase/BaseConfig"
-// import { sendEmailVerification } from "firebase/auth"
-
-// // Function to authenticate the user with Firebase Authentication
-// async function authenticateUser() {
-//   try {
-//     // Sign in the user with email and password
-//     const userCredential = await signInWithEmailAndPassword(
-//       firebaseAuth,
-//       firebaseConfig.adminEmail,
-//       firebaseConfig.adminPass
-//     )
-
-//     // Retrieve the ID token from the user credential
-//     const idToken = await userCredential.user.getIdToken()
-
-//     return idToken // Return the ID token for authentication
-//   } catch (err) {
-//     throw new Error("An error occured.")
-//   }
-// }
-
-// // Function to fetch data from Firestore using Axios
-// async function getAllUsersFromFirestore() {
-//   try {
-//     // Authenticate the user and obtain the ID token
-//     const idToken = await authenticateUser()
-
-//     // Firestore API endpoint
-//     const apiUrl = `https://firestore.googleapis.com/v1/projects/${firebaseConfig.projectId}/databases/(default)/documents/users/`
-
-//     const config = {
-//       headers: {
-//         Authorization: `Bearer ${idToken}`, // Include Firebase ID token as a Bearer token
-//         "Content-Type": "application/json",
-//       },
-//     }
-
-//     const response = await axios.get(apiUrl, config)
-
-//     console.log(response.data)
-//   } catch (error) {
-//     console.error(error)
-//   }
-// }
-
-// async function verifyAdminEmail() {
-//   try {
-//     const userCredential = await signInWithEmailAndPassword(
-//       firebaseAuth,
-//       firebaseConfig.adminEmail,
-//       firebaseConfig.adminPass
-//     )
-
-//     await sendEmailVerification(userCredential.user)
-//   } catch (error) {
-//     console.error(error)
-//   }
-// }
-// verifyAdminEmail()
-
-// // Call the function to fetch data
-// getAllUsersFromFirestore()

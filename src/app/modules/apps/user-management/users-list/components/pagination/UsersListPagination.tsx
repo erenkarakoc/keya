@@ -7,11 +7,11 @@ import {useMemo} from 'react'
 
 const mappedLabel = (label: string): string => {
   if (label === '&laquo; Previous') {
-    return 'Previous'
+    return 'Önceki'
   }
 
   if (label === 'Next &raquo;') {
-    return 'Next'
+    return 'Sonraki'
   }
 
   return label

@@ -17,4 +17,26 @@ const getUserRoleText = (text: string) => {
   }
 }
 
-export { getUserRoleText }
+const slugify = (str: string) => {
+  const trMap: { [key: string]: string } = {
+    çÇ: "c",
+    ğĞ: "g",
+    şŞ: "s",
+    üÜ: "u",
+    ıİ: "i",
+    öÖ: "o",
+  }
+
+  for (const key in trMap) {
+    str = str.replace(new RegExp("[" + key + "]", "g"), trMap[key])
+  }
+
+  str = str
+    .replace(/[^a-zA-Z0-9@.]+/gi, "")
+    .replace(/\s+/g, "-")
+    .toLowerCase()
+
+  return str
+}
+
+export { getUserRoleText, slugify }
