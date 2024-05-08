@@ -14,6 +14,7 @@ import {
   throttle,
   getHighestZindex,
 } from '../_utils/index'
+import e from 'cors'
 
 export interface MenuOptions {
   dropdown: {

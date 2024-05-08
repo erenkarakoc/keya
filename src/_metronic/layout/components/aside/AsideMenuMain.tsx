@@ -144,28 +144,12 @@ export function AsideMenuMain() {
           </span>
         </div>
       </div>
-      <AsideMenuItemWithSub
-        to="apps/chat"
-        title="Chat"
-        fontIcon="bi-chat-left"
+      <AsideMenuItem
+        to="ofis-yonetimi/ofisler"
         icon="black-right"
-      >
-        <AsideMenuItem
-          to="apps/chat/private-chat"
-          title="Private Chat"
-          hasBullet={true}
-        />
-        <AsideMenuItem
-          to="apps/chat/group-chat"
-          title="Group Chart"
-          hasBullet={true}
-        />
-        <AsideMenuItem
-          to="apps/chat/drawer-chat"
-          title="Drawer Chart"
-          hasBullet={true}
-        />
-      </AsideMenuItemWithSub>
+        title="Ofis Yönetimi"
+        fontIcon="bi-layers"
+      />
       <AsideMenuItem
         to="kullanici-yonetimi/kullanicilar"
         icon="black-right"

@@ -165,34 +165,15 @@ export function MenuInner() {
         menuTrigger="click"
       >
         {/* PAGES */}
-        <MenuInnerWithSub
-          title="Chat"
-          to="/apps/chat"
-          icon="message-text-2"
-          hasArrow={true}
-          menuPlacement="right-start"
-          menuTrigger={`{default:'click', lg: 'hover'}`}
-        >
-          <MenuItem
-            to="/apps/chat/private-chat"
-            title="Private Chat"
-            hasBullet={true}
-          />
-          <MenuItem
-            to="/apps/chat/group-chat"
-            title="Group Chart"
-            hasBullet={true}
-          />
-          <MenuItem
-            to="/apps/chat/drawer-chat"
-            title="Drawer Chart"
-            hasBullet={true}
-          />
-        </MenuInnerWithSub>
+        <MenuItem
+          icon="shield-tick"
+          to="/ofis-yonetimi/ofisler"
+          title="Ofis Yönetimi"
+        />
         <MenuItem
           icon="shield-tick"
           to="/kullanici-yonetimi/kullanicilar"
-          title="User management"
+          title="Kullanıcı Yönetimi"
         />
       </MenuInnerWithSub>
 

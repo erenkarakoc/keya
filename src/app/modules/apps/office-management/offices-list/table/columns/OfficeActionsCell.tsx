@@ -4,13 +4,13 @@ import { ID, KTIcon, QUERIES } from "../../../../../../../_metronic/helpers"
 import { useListView } from "../../core/ListViewProvider"
 import { useQueryResponse } from "../../core/QueryResponseProvider"
 import { deleteUser } from "../../core/_requests"
-import { UserDeleteModal } from "../../user-delete-modal/UserDeleteModal"
+import { OfficeDeleteModal } from "../../office-delete-modal/OfficeDeleteModal"
 
 type Props = {
   id: ID
 }
 
-const UserActionsCell: FC<Props> = ({ id }) => {
+const OfficeActionsCell: FC<Props> = ({ id }) => {
   const { setItemIdForUpdate } = useListView()
 
   const { query } = useQueryResponse()
@@ -26,7 +26,7 @@ const UserActionsCell: FC<Props> = ({ id }) => {
 
   return (
     <>
-      <UserDeleteModal
+      <OfficeDeleteModal
         id="kt_modal_delete_confirmation_single"
         title="Emin misiniz?"
         description="Devam etmeniz halinde bu kullanıcı kalıcı olarak silinecektir."
@@ -67,4 +67,4 @@ const UserActionsCell: FC<Props> = ({ id }) => {
   )
 }
 
-export { UserActionsCell }
+export { OfficeActionsCell }

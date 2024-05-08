@@ -1,11 +1,11 @@
-import "./UserDeleteModal.css"
+import "./OfficeDeleteModal.css"
 
 import clsx from "clsx"
 import React, { useEffect, useState } from "react"
 
 import { UserModel } from "../../../../auth"
 
-interface UserDeleteModalProps {
+interface OfficeDeleteModalProps {
   id: string
   title?: string
   description?: string
@@ -14,7 +14,7 @@ interface UserDeleteModalProps {
   selectedUsersForDelete?: UserModel[]
 }
 
-const UserDeleteModal: React.FC<UserDeleteModalProps> = ({
+const OfficeDeleteModal: React.FC<OfficeDeleteModalProps> = ({
   id,
   title,
   description,
@@ -103,4 +103,4 @@ const UserDeleteModal: React.FC<UserDeleteModalProps> = ({
   )
 }
 
-export { UserDeleteModal }
+export { OfficeDeleteModal }

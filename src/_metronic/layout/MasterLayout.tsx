@@ -6,12 +6,7 @@ import { HeaderWrapper } from "./components/header/HeaderWrapper"
 import { ScrollTop } from "./components/ScrollTop"
 import { Content } from "./components/Content"
 import { PageDataProvider } from "./core"
-import {
-  ActivityDrawer,
-  DrawerMessenger,
-  InviteUsers,
-  UpgradePlan,
-} from "../partials"
+import { ActivityDrawer, InviteUsers, UpgradePlan } from "../partials"
 import { MenuComponent } from "../assets/ts/components"
 import { Sidebar } from "./components/Sidebar"
 
@@ -51,7 +46,6 @@ const MasterLayout = () => {
 
       {/* begin:: Drawers */}
       <ActivityDrawer />
-      <DrawerMessenger />
       {/* end:: Drawers */}
 
       {/* begin:: Modals */}
