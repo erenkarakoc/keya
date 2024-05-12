@@ -8,13 +8,7 @@ const officesBreadcrumbs: Array<PageLink> = [
     path: "ofis-yonetimi/ofisler",
     isSeparator: false,
     isActive: false,
-  },
-  {
-    title: "",
-    path: "",
-    isSeparator: true,
-    isActive: false,
-  },
+  }
 ]
 
 const OfficesPage = () => {
@@ -22,7 +16,7 @@ const OfficesPage = () => {
     <Routes>
       <Route element={<Outlet />}>
         <Route
-          path="kullanicilar"
+          path="ofisler"
           element={
             <>
               <PageTitle breadcrumbs={officesBreadcrumbs}>Ofisler</PageTitle>

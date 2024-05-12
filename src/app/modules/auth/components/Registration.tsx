@@ -5,8 +5,6 @@ import clsx from "clsx"
 import { Link } from "react-router-dom"
 import { toAbsoluteUrl } from "../../../../_metronic/helpers"
 import { PasswordMeterComponent } from "../../../../_metronic/assets/ts/components"
-import { useAuth } from "../core/Auth"
-import { login, register } from "../core/_requests"
 
 const initialValues = {
   first_name: "",
@@ -45,23 +43,13 @@ const registrationSchema = Yup.object().shape({
 
 export function Registration() {
   const [loading, setLoading] = useState(false)
-  const { setCurrentUser } = useAuth()
   const formik = useFormik({
     initialValues,
     validationSchema: registrationSchema,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       setLoading(true)
       try {
-        await register(
-          values.email,
-          values.first_name,
-          values.last_name,
-          values.password,
-          values.confirmpassword
-        )
-
-        const user = await login(values.email, values.password)
-        setCurrentUser(user)
+        console.log(values)
       } catch (error) {
         console.error(error)
         setStatus("The registration details are incorrect")

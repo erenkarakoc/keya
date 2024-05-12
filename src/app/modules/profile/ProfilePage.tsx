@@ -13,13 +13,7 @@ const profileBreadCrumbs: Array<PageLink> = [
     path: "crafted/pages/profile/overview",
     isSeparator: false,
     isActive: false,
-  },
-  {
-    title: "",
-    path: "",
-    isSeparator: true,
-    isActive: false,
-  },
+  }
 ]
 
 const ProfilePage = () => (

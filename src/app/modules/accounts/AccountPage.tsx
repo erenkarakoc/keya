@@ -11,13 +11,7 @@ const accountBreadCrumbs: Array<PageLink> = [
     path: 'crafted/account/overview',
     isSeparator: false,
     isActive: false,
-  },
-  {
-    title: '',
-    path: '',
-    isSeparator: true,
-    isActive: false,
-  },
+  }
 ]
 
 const AccountPage: React.FC = () => {

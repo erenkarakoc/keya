@@ -13,13 +13,7 @@ const widgetsBreadCrumbs: Array<PageLink> = [
     path: 'crafted/widgets/charts',
     isSeparator: false,
     isActive: false,
-  },
-  {
-    title: '',
-    path: '',
-    isSeparator: true,
-    isActive: false,
-  },
+  }
 ]
 
 const WidgetsPage = () => {

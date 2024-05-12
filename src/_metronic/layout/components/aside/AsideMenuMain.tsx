@@ -137,25 +137,46 @@ export function AsideMenuMain() {
           hasBullet={true}
         />
       </AsideMenuItemWithSub>
-      <div className="menu-item">
-        <div className="menu-content pt-8 pb-2">
-          <span className="menu-section text-muted text-uppercase fs-8 ls-1">
-            Kullanıcılar
-          </span>
-        </div>
-      </div>
-      <AsideMenuItem
+
+      <AsideMenuItemWithSub
         to="ofis-yonetimi/ofisler"
-        icon="black-right"
         title="Ofis Yönetimi"
-        fontIcon="bi-layers"
-      />
-      <AsideMenuItem
-        to="kullanici-yonetimi/kullanicilar"
+        fontIcon="bi-sticky"
         icon="black-right"
+      >
+        <AsideMenuItem
+          to="ofis-yonetimi/ofisler"
+          icon="black-right"
+          title="Ofis Yönetimi"
+          fontIcon="bi-layers"
+        />
+        <AsideMenuItem
+          to="ofis-yonetimi/ofis-ekle"
+          icon="black-right"
+          title="Ofis Ekle"
+          fontIcon="bi-layers"
+        />
+      </AsideMenuItemWithSub>
+
+      <AsideMenuItemWithSub
+        to="kullanici-yonetimi/kullanicilar"
         title="Kullanıcı Yönetimi"
-        fontIcon="bi-layers"
-      />
+        fontIcon="bi-sticky"
+        icon="black-right"
+      >
+        <AsideMenuItem
+          to="kullanici-yonetimi/kullanicilar"
+          icon="black-right"
+          title="Tüm Kullanıcılar"
+          fontIcon="bi-layers"
+        />
+        <AsideMenuItem
+          to="kullanici-yonetimi/kullanici-ekle"
+          icon="black-right"
+          title="Kullanıcı Ekle"
+          fontIcon="bi-layers"
+        />
+      </AsideMenuItemWithSub>
     </>
   )
 }

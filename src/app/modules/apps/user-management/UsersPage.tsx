@@ -1,6 +1,7 @@
 import { Route, Routes, Outlet, Navigate } from "react-router-dom"
 import { PageLink, PageTitle } from "../../../../_metronic/layout/core"
 import { UsersListWrapper } from "./users-list/UsersList"
+import { AddUser } from "./add-user/AddUser"
 
 const usersBreadcrumbs: Array<PageLink> = [
   {
@@ -9,10 +10,13 @@ const usersBreadcrumbs: Array<PageLink> = [
     isSeparator: false,
     isActive: false,
   },
+]
+
+const addUserBreadcrumbs: Array<PageLink> = [
   {
-    title: "",
-    path: "",
-    isSeparator: true,
+    title: "Kullanıcı Ekle",
+    path: "kullanici-yonetimi/kullanici-ekle",
+    isSeparator: false,
     isActive: false,
   },
 ]
@@ -31,6 +35,18 @@ const UsersPage = () => {
           }
         />
       </Route>
+      <Route
+        path="kullanici-ekle"
+        element={
+          <>
+            <PageTitle breadcrumbs={addUserBreadcrumbs}>
+              Kullanıcı Ekle
+            </PageTitle>
+            <AddUser />
+          </>
+        }
+      />
+
       <Route
         index
         element={<Navigate to="/kullanici-yonetimi/kullanicilar" />}

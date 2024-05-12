@@ -15,7 +15,6 @@ import {
   getDoc,
   doc,
 } from "firebase/firestore"
-import { slugify } from "../../../../_metronic/helpers/kyHelpers"
 
 initializeApp(firebaseConfig)
 const db = getFirestore()
@@ -44,55 +43,21 @@ export async function login(
         id: userDataFromFirestore?.id || user.uid,
         uid: userDataFromFirestore?.uid || user.uid,
         email: userDataFromFirestore?.email || user.email || "",
-        emailVerified:
-          userDataFromFirestore?.emailVerified || user.emailVerified || false,
         first_name: userDataFromFirestore?.first_name || "",
         last_name: userDataFromFirestore?.last_name || "",
         photoURL: userDataFromFirestore?.photoURL || "",
         phoneNumber: userDataFromFirestore?.phone || "",
         role: userDataFromFirestore?.role || "",
         permissions: userDataFromFirestore?.permissions || [],
-        emailSettings: {
-          emailNotification:
-            userDataFromFirestore?.emailSettings?.emailNotification || true,
-          sendCopyToPersonalEmail:
-            userDataFromFirestore?.emailSettings?.sendCopyToPersonalEmail ||
-            false,
-          activityRelatesEmail: {
-            youHaveNewNotifications:
-              userDataFromFirestore?.emailSettings?.activityRelatesEmail
-                ?.youHaveNewNotifications || true,
-            youAreSentADirectMessage:
-              userDataFromFirestore?.emailSettings?.activityRelatesEmail
-                ?.youAreSentADirectMessage || true,
-            someoneAddsYouAsAsAConnection:
-              userDataFromFirestore?.emailSettings?.activityRelatesEmail
-                ?.someoneAddsYouAsAsAConnection || true,
-            uponNewOrder:
-              userDataFromFirestore?.emailSettings?.activityRelatesEmail
-                ?.uponNewOrder || false,
-            newMembershipApproval:
-              userDataFromFirestore?.emailSettings?.activityRelatesEmail
-                ?.newMembershipApproval || true,
-            memberRegistration:
-              userDataFromFirestore?.emailSettings?.activityRelatesEmail
-                ?.memberRegistration || false,
-          },
-        },
         address: {
-          addressLine: userDataFromFirestore?.address?.addressLine || "",
-          city: userDataFromFirestore?.address?.city || "",
+          country: userDataFromFirestore?.address?.country || "",
           state: userDataFromFirestore?.address?.state || "",
-          postCode: userDataFromFirestore?.address?.postCode || "",
+          city: userDataFromFirestore?.address?.city || "",
+          addressLine: userDataFromFirestore?.address?.addressLine || "",
         },
         createdAt: userDataFromFirestore?.createdAt || "",
         lastLoginAt: userDataFromFirestore?.lastLoginAt || "",
-        searchIndex:
-          userDataFromFirestore?.email +
-          " " +
-          slugify(
-            userDataFromFirestore?.first_name + userDataFromFirestore?.last_name
-          ),
+        searchIndex: userDataFromFirestore?.email,
       }
 
       return userData
@@ -111,14 +76,21 @@ export async function register(
   first_name: string,
   last_name: string,
   password: string,
-  password_confirmation: string
+  confirmpassword: string,
+  photoURL: string,
+  phoneNumber: string,
+  role: string,
+  country: string,
+  state: string,
+  city: string,
+  addressLine: string
 ): Promise<void> {
   const auth = getAuth()
   const db = getFirestore()
 
   try {
-    if (password !== password_confirmation) {
-      throw new Error("Passwords do not match")
+    if (password !== confirmpassword) {
+      throw new Error("Şifre ve Şifre Tekrar alanları uyuşmalıdır")
     }
 
     const userCredential = await createUserWithEmailAndPassword(
@@ -134,34 +106,21 @@ export async function register(
       id: user.uid,
       uid: user.uid,
       email,
-      emailVerified: user.emailVerified || false,
       first_name,
       last_name,
-      photoURL: "",
-      phoneNumber: "",
-      role: "",
-      permissions: [],
-      emailSettings: {
-        emailNotification: true,
-        sendCopyToPersonalEmail: false,
-        activityRelatesEmail: {
-          youHaveNewNotifications: true,
-          youAreSentADirectMessage: true,
-          someoneAddsYouAsAsAConnection: true,
-          uponNewOrder: false,
-          newMembershipApproval: true,
-          memberRegistration: false,
-        },
-      },
+      photoURL: photoURL,
+      phoneNumber: phoneNumber,
+      role: role,
       address: {
-        addressLine: "",
-        city: "",
-        state: "",
-        postCode: "",
+        country: country,
+        state: state,
+        city: city,
+        addressLine: addressLine,
       },
+      permissions: [],
       createdAt: user.metadata.creationTime || "",
       lastLoginAt: user.metadata.lastSignInTime || "",
-      searchIndex: email + " " + slugify(first_name + last_name),
+      searchIndex: email,
     })
   } catch (error) {
     console.error("Error when registering user:", error)

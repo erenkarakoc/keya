@@ -92,7 +92,6 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
             console.log("User is not authenticated. Please sign in.")
             return
           }
-          values.photoURL = userForEdit.photoURL
           if (uploadedImage) {
             try {
               const storageRef = ref(
@@ -101,6 +100,7 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
               )
               await uploadBytes(storageRef, uploadedImage as File)
               const downloadURL = await getDownloadURL(storageRef)
+              console.log(downloadURL)
               values.photoURL = downloadURL
             } catch (error) {
               console.error("Error uploading image:", error)

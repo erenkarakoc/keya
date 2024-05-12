@@ -1,3 +1,65 @@
+import countries from "./address-helper/countries.json"
+import states from "./address-helper/states.json"
+import citiesData from "./address-helper/cities.json"
+import { Country, City, State } from "./address-helper/_models"
+
+const cities: City[] = citiesData as City[]
+
+const getCountries = (): Country[] => {
+  const countriesArr = countries.map((country) => ({
+    id: country.id,
+    name: country.name,
+    iso3: country.iso3,
+    iso2: country.iso2,
+    numeric_code: country.numeric_code,
+    phone_code: country.phone_code,
+    capital: country.capital,
+    currency: country.currency,
+    currency_name: country.currency_name,
+    currency_symbol: country.currency_symbol,
+    tld: country.tld,
+    native: country.native,
+    region: country.region,
+    region_id: country.region_id,
+    subregion: country.subregion,
+    subregion_id: country.subregion_id,
+    nationality: country.nationality,
+    timezones: country.timezones,
+    translations: country.translations,
+    latitude: country.latitude,
+    longitude: country.longitude,
+    emoji: country.emoji,
+    emojiU: country.emojiU,
+  }))
+
+  return countriesArr
+}
+
+const getStatesByCountry = (countryId: number): State[] | undefined => {
+  const countryStates = states.filter(
+    (state: State) =>
+      state.country_id === countryId &&
+      state.latitude !== null &&
+      state.longitude !== null
+  )
+
+  if (countryStates.length > 0) {
+    return countryStates
+  } else {
+    return undefined
+  }
+}
+
+const getCitiesByState = (stateId: number): City[] | undefined => {
+  const stateCities = cities.filter((city: City) => city.state_id === stateId)
+
+  if (stateCities.length > 0) {
+    return stateCities
+  } else {
+    return undefined
+  }
+}
+
 const getUserRoleText = (text: string) => {
   switch (text) {
     case "admin":
@@ -39,4 +101,10 @@ const slugify = (str: string) => {
   return str
 }
 
-export { getUserRoleText, slugify }
+export {
+  getCountries,
+  getStatesByCountry,
+  getCitiesByState,
+  getUserRoleText,
+  slugify,
+}

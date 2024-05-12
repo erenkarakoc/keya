@@ -9,13 +9,7 @@ const wizardsBreadCrumbs: Array<PageLink> = [
     path: 'crafted/pages/wizards/horizontal',
     isSeparator: false,
     isActive: false,
-  },
-  {
-    title: '',
-    path: '',
-    isSeparator: true,
-    isActive: false,
-  },
+  }
 ]
 
 const WizardsPage = () => (
