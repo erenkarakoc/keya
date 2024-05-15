@@ -275,7 +275,7 @@ class StickyComponent {
     });
   }
 
-  public static createInsance = (
+  public static createInstance = (
     selector: string,
     options: StickyOptions = defaultStickyOptions
   ): StickyComponent | undefined => {

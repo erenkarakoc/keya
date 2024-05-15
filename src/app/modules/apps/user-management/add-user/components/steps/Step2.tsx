@@ -7,6 +7,7 @@ import {
   getCountries,
   getStatesByCountry,
   getCitiesByState,
+  generateRandomName,
 } from "../../../../../../../_metronic/helpers/kyHelpers"
 import {
   Country,
@@ -14,8 +15,25 @@ import {
   City,
 } from "../../../../../../../_metronic/helpers/address-helper/_models"
 
-const Step2: FC = () => {
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
+import { firebaseApp } from "../../../../../../../firebase/BaseConfig"
+
+const storage = getStorage(firebaseApp)
+
+interface Step2Props {
+  setFieldValue: (
+    field: string,
+    value: string,
+    shouldValidate?: boolean
+  ) => void
+}
+
+const Step2: FC<Step2Props> = ({ setFieldValue }) => {
   const [countries, setCountries] = useState<Country[]>([])
+
+  const [currentCountry, setCurrentCountry] = useState<string | null>("")
+  const [currentState, setCurrentState] = useState<string | null>("")
+  const [currentCity, setCurrentCity] = useState<string | null>("")
 
   const [states, setStates] = useState<State[]>([])
   const [cities, setCities] = useState<City[]>([])
@@ -33,18 +51,35 @@ const Step2: FC = () => {
 
   const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
-      const selectedFile = e.target.files[0]
-      setUploadedImageUrl(URL.createObjectURL(selectedFile))
+      const file = e.target.files[0]
+      const fileSizeInMB = file.size / (1024 * 1024)
+
+      if (fileSizeInMB > 2) {
+        console.error(`Dosya boyutu 2 MB'dan küçük olmalıdır`)
+        return
+      }
+
+      try {
+        const randomName = generateRandomName()
+        const storageRef = ref(storage, `images/avatars/avatar-${randomName}`)
+        await uploadBytes(storageRef, e.target.files[0])
+        const downloadURL = await getDownloadURL(storageRef)
+        setUploadedImageUrl(downloadURL)
+        setFieldValue("photoURL", downloadURL)
+      } catch (error) {
+        console.error("Error uploading image:", error)
+      }
     }
   }
 
-  const handleImageRemove = () => {
-    setUploadedImageUrl(null)
-  }
-
   const handleCountryChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setCurrentCountry(e.target.value)
+    setFieldValue("country", e.target.value)
+
     if (e.target.value) {
-      const statesArr = getStatesByCountry(parseInt(e.target.value))
+      const selectedOption = e.target.selectedOptions[0]
+      const countryId = selectedOption.getAttribute("country-id")
+      const statesArr = getStatesByCountry(parseInt(countryId as string))
       setStates(statesArr || [])
       setCountrySelected(true)
     } else {
@@ -54,8 +89,13 @@ const Step2: FC = () => {
   }
 
   const handleStateChange = async (e: ChangeEvent<HTMLSelectElement>) => {
+    setCurrentState(e.target.value)
+    setFieldValue("state", e.target.value)
+
     if (e.target.value) {
-      const citiesArr = getCitiesByState(parseInt(e.target.value))
+      const selectedOption = e.target.selectedOptions[0]
+      const stateId = selectedOption.getAttribute("state-id")
+      const citiesArr = getCitiesByState(parseInt(stateId as string))
       setCities(citiesArr || [])
       setStateSelected(true)
     } else {
@@ -64,12 +104,18 @@ const Step2: FC = () => {
     }
   }
 
+  const handleCityChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setCurrentCity(e.target.value)
+    setFieldValue("city", e.target.value)
+  }
+
   const handlePhoneNumberChange = (e: ChangeEvent<HTMLInputElement>) => {
     const asYouType = new AsYouType()
     const formatted = asYouType.input(e.target.value)
     const countryCode = asYouType.getNumber()?.country
 
-    setCurrentPhoneNumber(formatted || "")
+    setCurrentPhoneNumber(formatted)
+    setFieldValue("phoneNumber", formatted)
     setCountryCode(countryCode ? countryCode : "")
   }
 
@@ -133,38 +179,28 @@ const Step2: FC = () => {
               accept=".png, .jpg, .jpeg"
               onChange={handleImageChange}
             />
-            {/* <input type="hidden" name="avatar_remove" /> */}
+
+            <input
+              type="hidden"
+              name="photoURL"
+              value={uploadedImageUrl ? uploadedImageUrl : ""}
+              className="d-none"
+              disabled
+            />
           </label>
           {/* end::Label */}
-
-          {/* begin::Cancel */}
-          <span
-            className="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-            data-kt-image-input-action="cancel"
-            data-bs-toggle="tooltip"
-          >
-            <i className="bi bi-x fs-2"></i>
-          </span>
-          {/* end::Cancel */}
-
-          {/* begin::Remove */}
-          <span
-            className="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-            data-kt-image-input-action="remove"
-            data-bs-toggle="tooltip"
-            title="Fotoğrafı Sil"
-            onClick={handleImageRemove}
-          >
-            <i className="bi bi-x fs-2"></i>
-          </span>
-          {/* end::Remove */}
         </div>
         {/* end::Image input */}
+
         {/* begin::Hint */}
         <div className="form-text">
           İzin verilen dosya türleri: png, jpg, jpeg.
         </div>
         {/* end::Hint */}
+
+        <div className="text-danger mt-2">
+          <ErrorMessage name="photoURL" className="mt-10" />
+        </div>
       </div>
       {/* end::Input group */}
 
@@ -177,7 +213,7 @@ const Step2: FC = () => {
             placeholder="+90 5xx xxx xx xx"
             onChange={handlePhoneNumberChange}
             value={currentPhoneNumber}
-            style={{ paddingLeft: "35px" }}
+            style={{ paddingLeft: "40px" }}
             name="phoneNumber"
           />
           <span
@@ -201,12 +237,16 @@ const Step2: FC = () => {
           className="form-select form-select-lg form-select-solid"
           onChange={handleCountryChange}
           name="country"
-          value={225}
+          value={currentCountry}
         >
           <option></option>
           {countries &&
             countries.map((country) => (
-              <option value={country.id} key={country.id}>
+              <option
+                value={country.name}
+                country-id={country.id}
+                key={country.id}
+              >
                 {country.translations.tr}
               </option>
             ))}
@@ -225,11 +265,12 @@ const Step2: FC = () => {
           onChange={handleStateChange}
           name="state"
           disabled={!countrySelected}
+          value={currentState}
         >
           <option></option>
           {countrySelected
             ? states.map((state) => (
-                <option value={state.id} key={state.id}>
+                <option value={state.name} state-id={state.id} key={state.id}>
                   {state.name}
                 </option>
               ))
@@ -246,13 +287,15 @@ const Step2: FC = () => {
         <Field
           as="select"
           className="form-select form-select-lg form-select-solid"
+          onChange={handleCityChange}
           name="city"
           disabled={!stateSelected && !countrySelected}
+          value={currentCity}
         >
           <option></option>
           {countrySelected && stateSelected
             ? cities.map((city) => (
-                <option value={city.id} key={city.id}>
+                <option value={city.name} city-id={city.id} key={city.id}>
                   {city.name}
                 </option>
               ))

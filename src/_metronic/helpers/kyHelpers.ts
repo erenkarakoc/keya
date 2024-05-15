@@ -35,6 +35,14 @@ const getCountries = (): Country[] => {
   return countriesArr
 }
 
+const getCountryById = (countryId: number) => {
+  const country = countries.filter((country) => {
+    country.id === countryId
+  })
+
+  return country
+}
+
 const getStatesByCountry = (countryId: number): State[] | undefined => {
   const countryStates = states.filter(
     (state: State) =>
@@ -101,10 +109,27 @@ const slugify = (str: string) => {
   return str
 }
 
+const generateRandomName = () => {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+  const length = 30
+  let randomName = ""
+
+  for (let i = 0; i < length; i++) {
+    randomName += characters.charAt(
+      Math.floor(Math.random() * characters.length)
+    )
+  }
+
+  return randomName
+}
+
 export {
   getCountries,
+  getCountryById,
   getStatesByCountry,
   getCitiesByState,
   getUserRoleText,
   slugify,
+  generateRandomName,
 }

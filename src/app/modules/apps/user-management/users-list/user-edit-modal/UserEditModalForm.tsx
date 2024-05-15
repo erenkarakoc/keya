@@ -65,15 +65,6 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
     }
   }
 
-  const handleImageRemove = () => {
-    setUploadedImage(null)
-    setUploadedImageUrl(null)
-    setUserForEdit((prevUser) => ({
-      ...prevUser,
-      photoURL: null,
-    }))
-  }
-
   const cancel = (withRefresh?: boolean) => {
     if (withRefresh) {
       refetch()
@@ -107,7 +98,7 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
             }
           }
           await updateUser(values)
-          updateEmail({ uid: values.uid, newEmail: values.email })
+          await updateEmail({ uid: values.uid, newEmail: values.email })
         } else {
           await createUser(values)
         }
@@ -167,7 +158,7 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
                 className="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
                 data-kt-image-input-action="change"
                 data-bs-toggle="tooltip"
-                title="Change avatar"
+                title="Fotoğrafı Değiştir"
               >
                 <i className="bi bi-pencil-fill fs-7"></i>
 
@@ -180,29 +171,6 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
                 {/* <input type="hidden" name="avatar_remove" /> */}
               </label>
               {/* end::Label */}
-
-              {/* begin::Cancel */}
-              <span
-                className="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                data-kt-image-input-action="cancel"
-                data-bs-toggle="tooltip"
-                title="Cancel avatar"
-              >
-                <i className="bi bi-x fs-2"></i>
-              </span>
-              {/* end::Cancel */}
-
-              {/* begin::Remove */}
-              <span
-                className="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                data-kt-image-input-action="remove"
-                data-bs-toggle="tooltip"
-                title="Remove avatar"
-                onClick={handleImageRemove}
-              >
-                <i className="bi bi-x fs-2"></i>
-              </span>
-              {/* end::Remove */}
             </div>
             {/* end::Image input */}
 

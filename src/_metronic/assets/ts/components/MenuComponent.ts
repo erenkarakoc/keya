@@ -1071,7 +1071,7 @@ class MenuComponent {
     MenuComponent.createInstances('[data-kt-menu="true"]')
   }
 
-  public static createInsance = (
+  public static createInstance = (
     selector: string,
     options: MenuOptions = defaultMenuOptions
   ): MenuComponent | undefined => {

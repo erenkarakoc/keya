@@ -19,7 +19,7 @@ const Horizontal: FC = () => {
   const [isSubmitButton, setSubmitButton] = useState(false)
 
   const loadStepper = () => {
-    setStepper(StepperComponent.createInsance(stepperRef.current as HTMLDivElement))
+    setStepper(StepperComponent.createInstance(stepperRef.current as HTMLDivElement))
   }
 
   const prevStep = () => {

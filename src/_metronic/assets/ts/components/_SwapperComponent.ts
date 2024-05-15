@@ -162,7 +162,7 @@ class SwapperComponent {
     })
   }
 
-  public static createInsance = (
+  public static createInstance = (
     selector: string = defaultSwapperQueires.instanseQuery,
     options: ISwapperOptions = defaultSwapperOptions,
     queries: ISwapperQueries = defaultSwapperQueires

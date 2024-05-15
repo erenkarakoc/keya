@@ -450,7 +450,7 @@ class SearchComponent {
     })
   }
 
-  public static createInsance = (
+  public static createInstance = (
     selector: string = defaultSearchQueires.instanseQuery,
     options: ISearchOptions = defaultSearchOptions,
     queries: ISearchQueries = defaultSearchQueires

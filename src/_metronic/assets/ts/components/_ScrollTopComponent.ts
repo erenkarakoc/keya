@@ -117,7 +117,7 @@ class ScrollTopComponent {
     })
   }
 
-  public static createInsance = (
+  public static createInstance = (
     selector: string,
     options: IScrollTopOptions = defaultScrollTopOptions
   ): ScrollTopComponent | undefined => {

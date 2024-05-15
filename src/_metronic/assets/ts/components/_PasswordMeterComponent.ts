@@ -241,7 +241,7 @@ class PasswordMeterComponent {
     })
   }
 
-  public static createInsance = (
+  public static createInstance = (
     selector: string = defaultPasswordMeterQueires.instanseQuery,
     options: IPasswordMeterOptions = defaultPasswordMeterOptions,
     queries: IPasswordMeterQueries = defaultPasswordMeterQueires

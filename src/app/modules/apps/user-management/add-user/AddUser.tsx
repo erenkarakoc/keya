@@ -8,7 +8,11 @@ import { Step4 } from "./components/steps/Step4"
 import { StepperComponent } from "../../../../../_metronic/assets/ts/components"
 import { Form, Formik, FormikValues } from "formik"
 import {
-  createAccountSchemas,
+  step0Schema,
+  step1Schema,
+  step2Schema,
+  step3Schema,
+  step4Schema,
   ICreateAccount,
   inits,
 } from "./components/CreateAccountWizardHelper"
@@ -18,32 +22,37 @@ import { register } from "../../../auth/core/_requests"
 const AddUser = () => {
   const stepperRef = useRef<HTMLDivElement | null>(null)
   const [stepper, setStepper] = useState<StepperComponent | null>(null)
-  const [currentSchema, setCurrentSchema] = useState(createAccountSchemas[0])
+
+  const [currentSchemaIndex, setCurrentSchemaIndex] = useState<number>(0)
+  const schemas = [
+    step0Schema,
+    step1Schema,
+    step2Schema,
+    step3Schema,
+    step4Schema,
+  ]
+
   const [initValues] = useState<ICreateAccount>(inits)
 
   const loadStepper = () => {
     setStepper(
-      StepperComponent.createInsance(stepperRef.current as HTMLDivElement)
+      StepperComponent.createInstance(stepperRef.current as HTMLDivElement)
     )
   }
 
   const prevStep = () => {
-    if (!stepper) {
-      return
-    }
-
+    if (!stepper) return
     stepper.goPrev()
-
-    setCurrentSchema(createAccountSchemas[stepper.currentStepIndex - 1])
+    setCurrentSchemaIndex((prevIndex) => prevIndex - 1)
   }
 
   const submitStep = async (values: ICreateAccount, actions: FormikValues) => {
-    if (!stepper) {
-      return
-    }
+    if (!stepper) return
 
     if (stepper.currentStepIndex !== stepper.totalStepsNumber) {
       stepper.goNext()
+      setCurrentSchemaIndex((prevIndex) => prevIndex + 1)
+      console.log(values)
     } else {
       try {
         await register(
@@ -55,19 +64,18 @@ const AddUser = () => {
           values.photoURL,
           values.phoneNumber,
           values.role,
-          values.country ?? "",
-          values.state ?? "",
-          values.city ?? "",
-          values.addressLine ?? ""
+          values.country ? values.country : "",
+          values.state ? values.state : "",
+          values.city ? values.city : "",
+          values.addressLine ? values.addressLine : ""
         )
+
+        actions.setSubmitting(false)
       } catch (error) {
+        actions.setSubmitting(false)
         console.error(error)
-      } finally {
-        actions.resetForm()
       }
     }
-
-    setCurrentSchema(createAccountSchemas[stepper.currentStepIndex - 1])
   }
 
   useEffect(() => {
@@ -215,11 +223,12 @@ const AddUser = () => {
 
           <div className="d-flex flex-row-fluid flex-center bg-body rounded">
             <Formik
-              validationSchema={currentSchema}
               initialValues={initValues}
+              validationSchema={schemas[currentSchemaIndex]}
               onSubmit={submitStep}
+              enableReinitialize={true}
             >
-              {() => (
+              {({ values, setFieldValue }) => (
                 <Form
                   className="py-20 w-100 w-xl-700px px-9"
                   noValidate
@@ -235,7 +244,7 @@ const AddUser = () => {
                   </div>
 
                   <div data-kt-stepper-element="content">
-                    <Step2 />
+                    <Step2 setFieldValue={setFieldValue} />
                   </div>
 
                   <div data-kt-stepper-element="content">
@@ -243,7 +252,7 @@ const AddUser = () => {
                   </div>
 
                   <div data-kt-stepper-element="content">
-                    <Step4 />
+                    <Step4 values={values} />
                   </div>
 
                   <div className="d-flex flex-stack pt-10">

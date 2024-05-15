@@ -99,7 +99,6 @@ export async function register(
       password
     )
     const user = userCredential.user
-
     const usersCollectionRef = collection(db, "users")
 
     await setDoc(doc(usersCollectionRef, user.uid), {

@@ -1,7 +1,14 @@
-import React, { FC } from "react"
+import { FC } from "react"
 import { KTIcon } from "../../../../../../../_metronic/helpers"
+interface Step4Props {
+  values: {
+    phoneNumber: string
+    email: string
+    password: string
+  }
+}
 
-const Step4: FC = () => {
+const Step4: FC<Step4Props> = ({ values }) => {
   return (
     <div className="w-100">
       <div className="mb-0">
@@ -15,7 +22,12 @@ const Step4: FC = () => {
                 basmadan önce giriş bilgilerini kullanıcıya WhatsApp üzerinden
                 iletmek için{" "}
                 <a
-                  href={`https://api.whatsapp.com/send?phone=905435390665&text=Keya%20ailesine%20ho%C5%9F%20geldiniz!%20Keya%20ser%C3%BCveninizi%20y%C3%B6netece%C4%9Finiz%20aray%C3%BCz%C3%BCn%C3%BCze%20%22keya.com.tr%2Fgiris%22%20adresinden%2C%20a%C5%9Fa%C4%9F%C4%B1daki%20bilgileri%20kullanarak%20giri%C5%9F%20yapabilirsiniz%3A%0A%0AE-posta%3A%20erenkarakoc%40keya.com.tr%0A%C5%9Eifre%3A%202023!*eren`}
+                  href={`https://api.whatsapp.com/send?phone=${values.phoneNumber.replace(
+                    /\D/g,
+                    ""
+                  )}&text=Keya%20ailesine%20ho%C5%9F%20geldiniz!%20Keya%20ser%C3%BCveninizi%20y%C3%B6netece%C4%9Finiz%20aray%C3%BCz%C3%BCn%C3%BCze%20%22keya.com.tr%2Fgiris%22%20adresinden%2C%20a%C5%9Fa%C4%9F%C4%B1daki%20bilgileri%20kullanarak%20giri%C5%9F%20yapabilirsiniz%3A%0A%0AE-posta%3A%20${
+                    values.email
+                  }%0A%C5%9Eifre%3A%20${values.password}`}
                   className="link-primary fw-bolder"
                   target="_blank"
                 >
@@ -23,6 +35,7 @@ const Step4: FC = () => {
                 </a>
                 .
               </div>
+              <input type="hidden" name="empty" />
             </div>
           </div>
         </div>

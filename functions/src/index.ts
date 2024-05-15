@@ -24,6 +24,70 @@ admin.initializeApp({
     "europe-west1.firebasedatabase.app",
 });
 
+export const registerUser = functions.https.onCall(async (data, context) => {
+  try {
+    if (!context.auth || !context.auth.token.admin) {
+      throw new functions.https.HttpsError(
+        "permission-denied",
+        "Only admins can register users."
+      );
+    }
+    const {
+      email,
+      first_name,
+      last_name,
+      password,
+      confirmpassword,
+      photoURL,
+      phoneNumber,
+      role,
+      country,
+      state,
+      city,
+      addressLine
+    } = data;
+    if (password !== confirmpassword) {
+      throw new functions.https.HttpsError(
+        'invalid-argument',
+        'Password and confirm password do not match.'
+      );
+    }
+    const userRecord = await admin.auth().createUser({
+      email,
+      password
+    });
+    const usersCollectionRef = admin.firestore().collection('users');
+    await usersCollectionRef.doc(userRecord.uid).set({
+      id: userRecord.uid,
+      uid: userRecord.uid,
+      email,
+      first_name,
+      last_name,
+      photoURL,
+      phoneNumber,
+      role,
+      address: {
+        country,
+        state,
+        city,
+        addressLine
+      },
+      permissions: [],
+      createdAt: userRecord.metadata.creationTime || "",
+      lastLoginAt: userRecord.metadata.lastSignInTime || "",
+      searchIndex: email
+    });
+    return {success: true, message: "User registered successfully."};
+  } catch (error) {
+    console.error("Error when registering user:", error);
+    throw new functions.https.HttpsError(
+      "unknown",
+      "Error when registering user.",
+      error
+    );
+  }
+});
+
 export const deleteUser = functions.https.onCall(async (data) => {
   try {
     await admin.auth().deleteUser(data.uid);

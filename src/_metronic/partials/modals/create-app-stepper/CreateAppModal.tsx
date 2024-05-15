@@ -26,7 +26,7 @@ const CreateAppModal = ({show, handleClose}: Props) => {
   const [hasError, setHasError] = useState(false)
 
   const loadStepper = () => {
-    setStepper(StepperComponent.createInsance(stepperRef.current as HTMLDivElement))
+    setStepper(StepperComponent.createInstance(stepperRef.current as HTMLDivElement))
   }
 
   const updateData = (fieldsToUpdate: Partial<ICreateAppData>) => {

@@ -51,7 +51,7 @@ const Search: FC<Props> = ({className = '', mobileToggleBtnClass = ''}) => {
 
   useEffect(() => {
     // Initialize search handler
-    const searchObject = SearchComponent.createInsance('#kt_header_search')
+    const searchObject = SearchComponent.createInstance('#kt_header_search')
 
     // Search handler
     searchObject!.on('kt.search.process', processs)

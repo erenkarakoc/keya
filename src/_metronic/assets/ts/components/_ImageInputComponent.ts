@@ -201,7 +201,7 @@ class ImageInputComponent {
     })
   }
 
-  public static createInsance = (
+  public static createInstance = (
     selector: string = defaultImageInputQueires.instanseQuery,
     options: IImageInputOptions = defaultImageInputOptions,
     queries: IImageInputQueries = defaultImageInputQueires
