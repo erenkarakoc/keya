@@ -44,6 +44,7 @@
     "react-dom": "^18.2.0",
     "react-firebase-hooks": "^5.1.1",
     "react-flatpickr": "^3.10.13",
+    "react-hot-toast": "^2.4.1",
     "react-inlinesvg": "4.1.0",
     "react-intl": "^6.4.4",
     "react-query": "3.38.0",

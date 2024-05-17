@@ -4,6 +4,7 @@ import { UserModel } from "./_models"
 import { onAuthStateChanged, signOut, getAuth } from "firebase/auth"
 import { firebaseAuth } from "../../../../firebase/BaseConfig"
 import { getFirestore, getDoc, doc } from "firebase/firestore"
+import toast from "react-hot-toast"
 
 const db = getFirestore()
 
@@ -53,6 +54,7 @@ const AuthProvider: FC<WithChildren> = ({ children }) => {
             console.log("User document doesn't exist, handle accordingly")
           }
         } catch (error) {
+          toast.error("Kullanıcı yüklenemedi! Lütfen daha sonra tekrar deneyin.")
           console.error("Error fetching user data:", error)
         } finally {
           setShowSplashScreen(false)
@@ -71,6 +73,7 @@ const AuthProvider: FC<WithChildren> = ({ children }) => {
       await signOut(firebaseAuth)
       setCurrentUser(undefined)
     } catch (error) {
+      toast.error("Bir sorun oluştu! Lütfen daha sonra tekrar deneyin.")
       console.error("Error signing out:", error)
     }
   }

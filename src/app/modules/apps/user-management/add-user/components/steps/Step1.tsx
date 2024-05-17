@@ -20,10 +20,10 @@ const Step1: FC = () => {
           <Field
             type="text"
             className="form-control form-control-lg form-control-solid"
-            name="first_name"
+            name="firstName"
           />
           <div className="text-danger mt-2">
-            <ErrorMessage name="first_name" />
+            <ErrorMessage name="firstName" />
           </div>
         </div>
         <div className="col-md-6">
@@ -32,10 +32,10 @@ const Step1: FC = () => {
           <Field
             type="text"
             className="form-control form-control-lg form-control-solid"
-            name="last_name"
+            name="lastName"
           />
           <div className="text-danger mt-2">
-            <ErrorMessage name="last_name" />
+            <ErrorMessage name="lastName" />
           </div>
         </div>
       </div>

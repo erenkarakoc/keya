@@ -31,7 +31,7 @@ const AsideUserMenu: FC = () => {
               href="#"
               className="text-gray-800 text-hover-primary fs-6 fw-bolder lh-1"
             >
-              {currentUser?.first_name} {currentUser?.last_name}
+              {currentUser?.firstName} {currentUser?.lastName}
             </a>
             <span className="text-muted fw-bold d-block fs-7 lh-1">
               {getUserRoleText(currentUser?.role as string)}

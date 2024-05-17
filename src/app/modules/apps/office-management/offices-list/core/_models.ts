@@ -11,8 +11,8 @@ export type User = {
   id: string
   uid: string
   email: string
-  first_name: string
-  last_name: string
+  firstName: string
+  lastName: string
   photoURL?: string | null
   phoneNumber?: string
   role?: string

@@ -69,7 +69,7 @@ const DashboardWrapper = () => {
   return (
     <EnableSidebar>
       <PageTitle description="" breadcrumbs={[]}>
-        {currentUser && "Merhaba " + currentUser?.first_name}
+        {currentUser && "Merhaba " + currentUser?.firstName}
       </PageTitle>
       <DashboardPage />
     </EnableSidebar>

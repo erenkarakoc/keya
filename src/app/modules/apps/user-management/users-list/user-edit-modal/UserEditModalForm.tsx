@@ -26,11 +26,11 @@ type Props = {
 
 const editUserSchema = Yup.object().shape({
   avatar: Yup.string(),
-  first_name: Yup.string()
+  firstName: Yup.string()
     .min(3, "Ad en az 3 karakterden oluşmalı")
     .max(50, "Ad fazla 50 karakterden oluşmalı")
     .required("Ad alanı zorunludur"),
-  last_name: Yup.string()
+  lastName: Yup.string()
     .min(3, "Soyad en az 3 karakterden oluşmalı")
     .max(50, "Soyad en fazla 50 karakterden oluşmalı")
     .required("Soyad alanı zorunludur"),
@@ -191,28 +191,28 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
             {/* begin::Input */}
             <input
               placeholder="Ad"
-              {...formik.getFieldProps("first_name")}
+              {...formik.getFieldProps("firstName")}
               type="text"
-              name="first_name"
-              value={formik.values.first_name}
+              name="firstName"
+              value={formik.values.firstName}
               className={clsx(
                 "form-control form-control-solid mb-3 mb-lg-0",
                 {
                   "is-invalid":
-                    formik.touched.first_name && formik.errors.first_name,
+                    formik.touched.firstName && formik.errors.firstName,
                 },
                 {
                   "is-valid":
-                    formik.touched.first_name && !formik.errors.first_name,
+                    formik.touched.firstName && !formik.errors.firstName,
                 }
               )}
               autoComplete="off"
               disabled={formik.isSubmitting || isUserLoading}
             />
-            {formik.touched.first_name && formik.errors.first_name && (
+            {formik.touched.firstName && formik.errors.firstName && (
               <div className="fv-plugins-message-container">
                 <div className="fv-help-block">
-                  <span role="alert">{formik.errors.first_name}</span>
+                  <span role="alert">{formik.errors.firstName}</span>
                 </div>
               </div>
             )}
@@ -229,28 +229,28 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
             {/* begin::Input */}
             <input
               placeholder="Soyad"
-              {...formik.getFieldProps("last_name")}
+              {...formik.getFieldProps("lastName")}
               type="text"
-              name="last_name"
-              value={formik.values.last_name}
+              name="lastName"
+              value={formik.values.lastName}
               className={clsx(
                 "form-control form-control-solid mb-3 mb-lg-0",
                 {
                   "is-invalid":
-                    formik.touched.last_name && formik.errors.last_name,
+                    formik.touched.lastName && formik.errors.lastName,
                 },
                 {
                   "is-valid":
-                    formik.touched.last_name && !formik.errors.last_name,
+                    formik.touched.lastName && !formik.errors.lastName,
                 }
               )}
               autoComplete="off"
               disabled={formik.isSubmitting || isUserLoading}
             />
-            {formik.touched.last_name && formik.errors.last_name && (
+            {formik.touched.lastName && formik.errors.lastName && (
               <div className="fv-plugins-message-container">
                 <div className="fv-help-block">
-                  <span role="alert">{formik.errors.last_name}</span>
+                  <span role="alert">{formik.errors.lastName}</span>
                 </div>
               </div>
             )}
@@ -284,9 +284,9 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
               disabled={formik.isSubmitting || isUserLoading}
             />
             {/* end::Input */}
-            {formik.touched.email && formik.errors.first_name && (
+            {formik.touched.email && formik.errors.firstName && (
               <div className="fv-plugins-message-container">
-                <span role="alert">{formik.errors.first_name}</span>
+                <span role="alert">{formik.errors.firstName}</span>
               </div>
             )}
           </div>

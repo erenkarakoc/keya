@@ -2,8 +2,8 @@ import * as Yup from "yup"
 
 export type ICreateAccount = {
   email: string
-  first_name: string
-  last_name: string
+  firstName: string
+  lastName: string
   password: string
   confirmpassword: string
   photoURL: string
@@ -20,11 +20,11 @@ const step0Schema = Yup.object({
 })
 
 const step1Schema = Yup.object({
-  first_name: Yup.string()
+  firstName: Yup.string()
     .min(3, "Ad en az 3 karakterden oluşmalı")
     .max(50, "Ad en fazla 50 karakterden oluşmalı")
     .required("Ad alanı zorunludur"),
-  last_name: Yup.string()
+  lastName: Yup.string()
     .min(3, "Soyad en az 3 karakterden oluşmalı")
     .max(50, "Soyad en fazla 50 karakterden oluşmalı")
     .required("Soyad alanı zorunludur"),
@@ -51,8 +51,6 @@ const step1Schema = Yup.object({
 const step2Schema = Yup.object({
   photoURL: Yup.string().required("Bir fotoğraf seçilmesi zorunludur"),
   phoneNumber: Yup.string()
-    .min(17, "Telefon numarası 12 haneli şekilde girilmelidir")
-    .max(17, "Telefon numarası 12 haneli şekilde girilmelidir")
     .matches(/^\+/, "Telefon numarası + işareti ile başlamalıdır")
     .required("Telefon numarası zorunludur"),
   country: Yup.string(),
@@ -71,8 +69,8 @@ const step4Schema = Yup.object({
 
 const inits: ICreateAccount = {
   email: "",
-  first_name: "",
-  last_name: "",
+  firstName: "",
+  lastName: "",
   password: "",
   confirmpassword: "",
   photoURL: "",

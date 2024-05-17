@@ -19,6 +19,10 @@ import "./_metronic/assets/sass/style.scss"
 import { AppRoutes } from "./app/routing/AppRoutes"
 import { AuthProvider } from "./app/modules/auth"
 /**
+ * Toaster Component
+ */
+import { Toaster } from "react-hot-toast"
+/**
  * Creates `axios-mock-adapter` instance for provided `axios` instance, add
  * basic Metronic mocks and returns it.
  *
@@ -37,6 +41,7 @@ if (container) {
   createRoot(container).render(
     <QueryClientProvider client={queryClient}>
       <MetronicI18nProvider>
+        <Toaster />
         <AuthProvider>
           <AppRoutes />
         </AuthProvider>

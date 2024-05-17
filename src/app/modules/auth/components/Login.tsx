@@ -5,6 +5,7 @@ import { Link } from "react-router-dom"
 import { useFormik } from "formik"
 import { login } from "../core/_requests"
 import { useAuth } from "../core/Auth"
+import toast from "react-hot-toast"
 
 const loginSchema = Yup.object().shape({
   email: Yup.string()
@@ -36,6 +37,7 @@ export function Login() {
         const user = await login(values.email, values.password)
         setCurrentUser(user)
       } catch (error) {
+        toast.error("Kullanıcılar yüklenemedi! Lütfen daha sonra tekrar deneyin.")
         console.error(error)
         setStatus("E-posta veya şifre yanlış. Lütfen tekrar deneyin.")
         setSubmitting(false)

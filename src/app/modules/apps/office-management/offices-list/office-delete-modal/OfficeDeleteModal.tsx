@@ -52,14 +52,14 @@ const OfficeDeleteModal: React.FC<OfficeDeleteModalProps> = ({
                           <div className="symbol-label">
                             <img
                               src={`${user.photoURL}`}
-                              alt={user.first_name}
+                              alt={user.firstName}
                               className="w-100"
                             />
                           </div>
                         ) : (
                           <div className={clsx("symbol-label fs-3")}>
-                            {user.first_name.charAt(0)}
-                            {user.last_name.charAt(0)}
+                            {user.firstName.charAt(0)}
+                            {user.lastName.charAt(0)}
                           </div>
                         )}
                       </a>
@@ -70,7 +70,7 @@ const OfficeDeleteModal: React.FC<OfficeDeleteModalProps> = ({
                         className="text-gray-800 text-hover-primary mb-1"
                         style={{ textAlign: "left" }}
                       >
-                        {user.first_name} {user.last_name}
+                        {user.firstName} {user.lastName}
                       </a>
                       <span>{user.email}</span>
                     </div>

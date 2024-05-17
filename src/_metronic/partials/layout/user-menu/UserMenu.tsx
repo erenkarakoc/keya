@@ -29,7 +29,7 @@ const UserMenu = () => {
           {/* begin::Username */}
           <div className="d-flex flex-column">
             <div className="fw-bolder d-flex align-items-center fs-5">
-              {currentUser?.first_name} {currentUser?.last_name}
+              {currentUser?.firstName} {currentUser?.lastName}
             </div>
             <a href="#" className="fw-bold text-muted text-hover-primary fs-7">
               {currentUser?.email}

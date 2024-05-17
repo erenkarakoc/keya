@@ -17,11 +17,22 @@ import {
   inits,
 } from "./components/CreateAccountWizardHelper"
 import { Content } from "../../../../../_metronic/layout/components/Content"
-import { register } from "../../../auth/core/_requests"
+
+import { initializeApp } from "firebase/app"
+import { firebaseConfig } from "../../../../../firebase/BaseConfig"
+import { getFunctions, httpsCallable } from "firebase/functions"
+
+import toast from "react-hot-toast"
+
+initializeApp(firebaseConfig)
+const functions = getFunctions()
+
+const registerUser = httpsCallable(functions, "registerUser")
 
 const AddUser = () => {
   const stepperRef = useRef<HTMLDivElement | null>(null)
   const [stepper, setStepper] = useState<StepperComponent | null>(null)
+  const [submittingForm, setSubmittingForm] = useState<boolean>(false)
 
   const [currentSchemaIndex, setCurrentSchemaIndex] = useState<number>(0)
   const schemas = [
@@ -52,26 +63,23 @@ const AddUser = () => {
     if (stepper.currentStepIndex !== stepper.totalStepsNumber) {
       stepper.goNext()
       setCurrentSchemaIndex((prevIndex) => prevIndex + 1)
-      console.log(values)
     } else {
-      try {
-        await register(
-          values.email,
-          values.first_name,
-          values.last_name,
-          values.password,
-          values.confirmpassword,
-          values.photoURL,
-          values.phoneNumber,
-          values.role,
-          values.country ? values.country : "",
-          values.state ? values.state : "",
-          values.city ? values.city : "",
-          values.addressLine ? values.addressLine : ""
-        )
+      setSubmittingForm(true)
 
+      try {
+        await registerUser(values)
+
+        setSubmittingForm(false)
         actions.setSubmitting(false)
+
+        toast.success("Kullanıcı başarıyla eklendi!")
+
+        window.location.reload()
       } catch (error) {
+        toast.error(
+          "Bir hata oluştu! Lütfen bilgileri kontrol edin veya daha sonra tekrar deneyin."
+        )
+        setSubmittingForm(false)
         actions.setSubmitting(false)
         console.error(error)
       }
@@ -274,15 +282,32 @@ const AddUser = () => {
                         className="btn btn-lg btn-primary me-3"
                       >
                         <span className="indicator-label">
-                          {stepper?.currentStepIndex ===
-                          (stepper?.totalStepsNumber || 2)
-                            ? "Kaydet"
-                            : "Devam et"}
-
-                          <KTIcon
-                            iconName="arrow-right"
-                            className="fs-3 ms-2 me-0"
-                          />
+                          {submittingForm ? (
+                            <span
+                              className="indicator-progress"
+                              style={{ display: "block" }}
+                            >
+                              Lütfen bekleyin...
+                              <span className="spinner-border spinner-border-sm align-middle ms-2"></span>
+                            </span>
+                          ) : stepper?.currentStepIndex ===
+                            (stepper?.totalStepsNumber || 2) ? (
+                            <>
+                              Kaydet
+                              <KTIcon
+                                iconName="arrow-right"
+                                className="fs-3 ms-2 me-0"
+                              />
+                            </>
+                          ) : (
+                            <>
+                              Devam et
+                              <KTIcon
+                                iconName="arrow-right"
+                                className="fs-3 ms-2 me-0"
+                              />
+                            </>
+                          )}
                         </span>
                       </button>
                     </div>

@@ -8,8 +8,8 @@ type Props = {
 
 const OfficeInfoCell: FC<Props> = ({ user }) => {
   const initials =
-    user.first_name && user.last_name
-      ? user.first_name.charAt(0) + user.last_name.charAt(0)
+    user.firstName && user.lastName
+      ? user.firstName.charAt(0) + user.lastName.charAt(0)
       : ""
 
   return (
@@ -21,7 +21,7 @@ const OfficeInfoCell: FC<Props> = ({ user }) => {
             <div className="symbol-label">
               <img
                 src={`${user.photoURL}`}
-                alt={user.first_name}
+                alt={user.firstName}
                 className="w-100"
               />
             </div>
@@ -32,7 +32,7 @@ const OfficeInfoCell: FC<Props> = ({ user }) => {
       </div>
       <div className="d-flex flex-column">
         <a href="#" className="text-gray-800 text-hover-primary mb-1">
-          {user.first_name} {user.last_name}
+          {user.firstName} {user.lastName}
         </a>
         <span>{user.email}</span>
       </div>

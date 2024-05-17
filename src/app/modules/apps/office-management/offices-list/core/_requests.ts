@@ -1,5 +1,4 @@
-import axios, { AxiosResponse } from "axios"
-import { ID, Response } from "../../../../../../_metronic/helpers"
+import { ID } from "../../../../../../_metronic/helpers"
 import { User, UsersQueryResponse } from "./_models"
 
 import { slugify } from "../../../../../../_metronic/helpers/kyHelpers"
@@ -21,15 +20,13 @@ import {
 } from "firebase/firestore"
 import { getFunctions, httpsCallable } from "firebase/functions"
 import { UserModel } from "../../../../auth"
+import toast from "react-hot-toast"
 
 initializeApp(firebaseConfig)
 const db = getFirestore()
 
 const functions = getFunctions()
 const deleteUserFromFirebase = httpsCallable(functions, "deleteUser")
-
-const API_URL = import.meta.env.VITE_APP_THEME_API_URL
-const USER_URL = `${API_URL}/user`
 
 const getUsers = async (queryString: string): Promise<UsersQueryResponse> => {
   try {
@@ -130,6 +127,7 @@ const getUsers = async (queryString: string): Promise<UsersQueryResponse> => {
       },
     }
   } catch (error) {
+    toast.error("Kullanıcılar yüklenemedi! Lütfen daha sonra tekrar deneyin.")
     console.error("Error fetching users:", error)
     return {
       data: [],
@@ -159,6 +157,7 @@ const getUserById = async (id: ID): Promise<User | undefined> => {
       return undefined
     }
   } catch (error) {
+    toast.error("Kullanıcı yüklenemedi! Lütfen daha sonra tekrar deneyin.")
     console.error("Error fetching user:", error)
     return undefined
   }
@@ -185,16 +184,10 @@ const getUsersById = async (ids: string[]): Promise<UserModel[]> => {
 
     return users
   } catch (error) {
+    toast.error("Kullanıcılar yüklenemedi! Lütfen daha sonra tekrar deneyin.")
     console.error("Error fetching users:", error)
     return []
   }
-}
-
-const createUser = (user: User): Promise<User | undefined> => {
-  return axios
-    .put(USER_URL, user)
-    .then((response: AxiosResponse<Response<User>>) => response.data)
-    .then((response: Response<User>) => response.data)
 }
 
 const updateUser = async (user: User): Promise<User | undefined> => {
@@ -207,6 +200,7 @@ const deleteUser = async (userId: ID): Promise<void> => {
   try {
     deleteUserFromFirebase({ uid: userId })
   } catch (error) {
+    toast.error("Kullanıcı silinemedi! Lütfen daha sonra tekrar deneyin.")
     console.error("Error deleting user documents:", error)
     throw error
   }
@@ -220,6 +214,7 @@ const deleteSelectedUsers = async (userIds: Array<ID>): Promise<void> => {
       })
     )
   } catch (error) {
+    toast.error("Kullanıcılar silinemedi! Lütfen daha sonra tekrar deneyin.")
     console.error("Error deleting users:", error)
     throw error
   }
@@ -231,6 +226,5 @@ export {
   deleteSelectedUsers,
   getUserById,
   getUsersById,
-  createUser,
   updateUser,
 }

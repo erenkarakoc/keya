@@ -5,10 +5,11 @@ import clsx from "clsx"
 import { Link } from "react-router-dom"
 import { toAbsoluteUrl } from "../../../../_metronic/helpers"
 import { PasswordMeterComponent } from "../../../../_metronic/assets/ts/components"
+import toast from "react-hot-toast"
 
 const initialValues = {
-  first_name: "",
-  last_name: "",
+  firstName: "",
+  lastName: "",
   email: "",
   password: "",
   confirmpassword: "",
@@ -16,7 +17,7 @@ const initialValues = {
 }
 
 const registrationSchema = Yup.object().shape({
-  first_name: Yup.string()
+  firstName: Yup.string()
     .min(3, "Minimum 3 symbols")
     .max(50, "Maximum 50 symbols")
     .required("First name is required"),
@@ -25,7 +26,7 @@ const registrationSchema = Yup.object().shape({
     .min(3, "Minimum 3 symbols")
     .max(50, "Maximum 50 symbols")
     .required("Email is required"),
-  last_name: Yup.string()
+  lastName: Yup.string()
     .min(3, "Minimum 3 symbols")
     .max(50, "Maximum 50 symbols")
     .required("Last name is required"),
@@ -51,6 +52,7 @@ export function Registration() {
       try {
         console.log(values)
       } catch (error) {
+        toast.error("Kullanıcılar yüklenemedi! Lütfen daha sonra tekrar deneyin.")
         console.error(error)
         setStatus("The registration details are incorrect")
       } finally {
@@ -140,7 +142,7 @@ export function Registration() {
         </div>
       )}
 
-      {/* begin::Form group First_name */}
+      {/* begin::Form group firstName */}
       <div className="fv-row mb-8">
         <label className="form-label fw-bolder text-gray-900 fs-6">
           First name
@@ -149,30 +151,30 @@ export function Registration() {
           placeholder="First name"
           type="text"
           autoComplete="off"
-          {...formik.getFieldProps("first_name")}
+          {...formik.getFieldProps("firstName")}
           className={clsx(
             "form-control bg-transparent",
             {
               "is-invalid":
-                formik.touched.first_name && formik.errors.first_name,
+                formik.touched.firstName && formik.errors.firstName,
             },
             {
               "is-valid":
-                formik.touched.first_name && !formik.errors.first_name,
+                formik.touched.firstName && !formik.errors.firstName,
             }
           )}
         />
-        {formik.touched.first_name && formik.errors.first_name && (
+        {formik.touched.firstName && formik.errors.firstName && (
           <div className="fv-plugins-message-container">
             <div className="fv-help-block">
-              <span role="alert">{formik.errors.first_name}</span>
+              <span role="alert">{formik.errors.firstName}</span>
             </div>
           </div>
         )}
       </div>
       {/* end::Form group */}
       <div className="fv-row mb-8">
-        {/* begin::Form group Last_name */}
+        {/* begin::Form group lastName */}
         <label className="form-label fw-bolder text-gray-900 fs-6">
           Last name
         </label>
@@ -180,21 +182,21 @@ export function Registration() {
           placeholder="Last name"
           type="text"
           autoComplete="off"
-          {...formik.getFieldProps("last_name")}
+          {...formik.getFieldProps("lastName")}
           className={clsx(
             "form-control bg-transparent",
             {
-              "is-invalid": formik.touched.last_name && formik.errors.last_name,
+              "is-invalid": formik.touched.lastName && formik.errors.lastName,
             },
             {
-              "is-valid": formik.touched.last_name && !formik.errors.last_name,
+              "is-valid": formik.touched.lastName && !formik.errors.lastName,
             }
           )}
         />
-        {formik.touched.last_name && formik.errors.last_name && (
+        {formik.touched.lastName && formik.errors.lastName && (
           <div className="fv-plugins-message-container">
             <div className="fv-help-block">
-              <span role="alert">{formik.errors.last_name}</span>
+              <span role="alert">{formik.errors.lastName}</span>
             </div>
           </div>
         )}

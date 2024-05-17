@@ -15,7 +15,7 @@ const officesColumns: ReadonlyArray<Column<User>> = [
   },
   {
     Header: (props) => <OfficeCustomHeader tableProps={props} title='Kullanıcı' className='min-w-125px' />,
-    id: 'first_name',
+    id: 'firstName',
     Cell: ({...props}) => <OfficeInfoCell user={props.data[props.row.index]} />,
   },
   {
