@@ -20,7 +20,41 @@
   background-color: var(--ky-midnight-2);
 }
 
+.ky-testimonials-wrapper {
+  position: relative;
+}
+
+.ky-testimonials-wrapper .ky-testimonials-prev,
+.ky-testimonials-wrapper .ky-testimonials-next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(calc(-50% - 20px));
+  display: block;
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  background-color: var(--ky-midnight-4);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 12px;
+  transition: all 0.1s ease-out;
+}
+.ky-testimonials-wrapper .ky-testimonials-prev:hover,
+.ky-testimonials-wrapper .ky-testimonials-next:hover {
+  background-color: var(--ky-midnight-3);
+}
+.ky-testimonials-wrapper .ky-testimonials-prev {
+  left: -60px;
+  background-image: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8.17841 0.821407C7.52754 0.170534 6.47226 0.170534 5.82139 0.821407L0.821387 5.82141C0.170513 6.47228 0.170513 7.52756 0.821387 8.17843L5.82139 13.1784C6.47226 13.8293 7.52754 13.8293 8.17841 13.1784C8.82928 12.5276 8.82928 11.4723 8.17841 10.8214L6.02359 8.66659H11.9999C12.9204 8.66659 13.6666 7.92039 13.6666 6.99992C13.6666 6.07944 12.9204 5.33325 11.9999 5.33325H6.02359L8.17841 3.17843C8.82928 2.52756 8.82928 1.47228 8.17841 0.821407Z' fill='%23525252'/%3E%3C/svg%3E%0A");
+}
+.ky-testimonials-wrapper .ky-testimonials-next {
+  right: -60px;
+  background-image: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M5.82165 0.821407C6.47253 0.170534 7.5278 0.170534 8.17867 0.821407L13.1787 5.82141C13.8295 6.47228 13.8295 7.52756 13.1787 8.17843L8.17867 13.1784C7.5278 13.8293 6.47253 13.8293 5.82165 13.1784C5.17078 12.5276 5.17078 11.4723 5.82165 10.8214L7.97647 8.66659H2.00016C1.07969 8.66659 0.333496 7.92039 0.333496 6.99992C0.333496 6.07944 1.07969 5.33325 2.00016 5.33325H7.97647L5.82165 3.17843C5.17078 2.52756 5.17078 1.47228 5.82165 0.821407Z' fill='%23525252'/%3E%3C/svg%3E%0A");
+}
+
 .ky-testimonial-slide {
+  cursor: grab;
   padding: 50px;
   border-radius: 20px;
   border: 2px solid var(--ky-midnight-4);
@@ -31,6 +65,9 @@
 .ky-testimonial-slide:hover {
   transform: translateY(-3px);
   box-shadow: 0px 30px 45px -25px rgba(0, 0, 0, 0.5);
+}
+.ky-testimonial-slide:active {
+  cursor: grabbing;
 }
 
 .ky-testimonial-top {
@@ -44,16 +81,19 @@
 }
 
 .ky-testimonial-name {
+  user-select: none;
   color: var(--ky-light);
   font-size: 20px;
   font-weight: 700;
 }
 .ky-testimonial-desc {
+  user-select: none;
   color: var(--ky-midnight);
   font-size: 14px;
   font-weight: 700;
 }
 .ky-testimonial-comment {
+  user-select: none;
   margin-top: 20px;
   color: var(--ky-light);
   font-family: "SF Pro Text";
