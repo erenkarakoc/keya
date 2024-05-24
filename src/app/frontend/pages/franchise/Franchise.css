@@ -1,0 +1,22 @@
+.ky-franchise-introduction {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.ky-franchise-introduction .ky-title {
+  margin: 100px 0 0;
+}
+
+.ky-franchise-introduction .ky-paragraph {
+  max-width: 800px;
+  margin: 30px auto 0;
+}
+.ky-franchise-introduction .ky-button {
+  margin-top: 30px;
+}
+
+.ky-franchise-introduction img {
+  margin: 120px auto;
+}

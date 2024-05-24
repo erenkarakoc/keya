@@ -19,7 +19,7 @@ const KYTestimonials = () => {
         initial={{ opacity: 0, y: 25 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ delay: 0.2 }}
+        transition={{ delay: 0.4 }}
       >
         <KYText className="ky-section-title-center" variant="title">
           <span className="ky-text-highlight">Müşterilerimiz</span> bizden gayet

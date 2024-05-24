@@ -6,36 +6,36 @@
   z-index: 1;
 }
 
-.ky-home-wrapper section .ky-section-header-right,
-.ky-home-wrapper section .ky-section-header-left {
+.ky-section-header-right,
+.ky-section-header-left {
   display: flex;
   flex-direction: column;
   gap: 30px;
 }
 
-.ky-home-wrapper section .ky-section-title-center {
+.ky-section-title-center {
   margin: 0 auto 100px;
-  max-width: 400px;
+  max-width: 500px;
   text-align: center;
 }
-.ky-home-wrapper section .ky-section-title-right {
+.ky-section-title-right {
   max-width: 500px;
   text-align: right;
 }
-.ky-home-wrapper section .ky-section-title-left {
+.ky-section-title-left {
   max-width: 500px;
   text-align: left;
 }
 
-.ky-home-wrapper section .ky-section-desc-center {
+.ky-section-desc-center {
   max-width: 500px;
   text-align: center;
 }
-.ky-home-wrapper section .ky-section-desc-right {
+.ky-section-desc-right {
   max-width: 500px;
   text-align: right;
 }
-.ky-home-wrapper section .ky-section-desc-left {
+.ky-section-desc-left {
   max-width: 500px;
   text-align: left;
 }

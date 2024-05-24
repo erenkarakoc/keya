@@ -17,6 +17,10 @@ const KYIcon: React.FC<KYIconProps> = ({ name, className }) => {
     project: toAbsoluteUrl("src/_metronic/assets/ky-icons/project-icon.svg"),
     shop: toAbsoluteUrl("src/_metronic/assets/ky-icons/shop-icon.svg"),
     map: toAbsoluteUrl("src/_metronic/assets/ky-icons/map-icon.svg"),
+    badge: toAbsoluteUrl("src/_metronic/assets/ky-icons/badge-icon.svg"),
+    city: toAbsoluteUrl("src/_metronic/assets/ky-icons/city-icon.svg"),
+    office: toAbsoluteUrl("src/_metronic/assets/ky-icons/office-icon.svg"),
+    agent: toAbsoluteUrl("src/_metronic/assets/ky-icons/agent-icon.svg"),
   }
 
   const iconUrl = icons[name]

@@ -8,6 +8,7 @@ interface KYTextProps {
   color?: string
   fontSize?: number
   fontWeight?: number
+  textAlign?: "left" | "right" | "center"
 }
 
 const KYText: React.FC<KYTextProps> = ({
@@ -17,6 +18,7 @@ const KYText: React.FC<KYTextProps> = ({
   color,
   fontSize,
   fontWeight,
+  textAlign,
 }) => {
   const Tag =
     variant === "heading"
@@ -36,6 +38,7 @@ const KYText: React.FC<KYTextProps> = ({
         color,
         fontSize,
         fontWeight,
+        textAlign,
       }}
     >
       {children}
