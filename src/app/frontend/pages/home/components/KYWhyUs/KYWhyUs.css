@@ -1,0 +1,107 @@
+.ky-why-us-section {
+  position: relative;
+}
+
+.ky-why-us-section .ky-bg-pattern {
+  top: calc(50% + 200px);
+  left: calc(100vw - 600px);
+  transform: translateY(-50%);
+}
+
+.ky-why-us-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 50px 0;
+  background-image: var(--ky-midnight-gradient);
+  border-radius: 20px;
+  border: 2px solid var(--ky-midnight-4);
+  box-shadow: 0px 30px 40px -30px rgba(0, 0, 0, 0.5);
+  transition: all 0.6s ease-out;
+}
+.ky-why-us-wrapper:hover {
+  transform: translateY(-3px);
+  box-shadow: 0px 30px 45px -25px rgba(0, 0, 0, 0.5);
+}
+
+.ky-why-us-wrapper::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 33.33%;
+  height: 100%;
+  width: 2px;
+  right: 0;
+  background-image: linear-gradient(
+    to bottom,
+    var(--ky-midnight-4) 0,
+    var(--ky-midnight-4) 90px,
+    transparent 90px,
+    transparent 180px,
+    var(--ky-midnight-4) 180px,
+    var(--ky-midnight-4) 270px
+  );
+}
+.ky-why-us-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 66.66%;
+  height: 100%;
+  width: 2px;
+  right: 0;
+  background-image: linear-gradient(
+    to bottom,
+    var(--ky-midnight-4) 0,
+    var(--ky-midnight-4) 90px,
+    transparent 90px,
+    transparent 180px,
+    var(--ky-midnight-4) 180px,
+    var(--ky-midnight-4) 270px
+  );
+}
+
+.ky-why-us-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-width: 300px;
+  padding: 0 45px;
+}
+
+.ky-why-us-item:not(:last-of-type)::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translate(50%, -50%);
+  height: 2px;
+  width: 40px;
+  background-color: var(--ky-midnight-2);
+}
+.ky-why-us-item:not(:last-of-type)::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translate(calc(50% + 15px), -50%) rotate(45deg);
+  height: 8px;
+  width: 8px;
+  background-color: var(--ky-midnight-2);
+}
+
+.ky-why-us-item-title {
+  color: var(--ky-light);
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.ky-why-us-item-desc {
+  margin-top: 44px;
+  color: var(--ky-midnight);
+  font-size: 15px;
+  font-weight: 500;
+}

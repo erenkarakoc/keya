@@ -5,6 +5,21 @@
   align-items: center;
 }
 
+.ky-hero-section .ky-bg-pattern {
+  top: -290px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+  0% {
+    top: -320px;
+  }
+  100% {
+    top: -290px;
+  }
+}
 .ky-hero-section .ky-heading {
   max-width: 700px;
   text-align: center;
@@ -14,9 +29,12 @@
   margin-top: 40px;
 }
 
+.ky-hero-section .ky-hero-caption {
+  margin-top: 40px;
+}
+
 .ky-hero-section .ky-caption {
   position: relative;
-  margin-top: 40px;
 }
 
 .ky-hero-caption-more + svg {
@@ -31,8 +49,4 @@
 .ky-hero-caption-more:hover + svg {
   color: var(--ky-light);
   transform: translate(3px, -50%);
-}
-
-.ky-hero-section .ky-bg-pattern {
-  top: -290px;
 }

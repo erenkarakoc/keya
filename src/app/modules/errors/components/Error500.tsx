@@ -34,7 +34,6 @@ const Error500: FC = () => {
       {/* begin::Link */}
       <div className="mb-0">
         <KYButton
-          link
           width="fit-content"
           to="/"
           text="Ana Sayfa'ya dön"

@@ -5,10 +5,17 @@ import { Link } from "react-router-dom"
 import { KYBGPattern } from "../../../../components/KYBGPattern/KYBGPattern"
 import { KYText } from "../../../../components/KYText/KYText"
 
+import { motion } from "framer-motion"
+
 const KYServices = () => {
   return (
     <section className="ky-services-section">
-      <div className="ky-services-wrapper">
+      <motion.div
+        initial={{ opacity: 0, y: 25 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.8 }}
+        className="ky-services-wrapper">
         <KYText variant="subtitle">
           Gayrimenkule dair <span className="ky-text-highlight">her şey</span>{" "}
           Keya'da!
@@ -35,13 +42,18 @@ const KYServices = () => {
             <Link to="/ilanlar&search?=arsa">Arsa</Link>
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="ky-services-note">
+      <motion.div
+        initial={{ opacity: 0, y: 25 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.4 }}
+        className="ky-services-note">
         <KYText variant="caption" fontSize={12}>
           Aradığın şeyi bulamadıysan, <Link to="/iletisim" style={{fontSize: 12}}>iletişime geç</Link>.
         </KYText>
-      </div>
+      </motion.div>
       <KYBGPattern type={8} />
     </section>
   )

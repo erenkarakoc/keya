@@ -1,0 +1,40 @@
+.ky-footer-top {
+  position: relative;
+  z-index: 1;
+  padding-top: 300px;
+}
+
+.ky-footer-top-wrapper {
+  position: relative;
+  display: flex;
+  height: 286px;
+  width: 940px;
+  margin: 0 auto 150px;
+  padding: 50px;
+  background-image: var(--ky-midnight-gradient);
+  border: 2px solid var(--ky-midnight-4);
+  border-radius: 20px;
+  transition: all 0.5s ease-out;
+}
+.ky-footer-top-wrapper:hover {
+  transform: translateY(-2px);
+}
+
+.ky-footer-top-left {
+  display: flex;
+  flex-direction: column;
+  grid-gap: 30px;
+}
+
+.ky-footer-top-left .ky-paragraph {
+  max-width: 424px;
+}
+
+.ky-footer-top-right img {
+  user-select: none;
+  pointer-events: none;
+  position: absolute;
+  width: 450px;
+  right: -100px;
+  bottom: -60px;
+}

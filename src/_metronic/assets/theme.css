@@ -19,6 +19,7 @@
 .ky-layout {
   background: var(--ky-dark);
   color: var(--ky-light);
+  overflow-x: hidden;
 }
 
 .ky-dark-layout {
@@ -31,6 +32,6 @@
 }
 
 .ky-layout * {
-  font-family: var(--switzer);
+  font-family: var(--sf-pro-display);
   letter-spacing: 0.2px;
 }

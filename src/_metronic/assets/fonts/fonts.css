@@ -1,7 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap');
-
 :root {
-  --switzer: "Switzer", "Helvetica", "Arial", sans-serif;
+  --sf-pro-display: "SF Pro Display", "Helvetica", "Arial", sans-serif;
+  --sf-pro-text: "SF Pro Text", "Helvetica", "Arial", sans-serif;
 }
 
 * {
@@ -10,131 +9,190 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* SF Pro Display Normal */
 @font-face {
-  font-family: "Switzer";
-  font-style: normal;
-  font-weight: 400;
-  src: local("Switzer"), url(./switzer/Switzer-Regular.woff) format("woff");
-}
-
-@font-face {
-  font-family: "Switzer";
-  font-style: italic;
-  font-weight: 400;
-  src: local("Switzer"), url(./switzer/Switzer-Italic.woff) format("woff");
-}
-
-@font-face {
-  font-family: "Switzer";
+  font-family: "SF Pro Display";
   font-style: normal;
   font-weight: 100;
-  src: local("Switzer"), url(./switzer/Switzer-Thin.woff) format("woff");
+  src: local("SF Pro Display"), url(./sf-pro/SFProDisplay-Ultralight.ttf) format("truetype");
+}
+@font-face {
+  font-family: "SF Pro Display";
+  font-style: normal;
+  font-weight: 200;
+  src: local("SF Pro Display"), url(./sf-pro/SFProDisplay-Thin.ttf) format("truetype");
+}
+@font-face {
+  font-family: "SF Pro Display";
+  font-style: normal;
+  font-weight: 300;
+  src: local("SF Pro Display"), url(./sf-pro/SFProDisplay-Light.ttf) format("truetype");
+}
+@font-face {
+  font-family: "SF Pro Display";
+  font-style: normal;
+  font-weight: 400;
+  src: local("SF Pro Display"), url(./sf-pro/SFProDisplay-Regular.ttf) format("truetype");
+}
+@font-face {
+  font-family: "SF Pro Display";
+  font-style: normal;
+  font-weight: 500;
+  src: local("SF Pro Display"), url(./sf-pro/SFProDisplay-Medium.ttf) format("truetype");
+}
+@font-face {
+  font-family: "SF Pro Display";
+  font-style: normal;
+  font-weight: 600;
+  src: local("SF Pro Display"), url(./sf-pro/SFProDisplay-Semibold.ttf) format("truetype");
+}
+@font-face {
+  font-family: "SF Pro Display";
+  font-style: normal;
+  font-weight: 700;
+  src: local("SF Pro Display"), url(./sf-pro/SFProDisplay-Bold.ttf) format("truetype");
+}
+@font-face {
+  font-family: "SF Pro Display";
+  font-style: normal;
+  font-weight: 800;
+  src: local("SF Pro Display"), url(./sf-pro/SFProDisplay-Black.ttf) format("truetype");
+}
+@font-face {
+  font-family: "SF Pro Display";
+  font-style: normal;
+  font-weight: 900;
+  src: local("SF Pro Display"), url(./sf-pro/SFProDisplay-Heavy.ttf) format("truetype");
 }
 
+/* SF Pro Display Italic */
 @font-face {
-  font-family: "Switzer";
+  font-family: "SF Pro Display";
   font-style: italic;
   font-weight: 100;
-  src: local("Switzer"), url(./switzer/Switzer-ThinItalic.woff) format("woff");
+  src: local("SF Pro Display"), url(./sf-pro/SFProDisplay-UltralightItalic.ttf) format("truetype");
 }
-
 @font-face {
-  font-family: "Switzer";
-  font-style: normal;
-  font-weight: 200;
-  src: local("Switzer"), url(./switzer/Switzer-Extralight.woff) format("woff");
-}
-
-@font-face {
-  font-family: "Switzer";
+  font-family: "SF Pro Display";
   font-style: italic;
   font-weight: 200;
-  src: local("Switzer"),
-    url(./switzer/Switzer-ExtralightItalic.woff) format("woff");
+  src: local("SF Pro Display"), url(./sf-pro/SFProDisplay-ThinItalic.ttf) format("truetype");
 }
-
 @font-face {
-  font-family: "Switzer";
-  font-style: normal;
-  font-weight: 300;
-  src: local("Switzer"), url(./switzer/Switzer-Light.woff) format("woff");
-}
-
-@font-face {
-  font-family: "Switzer";
+  font-family: "SF Pro Display";
   font-style: italic;
   font-weight: 300;
-  src: local("Switzer"), url(./switzer/Switzer-LightItalic.woff) format("woff");
+  src: local("SF Pro Display"), url(./sf-pro/SFProDisplay-LightItalic.ttf) format("truetype");
 }
-
 @font-face {
-  font-family: "Switzer";
-  font-style: normal;
-  font-weight: 500;
-  src: local("Switzer"), url(./switzer/Switzer-Medium.woff) format("woff");
+  font-family: "SF Pro Display";
+  font-style: italic;
+  font-weight: 400;
+  src: local("SF Pro Display"), url(./sf-pro/SFProDisplay-RegularItalic.ttf) format("truetype");
 }
-
 @font-face {
-  font-family: "Switzer";
+  font-family: "SF Pro Display";
   font-style: italic;
   font-weight: 500;
-  src: local("Switzer"), url(./switzer/Switzer-MediumItalic.woff) format("woff");
+  src: local("SF Pro Display"), url(./sf-pro/SFProDisplay-MediumItalic.ttf) format("truetype");
 }
-
 @font-face {
-  font-family: "Switzer";
-  font-style: normal;
-  font-weight: 600;
-  src: local("Switzer"), url(./switzer/Switzer-Semibold.woff) format("woff");
-}
-
-@font-face {
-  font-family: "Switzer";
+  font-family: "SF Pro Display";
   font-style: italic;
   font-weight: 600;
-  src: local("Switzer"),
-    url(./switzer/Switzer-SemiboldItalic.woff) format("woff");
+  src: local("SF Pro Display"), url(./sf-pro/SFProDisplay-SemiboldItalic.ttf) format("truetype");
 }
-
 @font-face {
-  font-family: "Switzer";
-  font-style: normal;
-  font-weight: 700;
-  src: local("Switzer"), url(./switzer/Switzer-Bold.woff) format("woff");
-}
-
-@font-face {
-  font-family: "Switzer";
+  font-family: "SF Pro Display";
   font-style: italic;
   font-weight: 700;
-  src: local("Switzer"), url(./switzer/Switzer-BoldItalic.woff) format("woff");
+  src: local("SF Pro Display"), url(./sf-pro/SFProDisplay-BoldItalic.ttf) format("truetype");
 }
-
 @font-face {
-  font-family: "Switzer";
-  font-style: normal;
-  font-weight: 800;
-  src: local("Switzer"), url(./switzer/Switzer-Extrabold.woff) format("woff");
-}
-
-@font-face {
-  font-family: "Switzer";
+  font-family: "SF Pro Display";
   font-style: italic;
   font-weight: 800;
-  src: local("Switzer"),
-    url(./switzer/Switzer-ExtraboldItalic.woff) format("woff");
+  src: local("SF Pro Display"), url(./sf-pro/SFProDisplay-BlackItalic.ttf) format("truetype");
 }
-
 @font-face {
-  font-family: "Switzer";
-  font-style: normal;
-  font-weight: 900;
-  src: local("Switzer"), url(./switzer/Switzer-Black.woff) format("woff");
-}
-
-@font-face {
-  font-family: "Switzer";
+  font-family: "SF Pro Display";
   font-style: italic;
   font-weight: 900;
-  src: local("Switzer"), url(./switzer/Switzer-BlackItalic.woff) format("woff");
+  src: local("SF Pro Display"), url(./sf-pro/SFProDisplay-HeavyItalic.ttf) format("truetype");
+}
+
+/* SF Pro Text Normal */
+@font-face {
+  font-family: "SF Pro Text";
+  font-style: normal;
+  font-weight: 300;
+  src: local("SF Pro Text"), url(./sf-pro/SFProText-Light.ttf) format("truetype");
+}
+@font-face {
+  font-family: "SF Pro Text";
+  font-style: normal;
+  font-weight: 400;
+  src: local("SF Pro Text"), url(./sf-pro/SFProText-Regular.ttf) format("truetype");
+}
+@font-face {
+  font-family: "SF Pro Text";
+  font-style: normal;
+  font-weight: 500;
+  src: local("SF Pro Text"), url(./sf-pro/SFProText-Medium.ttf) format("truetype");
+}
+@font-face {
+  font-family: "SF Pro Text";
+  font-style: normal;
+  font-weight: 600;
+  src: local("SF Pro Text"), url(./sf-pro/SFProText-Semibold.ttf) format("truetype");
+}
+@font-face {
+  font-family: "SF Pro Text";
+  font-style: normal;
+  font-weight: 700;
+  src: local("SF Pro Text"), url(./sf-pro/SFProText-Bold.ttf) format("truetype");
+}
+@font-face {
+  font-family: "SF Pro Text";
+  font-style: normal;
+  font-weight: 900;
+  src: local("SF Pro Text"), url(./sf-pro/SFProText-Heavy.ttf) format("truetype");
+}
+
+/* SF Pro Text Italic */
+@font-face {
+  font-family: "SF Pro Text";
+  font-style: italic;
+  font-weight: 300;
+  src: local("SF Pro Text"), url(./sf-pro/SFProText-LightItalic.ttf) format("truetype");
+}
+@font-face {
+  font-family: "SF Pro Text";
+  font-style: italic;
+  font-weight: 400;
+  src: local("SF Pro Text"), url(./sf-pro/SFProText-RegularItalic.ttf) format("truetype");
+}
+@font-face {
+  font-family: "SF Pro Text";
+  font-style: italic;
+  font-weight: 500;
+  src: local("SF Pro Text"), url(./sf-pro/SFProText-MediumItalic.ttf) format("truetype");
+}
+@font-face {
+  font-family: "SF Pro Text";
+  font-style: italic;
+  font-weight: 600;
+  src: local("SF Pro Text"), url(./sf-pro/SFProText-SemiboldItalic.ttf) format("truetype");
+}
+@font-face {
+  font-family: "SF Pro Text";
+  font-style: italic;
+  font-weight: 700;
+  src: local("SF Pro Text"), url(./sf-pro/SFProText-BoldItalic.ttf) format("truetype");
+}
+@font-face {
+  font-family: "SF Pro Text";
+  font-style: italic;
+  font-weight: 900;
+  src: local("SF Pro Text"), url(./sf-pro/SFProText-HeavyItalic.ttf) format("truetype");
 }

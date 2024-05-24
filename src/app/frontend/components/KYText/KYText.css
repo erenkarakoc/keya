@@ -10,21 +10,18 @@
 
 .ky-text.ky-heading,
 .ky-text.ky-heading * {
-  font-family: var(--switzer);
   font-weight: 600;
   font-size: 48px;
 }
 
 .ky-text.ky-title,
 .ky-text.ky-title * {
-  font-family: var(--switzer);
   font-size: 40px;
   font-weight: 700;
 }
 
 .ky-text.ky-subtitle,
 .ky-text.ky-subtitle * {
-  font-family: var(--switzer);
   font-size: 24px;
   font-weight: 600;
 }
@@ -35,7 +32,6 @@
 
 .ky-text.ky-caption,
 .ky-text.ky-caption * {
-  font-family: var(--switzer);
   color: var(--ky-midnight);
   font-size: 14px;
   font-weight: 500;
@@ -49,7 +45,6 @@
 
 .ky-text.ky-paragraph,
 .ky-text.ky-paragraph * {
-  font-family: var(--switzer);
   color: var(--ky-midnight);
   font-size: 20px;
   font-weight: 500;

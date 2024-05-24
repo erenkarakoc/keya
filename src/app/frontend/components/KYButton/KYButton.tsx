@@ -6,7 +6,7 @@ import { checkIsActive } from "../../../../_metronic/helpers"
 
 interface KYButtonProps {
   link?: boolean
-  to: string
+  to?: string
   action?: () => void
   text: string
   secondary?: boolean
@@ -15,7 +15,6 @@ interface KYButtonProps {
 }
 
 const KYButton: React.FC<KYButtonProps> = ({
-  link,
   to,
   action,
   text,
@@ -31,10 +30,10 @@ const KYButton: React.FC<KYButtonProps> = ({
       className={`ky-button${secondary ? " ky-button-secondary" : ""}${
         className ? " " + className : ""
       }`}
-      style={{ width: width ? width : "" }}
+      style={{ width: width ? width : "fit-content" }}
       {...props}
     >
-      {link ? (
+      {to ? (
         <Link
           className={clsx("menu-link py-3", {
             active: checkIsActive(pathname, to),

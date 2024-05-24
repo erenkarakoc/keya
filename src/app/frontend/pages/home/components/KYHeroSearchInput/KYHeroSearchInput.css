@@ -26,7 +26,6 @@
   border: 2px solid var(--ky-midnight-3);
   border-radius: 24px;
   color: var(--ky-light);
-  font-family: var(--switzer);
   font-size: 20px;
   font-weight: 500;
   background-color: var(--ky-midnight-4);
@@ -93,7 +92,6 @@
   border: none;
   border-radius: 20px;
   color: var(--ky-light-2);
-  font-family: var(--switzer);
   font-size: 20px;
   font-weight: 600;
   background-color: var(--ky-midnight-3);
