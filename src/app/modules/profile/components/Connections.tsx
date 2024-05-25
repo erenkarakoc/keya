@@ -17,7 +17,6 @@ export function Connections() {
             data-control='select2'
             data-hide-search='true'
             className='form-select form-select-white form-select-sm w-125px'
-            defaultValue='Online'
           >
             <option value='Online'>Online</option>
             <option value='Pending'>Pending</option>

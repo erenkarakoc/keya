@@ -188,7 +188,6 @@ const InviteUsers: FC = () => {
 
                       <div className='ms-2 w-100px'>
                         <select
-                          defaultValue={'2'}
                           className='form-select form-select-solid form-select-sm select2-hidden-accessible'
                         >
                           <option value='1'>Guest</option>

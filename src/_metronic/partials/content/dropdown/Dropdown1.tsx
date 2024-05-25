@@ -20,7 +20,6 @@ export function Dropdown1() {
               data-kt-select2='true'
               data-placeholder='Select option'
               data-allow-clear='true'
-              defaultValue={'1'}
             >
               <option></option>
               <option value='1'>Approved</option>

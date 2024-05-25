@@ -19,7 +19,6 @@ export function Projects() {
               data-control='select2'
               data-hide-search='true'
               className='form-select form-select-sm form-select-white w-125px'
-              defaultValue='Active'
             >
               <option value='Active'>Active</option>
               <option value='Approved'>In Progress</option>

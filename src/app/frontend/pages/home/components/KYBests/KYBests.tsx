@@ -1,6 +1,5 @@
 import "./KYBests.css"
 
-import { KYBGPattern } from "../../../../components/KYBGPattern/KYBGPattern"
 import { KYText } from "../../../../components/KYText/KYText"
 
 import { motion } from "framer-motion"
@@ -14,11 +13,17 @@ const KYBests = () => {
   return (
     <section className="ky-bests-section">
       <div className="ky-bests-wrapper">
-        <motion.div className="ky-bests-item-wrapper" initial={bestsHidden} whileInView={bestsVisible} viewport={{ once: true }} transition={{ delay: 0.2 }}>
+        <motion.div
+          className="ky-bests-item-wrapper"
+          initial={bestsHidden}
+          whileInView={bestsVisible}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2 }}
+        >
           <a href="#" target="_blank" className="ky-bests-item">
             <KYText className="ky-bests-title" variant="subtitle">
-              <span className="ky-text-highlight">Mayıs Ayının</span> En Başarılı
-              Ofisi
+              <span className="ky-text-highlight">Mayıs Ayının</span> En
+              Başarılı Ofisi
             </KYText>
             <div className="ky-bests-content">
               <div className="ky-bests-image">
@@ -32,11 +37,17 @@ const KYBests = () => {
           </a>
         </motion.div>
 
-        <motion.div className="ky-bests-item-wrapper" initial={bestsHidden} whileInView={bestsVisible} viewport={{ once: true }} transition={{ delay: 0.4 }}>
+        <motion.div
+          className="ky-bests-item-wrapper"
+          initial={bestsHidden}
+          whileInView={bestsVisible}
+          viewport={{ once: true }}
+          transition={{ delay: 0.4 }}
+        >
           <a href="#" target="_blank" className="ky-bests-item">
             <KYText className="ky-bests-title" variant="subtitle">
-              <span className="ky-text-highlight">Mayıs Ayının</span> En Başarılı
-              Danışmanı
+              <span className="ky-text-highlight">Mayıs Ayının</span> En
+              Başarılı Danışmanı
             </KYText>
             <div className="ky-bests-content">
               <div className="ky-bests-image">
@@ -53,11 +64,17 @@ const KYBests = () => {
           </a>
         </motion.div>
 
-        <motion.div className="ky-bests-item-wrapper" initial={bestsHidden} whileInView={bestsVisible} viewport={{ once: true }} transition={{ delay: 0.6 }}>
+        <motion.div
+          className="ky-bests-item-wrapper"
+          initial={bestsHidden}
+          whileInView={bestsVisible}
+          viewport={{ once: true }}
+          transition={{ delay: 0.6 }}
+        >
           <a href="#" target="_blank" className="ky-bests-item">
             <KYText className="ky-bests-title" variant="subtitle">
-              <span className="ky-text-highlight">Geçen Haftanın</span> En Başarılı
-              Danışmanı
+              <span className="ky-text-highlight">Geçen Haftanın</span> En
+              Başarılı Danışmanı
             </KYText>
             <div className="ky-bests-content">
               <div className="ky-bests-image">
@@ -74,8 +91,6 @@ const KYBests = () => {
           </a>
         </motion.div>
       </div>
-
-      <KYBGPattern type={9} />
     </section>
   )
 }

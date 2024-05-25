@@ -3,6 +3,7 @@ import { useLocation } from "react-router"
 import { Link } from "react-router-dom"
 import clsx from "clsx"
 import { checkIsActive } from "../../../../_metronic/helpers"
+import { ReactPropTypes } from "react"
 
 interface KYButtonProps {
   link?: boolean
@@ -12,6 +13,8 @@ interface KYButtonProps {
   secondary?: boolean
   width?: string
   className?: string
+  type?: "button" | "submit" | "reset" | undefined
+  props?: ReactPropTypes
 }
 
 const KYButton: React.FC<KYButtonProps> = ({
@@ -21,6 +24,7 @@ const KYButton: React.FC<KYButtonProps> = ({
   secondary,
   width,
   className,
+  type,
   ...props
 }) => {
   const { pathname } = useLocation()
@@ -43,7 +47,9 @@ const KYButton: React.FC<KYButtonProps> = ({
           {text}
         </Link>
       ) : (
-        <button onClick={action}>{text}</button>
+        <button onClick={action} type={type}>
+          {text}
+        </button>
       )}
     </div>
   )

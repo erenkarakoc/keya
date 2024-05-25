@@ -33,6 +33,7 @@
   display: block;
   height: 30px;
   width: 30px;
+  border: 2px solid transparent ;
   border-radius: 50%;
   background-color: var(--ky-midnight-4);
   background-repeat: no-repeat;
@@ -42,7 +43,7 @@
 }
 .ky-testimonials-wrapper .ky-testimonials-prev:hover,
 .ky-testimonials-wrapper .ky-testimonials-next:hover {
-  background-color: var(--ky-midnight-3);
+  border-color: var(--ky-midnight-3);
 }
 .ky-testimonials-wrapper .ky-testimonials-prev {
   left: -60px;

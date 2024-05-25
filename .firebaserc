@@ -6,6 +6,9 @@
   "etags": {
     "alert-port-421202": {
       "extensionInstances": {}
+    },
+    "keya-web": {
+      "extensionInstances": {}
     }
   },
   "dataconnectEmulatorConfig": {}

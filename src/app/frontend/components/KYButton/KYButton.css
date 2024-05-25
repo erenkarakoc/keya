@@ -18,6 +18,7 @@
 
 .ky-button a,
 .ky-button button {
+  user-select: none;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -28,6 +29,12 @@
   border-radius: 10px;
   font-weight: 600;
   line-height: 1;
+}
+
+.ky-button button {
+  background-color: transparent;
+  border: none;
+  outline: none;
 }
 
 .ky-button a {

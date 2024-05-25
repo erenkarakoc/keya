@@ -35,7 +35,7 @@ const KYTestimonials = () => {
       <div className="ky-testimonials-wrapper">
         <div className="ky-testimonials-prev" ref={kyTestimonialsPrevRef}></div>
         <div className="ky-testimonials-next" ref={kyTestimonialsNextRef}></div>
-        
+
         <Swiper
           modules={[Autoplay, Navigation, Pagination]}
           spaceBetween={30}

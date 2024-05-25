@@ -14,6 +14,8 @@
   --ky-light-gradient: linear-gradient(90deg, #c4c4c4 0%, #f1f1f1 100%);
   --ky-red-gradient: linear-gradient(90deg, #ff4969 0%, #ea0029 100%);
   --ky-light-red-gradient: linear-gradient(90deg, #ff8585 0%, #ff002d 100%);
+  --ky-success: #448643;
+  --ky-error: #ab1f1f;
 }
 
 .ky-layout {
@@ -34,4 +36,44 @@
 .ky-layout * {
   font-family: var(--sf-pro-display);
   letter-spacing: 0.2px;
+}
+
+/* Form */
+.ky-form-group {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 10px;
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+.ky-form-section {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.ky-form-section:not(:first-of-type) {
+  margin-top: 50px;
+}
+
+.ky-form-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
+}
+
+.ky-form-label {
+  padding-left: 10px;
+  color: var(--ky-midnight);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ky-form-group .ky-button {
+  width: 100% !important;
+  margin-top: 50px;
 }

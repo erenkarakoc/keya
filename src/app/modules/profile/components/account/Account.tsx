@@ -69,7 +69,6 @@ export function Account() {
                 data-placeholder='Select Language...'
                 value={data.language}
                 onChange={(e) => updateData({language: e.target.value})}
-                defaultValue={data.language}
               >
                 <option value='id'>Bahasa Indonesia - Indonesian</option>
                 <option value='msa'>Bahasa Melayu - Malay</option>
@@ -132,7 +131,6 @@ export function Account() {
                 data-control='select2'
                 data-placeholder='Select Timezone...'
                 value={data.timeZone}
-                defaultValue={data.timeZone}
                 onChange={(e) => updateData({timeZone: e.target.value})}
               >
                 <option data-offset='-39600' value='International Date Line West'>

@@ -18,7 +18,6 @@ export function Campaigns() {
               data-control='select2'
               data-hide-search='true'
               className='form-select form-select-white form-select-sm'
-              defaultValue='1'
             >
               <option value='1'>30 Days</option>
               <option value='2'>90 Days</option>

@@ -20,11 +20,11 @@ const serviceAccountConfig: admin.ServiceAccount =
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccountConfig),
   databaseURL:
-    "https://alert-port-421202-default-rtdb." +
+    "https://keya-web-default-rtdb." +
     "europe-west1.firebasedatabase.app",
 });
 
-export const registerUser = functions.https.onCall(async (data, context) => {
+export const registerUser = functions.https.onCall(async (data) => {
   try {
     const {
       email,

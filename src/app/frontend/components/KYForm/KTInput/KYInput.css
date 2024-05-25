@@ -1,0 +1,32 @@
+.ky-input {
+  width: 100%;
+}
+.ky-input input {
+  height: 40px;
+  width: 100%;
+  padding: 0 10px;
+  border: 2px solid var(--ky-midnight-3);
+  border-radius: 6px;
+  outline: none;
+  background-color: var(--ky-midnight-4);
+  color: var(--ky-light-3);
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.1s ease-out;
+}
+
+.ky-input:hover input,
+.ky-input:active input,
+.ky-input input:not(:placeholder-shown) {
+  border-color: var(--ky-midnight-2);
+}
+.ky-input input:focus {
+  border-color: var(--ky-midnight);
+}
+
+.ky-input.success input {
+  border-color: var(--ky-success);
+}
+.ky-input.error input {
+  border-color: var(--ky-error);
+}
