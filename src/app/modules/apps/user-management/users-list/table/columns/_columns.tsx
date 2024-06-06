@@ -21,21 +21,12 @@ const usersColumns: ReadonlyArray<Column<User>> = [
   {
     Header: (props) => <UserCustomHeader tableProps={props} title='Ünvan' className='min-w-125px' />,
     accessor: 'role',
-    Cell: ({...props}) => <UserBadgeCell text={props.data[props.row.index].role} />,
+    Cell: ({...props}) => <UserBadgeCell text={props.data[props.row.index].role} type="role" />,
   },
   {
-    Header: (props) => (
-      <UserCustomHeader tableProps={props} title='Son Giriş' className='min-w-125px' />
-    ),
-    id: 'lastLoginAt',
-    Cell: ({...props}) => <UserBadgeCell text={props.data[props.row.index].lastLoginAt} />,
-  },
-  {
-    Header: (props) => (
-      <UserCustomHeader tableProps={props} title='Kayıt Tarihi' className='min-w-125px' />
-    ),
-    accessor: 'createdAt',
-    Cell: ({...props}) => <UserBadgeCell text={`test${props.data[props.row.index].createdAt}`} />,
+    Header: (props) => <UserCustomHeader tableProps={props} title='Ofis' className='min-w-125px' />,
+    accessor: 'officeId',
+    Cell: ({...props}) => <UserBadgeCell text={props.data[props.row.index].officeId} type="officeId" />,
   },
   {
     Header: (props) => (

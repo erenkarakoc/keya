@@ -3,7 +3,7 @@ import "./OfficeDeleteModal.css"
 import clsx from "clsx"
 import React, { useEffect, useState } from "react"
 
-import { UserModel } from "../../../../auth"
+import { Office } from "../core/_models"
 
 interface OfficeDeleteModalProps {
   id: string
@@ -11,7 +11,7 @@ interface OfficeDeleteModalProps {
   description?: string
   onApproval?: () => void
   onDecline?: () => void
-  selectedUsersForDelete?: UserModel[]
+  selectedOfficesForDelete?: Office[]
 }
 
 const OfficeDeleteModal: React.FC<OfficeDeleteModalProps> = ({
@@ -20,13 +20,13 @@ const OfficeDeleteModal: React.FC<OfficeDeleteModalProps> = ({
   description,
   onApproval,
   onDecline,
-  selectedUsersForDelete,
+  selectedOfficesForDelete,
 }) => {
-  const [usersArray, setUsersArray] = useState<UserModel[]>([])
+  const [officesArray, setOfficesArray] = useState<Office[]>([])
 
   useEffect(() => {
-    selectedUsersForDelete && setUsersArray(selectedUsersForDelete)
-  }, [selectedUsersForDelete])
+    selectedOfficesForDelete && setOfficesArray(selectedOfficesForDelete)
+  }, [selectedOfficesForDelete])
 
   return (
     <div className="modal fade" id={id} aria-hidden="true">
@@ -39,27 +39,26 @@ const OfficeDeleteModal: React.FC<OfficeDeleteModalProps> = ({
           <div className="modal-body">
             <p>{description}</p>
 
-            {selectedUsersForDelete && (
-              <div className="confirmation-modal-users">
-                {usersArray.map((user) => (
+            {selectedOfficesForDelete && (
+              <div className="confirmation-modal-offices">
+                {officesArray.map((office) => (
                   <div
-                    className="d-flex align-items-center confirmation-modal-user"
-                    key={user.id}
+                    className="d-flex align-items-center confirmation-modal-office"
+                    key={office.id}
                   >
                     <div className="symbol symbol-circle symbol-50px overflow-hidden me-3">
                       <a href="#">
-                        {user.photoURL ? (
+                        {office.photoURLs ? (
                           <div className="symbol-label">
                             <img
-                              src={`${user.photoURL}`}
-                              alt={user.firstName}
+                              src={`${office.photoURLs}`}
+                              alt={office.name}
                               className="w-100"
                             />
                           </div>
                         ) : (
                           <div className={clsx("symbol-label fs-3")}>
-                            {user.firstName.charAt(0)}
-                            {user.lastName.charAt(0)}
+                            {office.name.charAt(0)}
                           </div>
                         )}
                       </a>
@@ -70,9 +69,9 @@ const OfficeDeleteModal: React.FC<OfficeDeleteModalProps> = ({
                         className="text-gray-800 text-hover-primary mb-1"
                         style={{ textAlign: "left" }}
                       >
-                        {user.firstName} {user.lastName}
+                        {office.name} {office.name}
                       </a>
-                      <span>{user.email}</span>
+                      <span>{office.email}</span>
                     </div>
                   </div>
                 ))}

@@ -19,10 +19,12 @@ export type UserModel = {
   lastName: string
   photoURL?: string
   phoneNumber?: string
+  officeId?: string
   role?: string
   permissions?: Array<number>
   address?: UserAddressModel
   createdAt: string
   lastLoginAt: string
-  searchIndex: string
+  searchIndexEmail: string
+  searchIndexName: string
 }

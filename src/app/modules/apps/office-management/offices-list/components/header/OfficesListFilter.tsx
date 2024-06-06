@@ -11,7 +11,7 @@ const OfficesListFilter = () => {
   const { updateState } = useQueryRequest()
   const { isLoading } = useQueryResponse()
   const [role, setRole] = useState<string | undefined>()
-  const [lastLogin] = useState<string | undefined>()
+  const [lastLogin, setLastLogin] = useState<string | undefined>()
 
   useEffect(() => {
     MenuComponent.reinitialization()
@@ -60,7 +60,7 @@ const OfficesListFilter = () => {
         {/* end::Separator */}
 
         {/* begin::Content */}
-        <div className="px-7 py-5" data-kt-user-table-filter="form">
+        <div className="px-7 py-5" data-kt-office-table-filter="form">
           {/* begin::Input group */}
           <div className="mb-10">
             <label className="form-label fs-6 fw-bold">Ünvan:</label>
@@ -69,7 +69,7 @@ const OfficesListFilter = () => {
               data-kt-select2="true"
               data-placeholder="Select option"
               data-allow-clear="true"
-              data-kt-user-table-filter="role"
+              data-kt-office-table-filter="role"
               data-hide-search="true"
               onChange={(e) => setRole(e.target.value)}
               value={role}
@@ -86,25 +86,25 @@ const OfficesListFilter = () => {
           {/* end::Input group */}
 
           {/* begin::Input group */}
-          {/* <div className='mb-10'>
-            <label className='form-label fs-6 fw-bold'>Son Kayıt:</label>
+          <div className="mb-10">
+            <label className="form-label fs-6 fw-bold">Son Kayıt:</label>
             <select
-              className='form-select form-select-solid fw-bolder'
-              data-kt-select2='true'
-              data-placeholder='Select option'
-              data-allow-clear='true'
-              data-kt-user-table-filter='two-step'
-              data-hide-search='true'
+              className="form-select form-select-solid fw-bolder"
+              data-kt-select2="true"
+              data-placeholder="Select option"
+              data-allow-clear="true"
+              data-kt-office-table-filter="two-step"
+              data-hide-search="true"
               onChange={(e) => setLastLogin(e.target.value)}
               value={lastLogin}
             >
-              <option value=''></option>
-              <option value='Yesterday'>Yesterday</option>
-              <option value='20 mins ago'>20 mins ago</option>
-              <option value='5 hours ago'>5 hours ago</option>
-              <option value='2 days ago'>2 days ago</option>
+              <option value=""></option>
+              <option value="Yesterday">Yesterday</option>
+              <option value="20 mins ago">20 mins ago</option>
+              <option value="5 hours ago">5 hours ago</option>
+              <option value="2 days ago">2 days ago</option>
             </select>
-          </div> */}
+          </div>
           {/* end::Input group */}
 
           {/* begin::Actions */}
@@ -115,7 +115,7 @@ const OfficesListFilter = () => {
               onClick={filterData}
               className="btn btn-light btn-active-light-primary fw-bold me-2 px-6"
               data-kt-menu-dismiss="true"
-              data-kt-user-table-filter="reset"
+              data-kt-office-table-filter="reset"
             >
               Sıfırla
             </button>
@@ -125,7 +125,7 @@ const OfficesListFilter = () => {
               onClick={resetData}
               className="btn btn-primary fw-bold px-6"
               data-kt-menu-dismiss="true"
-              data-kt-user-table-filter="filter"
+              data-kt-office-table-filter="filter"
             >
               Uygula
             </button>

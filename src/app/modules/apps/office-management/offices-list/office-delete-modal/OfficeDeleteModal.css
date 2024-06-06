@@ -1,8 +1,8 @@
-.confirmation-modal-users {
+.confirmation-modal-offices {
   margin-top: 40px;
 }
 
-.confirmation-modal-users .confirmation-modal-user:not(:first-of-type) {
+.confirmation-modal-offices .confirmation-modal-office:not(:first-of-type) {
   margin-top: 22px;
   padding-top: 22px;
   border-top: 1px solid var(--bs-border-color);

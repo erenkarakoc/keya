@@ -13,6 +13,8 @@ import { getFirestore, getDoc, doc } from "firebase/firestore"
 
 import { UserDeleteModal } from "../../user-delete-modal/UserDeleteModal"
 
+import toast from "react-hot-toast"
+
 initializeApp(firebaseConfig)
 const db = getFirestore()
 
@@ -30,8 +32,14 @@ const UsersListGrouping = () => {
     },
     {
       onSuccess: () => {
+        toast.success("Kullanıcı/Kullanıcılar başarıyla silindi!")
         queryClient.invalidateQueries([`${QUERIES.USERS_LIST}-${query}`])
+        
         clearSelected()
+      },
+      onError: (error) => {
+        toast.error("Kullanıcı silinirken bir hata oluştu!")
+        console.error(error)
       },
     }
   )
@@ -61,7 +69,7 @@ const UsersListGrouping = () => {
   return (
     <div className="d-flex justify-content-end align-items-center">
       <div className="fw-bolder me-5">
-        <span className="me-2">{selected.length}</span> Selected
+        <span className="me-2">{selected.length}</span>seçildi
       </div>
 
       <button

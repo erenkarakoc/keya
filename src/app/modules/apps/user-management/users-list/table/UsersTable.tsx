@@ -1,4 +1,4 @@
-import { useMemo } from "react"
+import { useEffect, useMemo } from "react"
 import { useTable, ColumnInstance, Row } from "react-table"
 import { CustomHeaderColumn } from "./columns/CustomHeaderColumn"
 import { CustomRow } from "./columns/CustomRow"
@@ -11,6 +11,7 @@ import {
   useQueryResponseData,
   useQueryResponseLoading,
 } from "../core/QueryResponseProvider"
+import { MenuComponent } from "../../../../../../_metronic/assets/ts/components"
 
 const UsersTable = () => {
   const users = useQueryResponseData()
@@ -22,6 +23,10 @@ const UsersTable = () => {
       columns,
       data,
     })
+
+  useEffect(() => {
+    MenuComponent.reinitialization()
+  }, [data])
 
   return (
     <KTCardBody className="py-4">

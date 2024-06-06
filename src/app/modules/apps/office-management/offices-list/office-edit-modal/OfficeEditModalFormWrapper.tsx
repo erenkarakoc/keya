@@ -2,19 +2,19 @@ import { useQuery } from "react-query"
 import { OfficeEditModalForm } from "./OfficeEditModalForm"
 import { isNotEmpty, QUERIES } from "../../../../../../_metronic/helpers"
 import { useListView } from "../core/ListViewProvider"
-import { getUserById } from "../core/_requests"
+import { getOfficeById } from "../core/_requests"
 
 const OfficeEditModalFormWrapper = () => {
   const { itemIdForUpdate, setItemIdForUpdate } = useListView()
   const enabledQuery: boolean = isNotEmpty(itemIdForUpdate)
   const {
     isLoading,
-    data: user,
+    data: office,
     error,
   } = useQuery(
-    `${QUERIES.USERS_LIST}-user-${itemIdForUpdate}`,
+    `${QUERIES.USERS_LIST}-office-${itemIdForUpdate}`,
     () => {
-      return getUserById(itemIdForUpdate)
+      return getOfficeById(itemIdForUpdate as string)
     },
     {
       cacheTime: 0,
@@ -26,8 +26,8 @@ const OfficeEditModalFormWrapper = () => {
     }
   )
 
-  if (!isLoading && !error && user) {
-    return <OfficeEditModalForm isUserLoading={isLoading} user={user} />
+  if (!isLoading && !error && office) {
+    return <OfficeEditModalForm isOfficeLoading={isLoading} office={office} />
   }
 
   return null

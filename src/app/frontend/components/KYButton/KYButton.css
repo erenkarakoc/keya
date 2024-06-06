@@ -9,7 +9,6 @@
   background: var(--ky-midnight-4);
   transition: background-image 0.5s linear;
   z-index: 1;
-  outline: none;
 }
 
 .ky-button:hover {
@@ -22,24 +21,30 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100%;
+  width: 100%;
   margin: 0 !important;
   padding: 0 25px;
+  border: 2px solid transparent;
+  border-radius: 10px;
   color: var(--ky-light);
   font-size: 16px;
-  border-radius: 10px;
   font-weight: 600;
   line-height: 1;
+  transition: all 0.2s ease-out;
+  outline: none;
 }
 
 .ky-button button {
   background-color: transparent;
-  border: none;
   outline: none;
 }
 
-.ky-button a {
-  height: 100%;
-  width: 100%;
+.ky-button a:hover,
+.ky-button button:hover,
+.ky-button a:focus,
+.ky-button button:focus {
+  border-color: var(--ky-midnight);
 }
 
 /* Secondary */
@@ -66,4 +71,11 @@
 
 .ky-button-secondary:hover::before {
   opacity: 1;
+}
+
+.ky-button-secondary a:hover,
+.ky-button-secondary button:hover,
+.ky-button-secondary a:focus,
+.ky-button-secondary button:focus {
+  border-color: var(--ky-light-red);
 }

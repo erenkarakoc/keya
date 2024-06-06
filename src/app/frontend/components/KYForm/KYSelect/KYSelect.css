@@ -11,18 +11,24 @@
   border-radius: 6px;
   outline: none;
   background-color: var(--ky-midnight-4);
-  color: var(--ky-light-3);
+  color: var(--ky-light-2);
+  font-family: var(--sf-pro-text);
   font-size: 14px;
   font-weight: 500;
+  letter-spacing: -0.5px;
   appearance: none;
   text-indent: 1px;
   transition: all 0.1s ease-out;
 }
 
-.ky-select select:hover {
+.ky-select.has-value select {
   border-color: var(--ky-midnight-2);
 }
-.ky-select select:focus {
+
+.ky-select select:hover:not(:disabled) {
+  border-color: var(--ky-midnight-2);
+}
+.ky-select select:focus:not(:disabled) {
   border-color: var(--ky-midnight);
 }
 
@@ -39,4 +45,26 @@
 
 .ky-select select:focus + span {
   transform: translateY(-50%) rotate(180deg);
+}
+
+.ky-select-placeholder {
+  user-select: none;
+  pointer-events: none;
+  opacity: 1;
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: var(--ky-midnight);
+  font-family: var(--sf-pro-text);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  transition: all 0.1s ease-out;
+}
+
+.ky-select select:focus ~ .ky-select-placeholder,
+.ky-select.has-value .ky-select-placeholder {
+  opacity: 0;
+  left: 0;
 }

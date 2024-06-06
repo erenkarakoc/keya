@@ -1,31 +1,31 @@
-import {useEffect} from 'react'
-import {OfficeEditModalHeader} from './OfficeEditModalHeader'
-import {OfficeEditModalFormWrapper} from './OfficeEditModalFormWrapper'
+import { useEffect } from "react"
+import { OfficeEditModalHeader } from "./OfficeEditModalHeader"
+import { OfficeEditModalFormWrapper } from "./OfficeEditModalFormWrapper"
 
 const OfficeEditModal = () => {
   useEffect(() => {
-    document.body.classList.add('modal-open')
+    document.body.classList.add("modal-open")
     return () => {
-      document.body.classList.remove('modal-open')
+      document.body.classList.remove("modal-open")
     }
   }, [])
 
   return (
     <>
       <div
-        className='modal fade show d-block'
-        id='kt_modal_add_user'
-        role='dialog'
+        className="modal fade show d-block"
+        id="kt_modal_add_office"
+        role="dialog"
         tabIndex={-1}
-        aria-modal='true'
+        aria-modal="true"
       >
         {/* begin::Modal dialog */}
-        <div className='modal-dialog modal-dialog-centered mw-650px'>
+        <div className="modal-dialog modal-dialog-centered mw-650px">
           {/* begin::Modal content */}
-          <div className='modal-content'>
+          <div className="modal-content">
             <OfficeEditModalHeader />
             {/* begin::Modal body */}
-            <div className='modal-body mx-5 mx-xl-15 my-7'>
+            <div className="modal-body mx-5 mx-xl-15 my-7">
               <OfficeEditModalFormWrapper />
             </div>
             {/* end::Modal body */}
@@ -35,10 +35,10 @@ const OfficeEditModal = () => {
         {/* end::Modal dialog */}
       </div>
       {/* begin::Modal Backdrop */}
-      <div className='modal-backdrop fade show'></div>
+      <div className="modal-backdrop fade show"></div>
       {/* end::Modal Backdrop */}
     </>
   )
 }
 
-export {OfficeEditModal}
+export { OfficeEditModal }

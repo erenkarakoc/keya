@@ -20,7 +20,7 @@ const KYFranchiseFeatures = () => {
             <KYIcon name="badge" />
           </div>
           <div className="ky-franchise-feature-title">
-            {currentYear - 2009}+
+            {currentYear - 1994}+
           </div>
           <div className="ky-franchise-feature-desc">Yıllık deneyim</div>
         </div>

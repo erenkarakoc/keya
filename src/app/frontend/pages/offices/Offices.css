@@ -1,0 +1,12 @@
+.ky-page-offices .ky-page-content {
+  padding-top: 100px;
+}
+
+.ky-page-offices .ky-offices-search {
+  position: sticky;
+  top: 20px;
+}
+
+.ky-offices-list {
+  row-gap: var(--bs-gutter-x);
+}

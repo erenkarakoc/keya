@@ -1,0 +1,83 @@
+.ky-radio {
+  position: relative;
+  display: flex;
+  width: 100%;
+}
+
+.ky-radio input {
+  cursor: pointer;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 18px;
+  width: 18px;
+  border-radius: 4px;
+  z-index: 1;
+}
+
+.ky-radio input + span {
+  position: relative;
+  flex-shrink: 0;
+  height: 18px;
+  width: 18px;
+  border: 2px solid var(--ky-light-2);
+  border-radius: 50%;
+  background-color: var(--ky-light);
+  transition: all 0.2s ease-out;
+}
+
+.ky-radio input + span::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: block;
+  flex-shrink: 0;
+  height: 0;
+  width: 0;
+  border-radius: 50%;
+  background-image: var(--ky-red-gradient);
+  transition: all 0.15s ease-out;
+}
+
+.ky-radio input:checked + span {
+  border-color: var(--ky-light-red);
+}
+
+.ky-radio input:checked + span::after {
+  height: 8px;
+  width: 8px;
+}
+
+.ky-radio input:focus + span {
+  border-color: var(--ky-light-red);
+}
+
+.ky-radio-label {
+  cursor: pointer;
+  user-select: none;
+  color: var(--ky-light);
+  margin-left: 8px;
+  font-family: var(--sf-pro-text);
+  font-weight: 400;
+  letter-spacing: -0.1px;
+  line-height: 18px;
+}
+
+.ky-radio-label a {
+  color: var(--ky-light-3);
+  transition: all 0.1s ease-out;
+}
+.ky-radio-label a:hover {
+  color: var(--ky-light-2);
+}
+
+.ky-radio-required {
+  display: inline;
+  color: var(--ky-light-red);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 10px;
+}

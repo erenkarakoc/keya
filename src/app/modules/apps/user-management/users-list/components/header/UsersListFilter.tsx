@@ -11,7 +11,6 @@ const UsersListFilter = () => {
   const { updateState } = useQueryRequest()
   const { isLoading } = useQueryResponse()
   const [role, setRole] = useState<string | undefined>()
-  const [lastLogin, setLastLogin] = useState<string | undefined>()
 
   useEffect(() => {
     MenuComponent.reinitialization()
@@ -23,7 +22,7 @@ const UsersListFilter = () => {
 
   const filterData = () => {
     updateState({
-      filter: { role, last_login: lastLogin },
+      filter: { role },
       ...initialQueryState,
     })
   }

@@ -1,12 +1,10 @@
 import "./KYTestimonials.css"
 
-import { useRef } from "react"
-
 import { KYText } from "../../../../components/KYText/KYText"
 import { KYRatingStars } from "../../../../components/KYRatingStars/KYRatingStars"
 import { KYBGPattern } from "../../../../components/KYBGPattern/KYBGPattern"
 
-import { Swiper, SwiperSlide } from "swiper/react"
+import { Swiper, SwiperSlide, useSwiper } from "swiper/react"
 import { Autoplay, Navigation, Pagination } from "swiper/modules"
 import "swiper/css"
 import "swiper/css/navigation"
@@ -15,8 +13,7 @@ import "swiper/css/pagination"
 import { motion } from "framer-motion"
 
 const KYTestimonials = () => {
-  const kyTestimonialsPrevRef = useRef(null)
-  const kyTestimonialsNextRef = useRef(null)
+  const swiper = useSwiper()
 
   return (
     <section className="ky-testimonials-section">
@@ -33,8 +30,14 @@ const KYTestimonials = () => {
       </motion.div>
 
       <div className="ky-testimonials-wrapper">
-        <div className="ky-testimonials-prev" ref={kyTestimonialsPrevRef}></div>
-        <div className="ky-testimonials-next" ref={kyTestimonialsNextRef}></div>
+        <div
+          className="ky-testimonials-prev"
+          onClick={() => swiper?.slidePrev()}
+        ></div>
+        <div
+          className="ky-testimonials-next"
+          onClick={() => swiper?.slideNext()}
+        ></div>
 
         <Swiper
           modules={[Autoplay, Navigation, Pagination]}
@@ -46,11 +49,11 @@ const KYTestimonials = () => {
             pauseOnMouseEnter: true,
             disableOnInteraction: false,
           }}
-          pagination={{ clickable: true }}
           navigation={{
-            prevEl: kyTestimonialsPrevRef.current,
-            nextEl: kyTestimonialsNextRef.current,
+            prevEl: ".ky-testimonials-prev",
+            nextEl: ".ky-testimonials-next",
           }}
+          pagination={{ clickable: true }}
           loop
         >
           <SwiperSlide>

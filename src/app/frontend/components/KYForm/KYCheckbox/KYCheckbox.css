@@ -54,27 +54,33 @@
   clip-path: inset(0 0 0 0);
 }
 
-.ky-checkbox label {
+.ky-checkbox input:focus + span {
+  border-color: var(--ky-light-red);
+}
+
+.ky-checkbox-label {
   cursor: pointer;
   user-select: none;
   color: var(--ky-light);
-  margin-left: 10px;
-  font-weight: 500;
+  margin-left: 8px;
+  font-family: var(--sf-pro-text);
+  font-weight: 400;
+  letter-spacing: -0.1px;
   line-height: 18px;
 }
 
-.ky-checkbox label a {
+.ky-checkbox-label a {
   color: var(--ky-light-3);
   transition: all 0.1s ease-out;
 }
-.ky-checkbox label a:hover {
+.ky-checkbox-label a:hover {
   color: var(--ky-light-2);
 }
 
 .ky-checkbox-required {
-  margin-left: 5px;
+  display: inline;
   color: var(--ky-light-red);
   font-size: 18px;
   font-weight: 700;
-  line-height: 18px;
+  line-height: 10px;
 }

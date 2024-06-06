@@ -5,6 +5,7 @@ import { KYText } from "../../../../components/KYText/KYText"
 import { motion } from "framer-motion"
 
 import { toAbsoluteUrl } from "../../../../../../_metronic/helpers"
+import { KYOfficeImage } from "../../../../components/KYOfficeImage/KYOfficeImage"
 
 const KYBests = () => {
   const bestsHidden = { opacity: 0, y: 20 }
@@ -26,9 +27,7 @@ const KYBests = () => {
               Başarılı Ofisi
             </KYText>
             <div className="ky-bests-content">
-              <div className="ky-bests-image">
-                Keya <span>Gold</span>
-              </div>
+              <KYOfficeImage height={57} width={57} officeId="Gold" />
               <div className="ky-bests-info">
                 <div className="ky-bests-name">Keya Gold</div>
                 <div className="ky-bests-desc">Kırıkkale</div>

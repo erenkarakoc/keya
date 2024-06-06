@@ -184,9 +184,9 @@ const AddUser = () => {
 
                     {/* begin::Label*/}
                     <div className="stepper-label">
-                      <h3 className="stepper-title">Rol ve Yetkiler</h3>
+                      <h3 className="stepper-title">Ofis ve Yetkiler</h3>
                       <div className="stepper-desc fw-semibold">
-                        Kullanıcı rolü ve yetkileri
+                        Kullanıcı ofisi ve rolü
                       </div>
                     </div>
                     {/* end::Label*/}
@@ -252,7 +252,7 @@ const AddUser = () => {
                   </div>
 
                   <div data-kt-stepper-element="content">
-                    <Step2 setFieldValue={setFieldValue} />
+                    <Step2 setFieldValue={setFieldValue} values={values} />
                   </div>
 
                   <div data-kt-stepper-element="content">

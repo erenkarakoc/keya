@@ -1,5 +1,5 @@
 import { ID } from "../../../../../../_metronic/helpers"
-import { User, UsersQueryResponse } from "./_models"
+import { Office, OfficesQueryResponse } from "./_models"
 
 import { slugify } from "../../../../../../_metronic/helpers/kyHelpers"
 
@@ -16,19 +16,16 @@ import {
   doc,
   where,
   updateDoc,
+  deleteDoc,
   limit,
 } from "firebase/firestore"
-import { getFunctions, httpsCallable } from "firebase/functions"
-import { UserModel } from "../../../../auth"
-import toast from "react-hot-toast"
 
 initializeApp(firebaseConfig)
 const db = getFirestore()
 
-const functions = getFunctions()
-const deleteUserFromFirebase = httpsCallable(functions, "deleteUser")
-
-const getUsers = async (queryString: string): Promise<UsersQueryResponse> => {
+const getOffices = async (
+  queryString: string
+): Promise<OfficesQueryResponse> => {
   try {
     const params = new URLSearchParams(queryString)
     const page = parseInt(params.get("page") || "1", 10)
@@ -37,25 +34,23 @@ const getUsers = async (queryString: string): Promise<UsersQueryResponse> => {
       | 30
       | 50
       | 100
-    const sortField = params.get("sort") || "createdAt" // Default sort field
-    const sortOrder = params.get("order") || "asc" // Default sort order
-    const searchQuery = params.get("search") || "" // Search input value
+    const sortField = params.get("sort") || "name"
+    const sortOrder = params.get("order") || "asc"
+    const searchQuery = params.get("search") || ""
 
     const db = getFirestore()
-    const usersCollection = collection(db, "users")
+    const officesCollection = collection(db, "offices")
 
-    let q = query(usersCollection)
+    let q = query(officesCollection)
 
     // Apply search filter if search query is provided
     if (searchQuery) {
       const slugifiedSearchQuery = slugify(searchQuery)
 
-      console.log(slugifiedSearchQuery)
-
       q = query(
-        usersCollection,
-        where("searchIndex", ">=", slugifiedSearchQuery),
-        where("searchIndex", "<=", slugifiedSearchQuery + "\uf8ff")
+        officesCollection,
+        where("name", ">=", slugifiedSearchQuery),
+        where("name", "<=", slugifiedSearchQuery + "\uf8ff")
       )
     }
 
@@ -75,17 +70,17 @@ const getUsers = async (queryString: string): Promise<UsersQueryResponse> => {
 
     const snapshot = await getDocs(q)
 
-    const users: User[] = []
+    const offices: Office[] = []
     snapshot.forEach((doc) => {
       if (doc.exists()) {
-        users.push(doc.data() as User)
+        offices.push(doc.data() as Office)
       }
     })
 
     // Calculate pagination metadata
-    const totalUsersQuery = await getDocs(collection(db, "users"))
-    const totalUsers = totalUsersQuery.size
-    const totalPages = Math.ceil(totalUsers / itemsPerPage)
+    const totalOfficesQuery = await getDocs(collection(db, "offices"))
+    const totalOffices = totalOfficesQuery.size
+    const totalPages = Math.ceil(totalOffices / itemsPerPage)
     const nextPage = page < totalPages ? page + 1 : null
     const prevPage = page > 1 ? page - 1 : null
 
@@ -117,7 +112,7 @@ const getUsers = async (queryString: string): Promise<UsersQueryResponse> => {
     }
 
     return {
-      data: users,
+      data: offices,
       payload: {
         pagination: {
           page: page,
@@ -127,8 +122,7 @@ const getUsers = async (queryString: string): Promise<UsersQueryResponse> => {
       },
     }
   } catch (error) {
-    toast.error("Kullanıcılar yüklenemedi! Lütfen daha sonra tekrar deneyin.")
-    console.error("Error fetching users:", error)
+    console.error("Error fetching offices:", error)
     return {
       data: [],
       payload: {
@@ -142,89 +136,101 @@ const getUsers = async (queryString: string): Promise<UsersQueryResponse> => {
   }
 }
 
-const getUserById = async (id: ID): Promise<User | undefined> => {
+const getAllOffices = async (): Promise<Office[]> => {
   try {
-    if (!id) {
-      return undefined
-    }
     const db = getFirestore()
-    const userDocRef = doc(db, "users", id as string)
-    const userDocSnapshot = await getDoc(userDocRef)
+    const officeCollectionRef = collection(db, "offices")
+    const officeDocSnapshot = await getDocs(officeCollectionRef)
 
-    if (userDocSnapshot.exists()) {
-      return userDocSnapshot.data() as User
-    } else {
-      return undefined
-    }
+    const offices: Office[] = []
+
+    officeDocSnapshot.forEach((doc) => {
+      const officeData = doc.data() as Office
+      offices.push({ ...officeData, id: doc.id })
+    })
+
+    return offices
   } catch (error) {
-    toast.error("Kullanıcı yüklenemedi! Lütfen daha sonra tekrar deneyin.")
-    console.error("Error fetching user:", error)
-    return undefined
-  }
-}
-
-const getUsersById = async (ids: string[]): Promise<UserModel[]> => {
-  try {
-    if (!ids || ids.length === 0) {
-      return []
-    }
-
-    const db = getFirestore()
-    const users: UserModel[] = []
-
-    for (const id of ids) {
-      const userDocRef = doc(db, "users", id)
-      const userDocSnapshot = await getDoc(userDocRef)
-
-      if (userDocSnapshot.exists()) {
-        const userData = userDocSnapshot.data() as UserModel
-        users.push(userData)
-      }
-    }
-
-    return users
-  } catch (error) {
-    toast.error("Kullanıcılar yüklenemedi! Lütfen daha sonra tekrar deneyin.")
-    console.error("Error fetching users:", error)
+    console.error("Error fetching offices:", error)
     return []
   }
 }
 
-const updateUser = async (user: User): Promise<User | undefined> => {
-  const userDocRef = doc(db, "users", user.id)
-  await updateDoc(userDocRef, user)
-  return user
+const getOfficeById = async (id: string): Promise<Office | undefined> => {
+  try {
+    const db = getFirestore()
+    const officeDocRef = doc(db, "offices", id)
+    const officeDocSnapshot = await getDoc(officeDocRef)
+
+    if (officeDocSnapshot.exists()) {
+      return officeDocSnapshot.data() as Office
+    } else {
+      return undefined
+    }
+  } catch (error) {
+    console.error("Error fetching office:", error)
+    return undefined
+  }
 }
 
-const deleteUser = async (userId: ID): Promise<void> => {
+const getOfficeNameById = async (id: string): Promise<string | undefined> => {
   try {
-    deleteUserFromFirebase({ uid: userId })
+    const db = getFirestore()
+    const officeDocRef = doc(db, "offices", id)
+    const officeDocSnapshot = await getDoc(officeDocRef)
+
+    if (officeDocSnapshot.exists()) {
+      const officeData = officeDocSnapshot.data()
+      if (officeData) {
+        return officeData.name as string
+      }
+    }
+    return undefined
   } catch (error) {
-    toast.error("Kullanıcı silinemedi! Lütfen daha sonra tekrar deneyin.")
-    console.error("Error deleting user documents:", error)
+    console.error("Error fetching office:", error)
+    return undefined
+  }
+}
+
+const updateOffice = async (office: Office): Promise<Office | undefined> => {
+  const officeDocRef = doc(db, "offices", office.id)
+  await updateDoc(officeDocRef, office)
+  return office
+}
+
+const deleteOffice = async (officeId: string): Promise<void> => {
+  try {
+    const officeRef = doc(db, "offices", officeId)
+    await deleteDoc(officeRef)
+  } catch (error) {
+    console.error("Error deleting office documents:", error)
     throw error
   }
 }
 
-const deleteSelectedUsers = async (userIds: Array<ID>): Promise<void> => {
+const deleteSelectedOffices = async (officeIds: Array<ID>): Promise<void> => {
   try {
     await Promise.all(
-      userIds.map((uid) => {
-        deleteUserFromFirebase({ uid: uid })
+      officeIds.map(async (officeId) => {
+        if (typeof officeId === "string") {
+          await deleteOffice(officeId)
+        } else {
+          console.error("Invalid officeId")
+        }
       })
     )
   } catch (error) {
-    toast.error("Kullanıcılar silinemedi! Lütfen daha sonra tekrar deneyin.")
-    console.error("Error deleting users:", error)
+    console.error("Error deleting offices:", error)
     throw error
   }
 }
 
 export {
-  getUsers,
-  deleteUser,
-  deleteSelectedUsers,
-  getUserById,
-  getUsersById,
-  updateUser,
+  getOffices,
+  getAllOffices,
+  getOfficeById,
+  getOfficeNameById,
+  deleteOffice,
+  deleteSelectedOffices,
+  updateOffice,
 }

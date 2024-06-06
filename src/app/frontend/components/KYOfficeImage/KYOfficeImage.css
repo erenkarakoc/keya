@@ -1,0 +1,25 @@
+.ky-office-image {
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 57px;
+  width: 57px;
+  border-radius: 50%;
+  border: 3px solid var(--ky-light);
+  background-color: var(--ky-light);
+  color: var(--ky-red);
+  font-family: var(--klavika);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  text-transform: uppercase;
+  overflow: hidden;
+}
+
+.ky-office-image span {
+  margin-top: 2px;
+  font-family: var(--klavika);
+  font-weight: 900;
+}

@@ -8,6 +8,7 @@ export type ICreateAccount = {
   confirmpassword: string
   photoURL: string
   phoneNumber: string
+  officeId: string
   role: string
   country?: string
   state?: string
@@ -47,7 +48,6 @@ const step1Schema = Yup.object({
     ),
 })
 
-// Step 2 Schema
 const step2Schema = Yup.object({
   photoURL: Yup.string().required("Bir fotoğraf seçilmesi zorunludur"),
   phoneNumber: Yup.string()
@@ -59,8 +59,8 @@ const step2Schema = Yup.object({
   addressLine: Yup.string(),
 })
 
-// Step 3 Schema
 const step3Schema = Yup.object({
+  officeId: Yup.string().required("Bir ofis seçmek zorunludur"),
   role: Yup.string().required("Bir rol seçmek zorunludur"),
 })
 const step4Schema = Yup.object({
@@ -75,6 +75,7 @@ const inits: ICreateAccount = {
   confirmpassword: "",
   photoURL: "",
   phoneNumber: "",
+  officeId: "",
   role: "",
   country: "",
   state: "",

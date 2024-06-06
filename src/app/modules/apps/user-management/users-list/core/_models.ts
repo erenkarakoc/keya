@@ -16,11 +16,13 @@ export type User = {
   photoURL?: string | null
   phoneNumber?: string
   role?: string
+  officeId: string
   permissions?: Array<number>
   address?: UserAddressModel
   createdAt: string
   lastLoginAt: string
-  searchIndex: string
+  searchIndexEmail: string
+  searchIndexName: string
 }
 
 export type UsersQueryResponse = Response<Array<User>>

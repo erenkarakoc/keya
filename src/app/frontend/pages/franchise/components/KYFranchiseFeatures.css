@@ -17,6 +17,10 @@
   border: 2px solid var(--ky-midnight-3);
   border-radius: 20px;
   background-image: var(--ky-midnight-gradient);
+  transition: all 0.3s ease-out;
+}
+.ky-franchise-feature:hover {
+  transform: translateY(-3px);
 }
 
 .ky-franchise-feature-icon {

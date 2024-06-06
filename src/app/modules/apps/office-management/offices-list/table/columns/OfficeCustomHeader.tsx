@@ -3,12 +3,12 @@ import { FC, PropsWithChildren, useMemo } from "react"
 import { HeaderProps } from "react-table"
 import { initialQueryState } from "../../../../../../../_metronic/helpers"
 import { useQueryRequest } from "../../core/QueryRequestProvider"
-import { User } from "../../core/_models"
+import { Office } from "../../core/_models"
 
 type Props = {
   className?: string
   title?: string
-  tableProps: PropsWithChildren<HeaderProps<User>>
+  tableProps: PropsWithChildren<HeaderProps<Office>>
 }
 const OfficeCustomHeader: FC<Props> = ({ className, title, tableProps }) => {
   const id = tableProps.column.id
@@ -21,9 +21,9 @@ const OfficeCustomHeader: FC<Props> = ({ className, title, tableProps }) => {
 
   const sortColumn = () => {
     // avoid sorting for these columns
-    if (id === "actions" || id === "selection") {
+    // if (id === "actions" || id === "selection") {
       return
-    }
+    // }
 
     if (!isSelectedForSorting) {
       // enable sort asc
@@ -50,7 +50,6 @@ const OfficeCustomHeader: FC<Props> = ({ className, title, tableProps }) => {
         className,
         isSelectedForSorting && order !== undefined && `table-sort-${order}`
       )}
-      style={{ cursor: "pointer" }}
       onClick={sortColumn}
     >
       {title}

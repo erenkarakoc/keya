@@ -1,0 +1,259 @@
+.ky-office-card {
+  aspect-ratio: 1 / 1.33;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  border: 3px solid var(--ky-midnight-3);
+  border-radius: 20px;
+  background-color: #fff;
+  overflow: hidden;
+}
+
+.ky-office-card-office {
+  user-select: none;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--klavika);
+  font-size: 15px;
+  font-weight: 100;
+  text-transform: uppercase;
+  line-height: 1;
+  color: var(--ky-red);
+  background: var(--ky-red-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  z-index: 1;
+}
+.ky-office-card-office span {
+  font-family: var(--klavika);
+  font-weight: 900;
+}
+.ky-office-card-office::after {
+  content: "";
+  opacity: 0;
+  position: absolute;
+  bottom: -16px;
+  left: -10px;
+  display: block;
+  height: 12px;
+  width: 12px;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 9 9' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M3.24742 0.341509C3.61111 -0.0741276 4.24287 -0.116245 4.6585 0.247437L8.6585 3.74744C9.11383 4.14585 9.11383 4.85418 8.6585 5.25259L4.6585 8.75259C4.24287 9.11627 3.61111 9.07415 3.24742 8.65852C2.88374 8.24288 2.92586 7.61112 3.3415 7.24744L5.33855 5.50001H1C0.447715 5.50001 0 5.0523 0 4.50001C0 3.94773 0.447715 3.50001 1 3.50001H5.33855L3.3415 1.75259C2.92586 1.38891 2.88374 0.757146 3.24742 0.341509Z' fill='url(%23paint0_linear_527_481)'/%3E%3Cdefs%3E%3ClinearGradient id='paint0_linear_527_481' x1='0' y1='4.50001' x2='9' y2='4.50001' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23FF4969'/%3E%3Cstop offset='1' stop-color='%23EA0029'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E%0A");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  transition: all 0.1s ease-out;
+}
+.ky-office-card-office:hover::after {
+  opacity: 1;
+  left: 0;
+}
+
+.ky-office-card-image {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.ky-office-card-image span {
+  user-select: none;
+  font-family: var(--klavika);
+  color: var(--ky-red);
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1;
+  background: var(--ky-red-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ky-office-card-image .ky-office-card-image-name {
+  font-size: 40px;
+  font-weight: 900;
+}
+
+.ky-office-card-image img {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  height: calc(100% + 4px);
+  width: calc(100% + 4px);
+  object-fit: cover;
+  transition: opacity 0.2s ease-out;
+}
+
+.ky-office-card-users {
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: -10px;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  height: 40px;
+  width: 100%;
+  padding: 0 10px;
+  transition: all 0.2s ease-out;
+}
+.ky-office-card-users.images-loaded {
+  opacity: 1;
+  top: 10px;
+}
+
+.ky-office-card-users span {
+  user-select: none;
+  margin-left: 10px;
+  color: var(--ky-red);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.ky-office-card-user-images {
+  display: flex;
+  align-items: center;
+}
+
+.ky-office-card-user-image {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  width: 40px;
+  background-color: #fff;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 0 20px -9px rgba(0, 0, 0, 1);
+  transition: all 0.15s ease-out;
+}
+
+.ky-office-card-user-image:not(:first-of-type) {
+  margin-left: -25px;
+}
+
+.ky-office-card-user-image:nth-of-type(1) {
+  z-index: 5;
+}
+.ky-office-card-user-image:nth-of-type(2) {
+  z-index: 4;
+}
+.ky-office-card-user-image:nth-of-type(3) {
+  z-index: 3;
+}
+.ky-office-card-user-image:nth-of-type(4) {
+  z-index: 2;
+}
+
+.ky-office-card-user-image img {
+  user-select: none;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  transition: opacity 0.2s ease-out;
+}
+
+.ky-office-card-user-initials {
+  margin: 0 !important;
+  text-align: center;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+  background: var(--ky-red-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ky-office-card-footer {
+  position: absolute;
+  left: -2px;
+  bottom: -2px;
+  display: flex;
+  align-items: center;
+  min-height: 60px;
+  width: calc(100% + 4px);
+  background-color: var(--ky-midnight-4);
+  border-radius: 0 0 20px 20px;
+  overflow: hidden;
+}
+
+.ky-office-card-footer .ky-office-card-info {
+  position: absolute;
+  text-align: right;
+  width: 100%;
+  padding: 10px;
+  transition: all 0.2s ease-out;
+}
+
+.ky-office-card-footer .ky-office-card-name {
+  color: var(--ky-light);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.ky-office-card-footer .ky-office-card-title {
+  margin-top: 4px;
+  color: var(--ky-light-3);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.ky-office-card-footer .ky-office-card-actions {
+  position: absolute;
+  opacity: 0;
+  bottom: -100px;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--ky-midnight-4);
+  gap: 10px;
+  padding: 10px;
+  transition: all 0.2s ease-out;
+}
+
+.ky-office-card-footer .ky-office-card-action {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  width: 100%;
+  border-radius: 5px;
+  background: var(--ky-midnight-3);
+  padding: 0 13px;
+  color: var(--ky-light);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+  transition: all 0.5s ease-out;
+}
+.ky-office-card-footer .ky-office-card-action:hover {
+  background: var(--ky-red-gradient);
+}
+.ky-office-card-footer .ky-office-card-action-square {
+  height: 40px;
+  width: 40px;
+}
+.ky-office-card-footer .ky-office-card-action * {
+  flex-shrink: 0;
+}
+
+.ky-office-card:hover .ky-office-card-actions {
+  opacity: 1;
+  bottom: 0;
+}

@@ -1,9 +1,9 @@
-import { useMemo } from "react"
+import { useMemo, useEffect } from "react"
 import { useTable, ColumnInstance, Row } from "react-table"
 import { CustomHeaderColumn } from "./columns/CustomHeaderColumn"
 import { CustomRow } from "./columns/CustomRow"
 import { officesColumns } from "./columns/_columns"
-import { User } from "../core/_models"
+import { Office } from "../core/_models"
 import { OfficesListLoading } from "../components/loading/OfficesListLoading"
 import { OfficesListPagination } from "../components/pagination/OfficesListPagination"
 import { KTCardBody } from "../../../../../../_metronic/helpers"
@@ -11,11 +11,12 @@ import {
   useQueryResponseData,
   useQueryResponseLoading,
 } from "../core/QueryResponseProvider"
+import { MenuComponent } from "../../../../../../_metronic/assets/ts/components"
 
 const OfficesTable = () => {
-  const users = useQueryResponseData()
+  const offices = useQueryResponseData()
   const isLoading = useQueryResponseLoading()
-  const data = useMemo(() => users, [users])
+  const data = useMemo(() => offices, [offices])
   const columns = useMemo(() => officesColumns, [])
   const { getTableProps, getTableBodyProps, headers, rows, prepareRow } =
     useTable({
@@ -23,24 +24,28 @@ const OfficesTable = () => {
       data,
     })
 
+  useEffect(() => {
+    MenuComponent.reinitialization()
+  }, [data])
+
   return (
     <KTCardBody className="py-4">
       <div className="table-responsive">
         <table
-          id="kt_table_users"
+          id="kt_table_offices"
           className="table align-middle table-row-dashed fs-6 gy-5 dataTable no-footer"
           {...getTableProps()}
         >
           <thead>
             <tr className="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
-              {headers.map((column: ColumnInstance<User>) => (
+              {headers.map((column: ColumnInstance<Office>) => (
                 <CustomHeaderColumn key={column.id} column={column} />
               ))}
             </tr>
           </thead>
           <tbody className="text-gray-600 fw-bold" {...getTableBodyProps()}>
             {rows.length > 0 ? (
-              rows.map((row: Row<User>, i) => {
+              rows.map((row: Row<Office>, i) => {
                 prepareRow(row)
                 return <CustomRow row={row} key={`row-${i}-${row.id}`} />
               })

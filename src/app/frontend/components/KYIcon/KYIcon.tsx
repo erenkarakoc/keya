@@ -11,16 +11,16 @@ interface IconMap {
 
 const KYIcon: React.FC<KYIconProps> = ({ name, className }) => {
   const icons: IconMap = {
-    search: toAbsoluteUrl("src/_metronic/assets/ky-icons/search-icon.svg"),
-    gear: toAbsoluteUrl("src/_metronic/assets/ky-icons/gear-icon.svg"),
-    house: toAbsoluteUrl("src/_metronic/assets/ky-icons/house-icon.svg"),
-    project: toAbsoluteUrl("src/_metronic/assets/ky-icons/project-icon.svg"),
-    shop: toAbsoluteUrl("src/_metronic/assets/ky-icons/shop-icon.svg"),
-    map: toAbsoluteUrl("src/_metronic/assets/ky-icons/map-icon.svg"),
-    badge: toAbsoluteUrl("src/_metronic/assets/ky-icons/badge-icon.svg"),
-    city: toAbsoluteUrl("src/_metronic/assets/ky-icons/city-icon.svg"),
-    office: toAbsoluteUrl("src/_metronic/assets/ky-icons/office-icon.svg"),
-    agent: toAbsoluteUrl("src/_metronic/assets/ky-icons/agent-icon.svg"),
+    search: toAbsoluteUrl("media/ky-icons/search-icon.svg"),
+    gear: toAbsoluteUrl("media/ky-icons/gear-icon.svg"),
+    house: toAbsoluteUrl("media/ky-icons/house-icon.svg"),
+    project: toAbsoluteUrl("media/ky-icons/project-icon.svg"),
+    shop: toAbsoluteUrl("media/ky-icons/shop-icon.svg"),
+    map: toAbsoluteUrl("media/ky-icons/map-icon.svg"),
+    badge: toAbsoluteUrl("media/ky-icons/badge-icon.svg"),
+    city: toAbsoluteUrl("media/ky-icons/city-icon.svg"),
+    office: toAbsoluteUrl("media/ky-icons/office-icon.svg"),
+    agent: toAbsoluteUrl("media/ky-icons/agent-icon.svg"),
   }
 
   const iconUrl = icons[name]

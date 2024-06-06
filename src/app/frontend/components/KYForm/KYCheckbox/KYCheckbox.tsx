@@ -3,6 +3,7 @@ import { ReactPropTypes } from "react"
 
 interface KYCheckboxProps {
   id: string
+  name?: string
   value?: string
   setValue?: () => void
   label: React.ReactNode
@@ -14,6 +15,7 @@ interface KYCheckboxProps {
 
 const KYCheckbox: React.FC<KYCheckboxProps> = ({
   id,
+  name,
   value,
   setValue,
   label,
@@ -29,6 +31,7 @@ const KYCheckbox: React.FC<KYCheckboxProps> = ({
       <input
         type="checkbox"
         id={id}
+        name={name}
         value={value}
         onChange={setValue}
         required={required}
@@ -37,8 +40,8 @@ const KYCheckbox: React.FC<KYCheckboxProps> = ({
       <span></span>
       <label className="ky-checkbox-label" htmlFor={id}>
         {label}
+        {required && <div className="ky-checkbox-required"> *</div>}
       </label>
-      {required && <div className="ky-checkbox-required"> *</div>}
     </div>
   )
 }

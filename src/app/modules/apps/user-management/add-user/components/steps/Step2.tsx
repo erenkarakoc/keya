@@ -8,12 +8,15 @@ import {
   getStatesByCountry,
   getCitiesByState,
   generateRandomName,
+  slugify,
 } from "../../../../../../../_metronic/helpers/kyHelpers"
 import {
   Country,
   State,
   City,
 } from "../../../../../../../_metronic/helpers/address-helper/_models"
+
+import toast from "react-hot-toast"
 
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import { firebaseApp } from "../../../../../../../firebase/BaseConfig"
@@ -26,9 +29,13 @@ interface Step2Props {
     value: string,
     shouldValidate?: boolean
   ) => void
+  values: {
+    firstName: string
+    lastName: string
+  }
 }
 
-const Step2: FC<Step2Props> = ({ setFieldValue }) => {
+const Step2: FC<Step2Props> = ({ setFieldValue, values }) => {
   const [countries, setCountries] = useState<Country[]>([])
 
   const [currentCountry, setCurrentCountry] = useState<string | null>("")
@@ -55,19 +62,28 @@ const Step2: FC<Step2Props> = ({ setFieldValue }) => {
       const fileSizeInMB = file.size / (1024 * 1024)
 
       if (fileSizeInMB > 2) {
-        console.error(`Dosya boyutu 2 MB'dan küçük olmalıdır`)
+        toast.error(
+          `${file.name} adlı dosya yüklenemedi. Dosya boyutu 2 MB'den küçük olmalıdır!`
+        )
+        setUploadedImageUrl(null)
         return
       }
 
       try {
         const randomName = generateRandomName()
-        const storageRef = ref(storage, `images/avatars/avatar-${randomName}`)
+        const storageRef = ref(
+          storage,
+          `images/users/${slugify(
+            values.firstName + "-" + values.lastName
+          )}-${randomName}`
+        )
         await uploadBytes(storageRef, e.target.files[0])
         const downloadURL = await getDownloadURL(storageRef)
         setUploadedImageUrl(downloadURL)
         setFieldValue("photoURL", downloadURL)
       } catch (error) {
         console.error("Error uploading image:", error)
+        setUploadedImageUrl(null)
       }
     }
   }

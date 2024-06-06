@@ -1,6 +1,8 @@
 .ky-input {
+  position: relative;
   width: 100%;
 }
+
 .ky-input input {
   height: 40px;
   width: 100%;
@@ -9,10 +11,16 @@
   border-radius: 6px;
   outline: none;
   background-color: var(--ky-midnight-4);
-  color: var(--ky-light-3);
+  color: var(--ky-light-2);
+  font-family: var(--sf-pro-text);
   font-size: 14px;
   font-weight: 500;
+  letter-spacing: -0.5px;
   transition: all 0.1s ease-out;
+}
+
+.ky-input input::placeholder {
+  color: var(--ky-midnight);
 }
 
 .ky-input:hover input,
@@ -29,4 +37,8 @@
 }
 .ky-input.error input {
   border-color: var(--ky-error);
+}
+
+.ky-phone-input.has-country-code input {
+  padding-left: 35px;
 }

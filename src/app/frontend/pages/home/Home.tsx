@@ -1,4 +1,5 @@
 import "./Home.css"
+
 import { KYHero } from "./components/KYHero/KYHero"
 import { KYServices } from "./components/KYServices/KYServices"
 import { KYWhyUs } from "./components/KYWhyUs/KYWhyUs"
@@ -22,3 +23,4 @@ const Home = () => {
 }
 
 export { Home }
+ 

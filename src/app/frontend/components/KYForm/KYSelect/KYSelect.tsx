@@ -1,6 +1,6 @@
 import "./KYSelect.css"
 
-import { ReactPropTypes } from "react"
+import { ChangeEvent, useState } from "react"
 
 interface Option {
   value: string
@@ -15,7 +15,8 @@ interface KYSelectProps {
   success?: boolean
   error?: boolean
   onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void
-  props?: ReactPropTypes
+  disabled?: boolean
+  placeholder?: string
 }
 
 const KYSelect: React.FC<KYSelectProps> = ({
@@ -26,19 +27,32 @@ const KYSelect: React.FC<KYSelectProps> = ({
   success,
   error,
   onChange,
-  props,
+  disabled,
+  placeholder,
 }) => {
+  const [selectedValue, setSelectedValue] = useState(defaultValue || "")
+
+  const handleOnChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedValue(e.target.value)
+    onChange && onChange(e)
+  }
+
   const status = success ? " success" : error ? " error" : ""
 
   return (
-    <div className={`ky-select${status && status} `}>
+    <div
+      className={`ky-select${status && status} ${
+        selectedValue !== "" ? "has-value" : ""
+      }`}
+    >
       <select
         id={id}
         required={required}
-        onChange={onChange}
-        {...props}
+        onChange={handleOnChange}
+        disabled={disabled}
+        value={selectedValue}
       >
-        <option hidden></option>
+        <option></option>
         {options &&
           options.map((option, i) => (
             <option
@@ -51,6 +65,9 @@ const KYSelect: React.FC<KYSelectProps> = ({
           ))}
       </select>
       <span></span>
+      {placeholder && (
+        <span className="ky-select-placeholder">{placeholder}</span>
+      )}
     </div>
   )
 }

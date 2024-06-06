@@ -87,6 +87,12 @@ const getUserRoleText = (text: string) => {
   }
 }
 
+const getUserNameInitials = (firstName: string, lastName: string) => {
+  const initials =
+    firstName && lastName ? firstName.charAt(0) + lastName.charAt(0) : ""
+  return initials
+}
+
 const slugify = (str: string) => {
   const trMap: { [key: string]: string } = {
     çÇ: "c",
@@ -130,6 +136,7 @@ export {
   getStatesByCountry,
   getCitiesByState,
   getUserRoleText,
+  getUserNameInitials,
   slugify,
   generateRandomName,
 }

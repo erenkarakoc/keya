@@ -3,9 +3,9 @@ import { useQueryClient, useMutation } from "react-query"
 import { QUERIES } from "../../../../../../../_metronic/helpers"
 import { useListView } from "../../core/ListViewProvider"
 import { useQueryResponse } from "../../core/QueryResponseProvider"
-import { deleteSelectedUsers } from "../../core/_requests"
+import { deleteSelectedOffices } from "../../core/_requests"
 
-import { UserModel } from "../../../../../auth"
+import { Office } from "../../core/_models"
 
 import { firebaseConfig } from "../../../../../../../firebase/BaseConfig"
 import { initializeApp } from "firebase/app"
@@ -13,55 +13,63 @@ import { getFirestore, getDoc, doc } from "firebase/firestore"
 
 import { OfficeDeleteModal } from "../../office-delete-modal/OfficeDeleteModal"
 
+import toast from "react-hot-toast"
+
 initializeApp(firebaseConfig)
 const db = getFirestore()
 
 const OfficesListGrouping = () => {
   const { selected, clearSelected } = useListView()
-  const [selectedUsersForDelete, setSelectedUsersForDelete] = useState<
-    UserModel[]
+  const [selectedOfficesForDelete, setSelectedOfficesForDelete] = useState<
+    Office[]
   >([])
   const queryClient = useQueryClient()
   const { query } = useQueryResponse()
 
   const deleteSelectedItems = useMutation(
     async () => {
-      deleteSelectedUsers(selected)
+      deleteSelectedOffices(selected)
     },
     {
       onSuccess: () => {
+        toast.success("Ofis/Ofisler başarıyla silindi!")
         queryClient.invalidateQueries([`${QUERIES.USERS_LIST}-${query}`])
+
         clearSelected()
+      },
+      onError: (error) => {
+        toast.error("Ofis silinirken bir hata oluştu!")
+        console.error(error)
       },
     }
   )
 
   useEffect(() => {
-    const fetchSelectedUsers = async () => {
-      const newSelectedUsers: UserModel[] = []
+    const fetchSelectedOffices = async () => {
+      const newSelectedOffices: Office[] = []
 
       for (const uid of selected) {
-        const userRef = doc(db, "users", uid as string)
-        const userDocSnapshot = await getDoc(userRef)
-        const userDataFromFirestore = userDocSnapshot.data() as
-          | UserModel
+        const officeRef = doc(db, "offices", uid as string)
+        const officeDocSnapshot = await getDoc(officeRef)
+        const officeDataFromFirestore = officeDocSnapshot.data() as
+          | Office
           | undefined
 
-        if (userDataFromFirestore) {
-          newSelectedUsers.push(userDataFromFirestore)
+        if (officeDataFromFirestore) {
+          newSelectedOffices.push(officeDataFromFirestore)
         }
       }
 
-      setSelectedUsersForDelete(newSelectedUsers)
+      setSelectedOfficesForDelete(newSelectedOffices)
     }
 
-    fetchSelectedUsers()
+    fetchSelectedOffices()
   }, [selected])
 
   return (
     <div className="d-flex justify-content-end align-items-center">
       <div className="fw-bolder me-5">
-        <span className="me-2">{selected.length}</span> Selected
+        <span className="me-2">{selected.length}</span>seçildi
       </div>
 
       <button
@@ -79,7 +87,7 @@ const OfficesListGrouping = () => {
         description="Devam etmeniz halinde aşağıdaki kullanıcılar kalıcı olarak
               silinecektir:"
         onApproval={async () => await deleteSelectedItems.mutateAsync()}
-        selectedUsersForDelete={selectedUsersForDelete}
+        selectedOfficesForDelete={selectedOfficesForDelete}
       ></OfficeDeleteModal>
     </div>
   )

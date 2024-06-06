@@ -38,6 +38,7 @@ export async function login(
         lastName: userDataFromFirestore?.lastName || "",
         photoURL: userDataFromFirestore?.photoURL || "",
         phoneNumber: userDataFromFirestore?.phone || "",
+        officeId: userDataFromFirestore?.officeId || "",
         role: userDataFromFirestore?.role || "",
         permissions: userDataFromFirestore?.permissions || [],
         address: {
@@ -48,7 +49,11 @@ export async function login(
         },
         createdAt: userDataFromFirestore?.createdAt || "",
         lastLoginAt: userDataFromFirestore?.lastLoginAt || "",
-        searchIndex: userDataFromFirestore?.email,
+        searchIndexEmail: userDataFromFirestore?.email,
+        searchIndexName:
+          userDataFromFirestore?.firstName +
+          " " +
+          userDataFromFirestore?.lastName,
       }
 
       return userData

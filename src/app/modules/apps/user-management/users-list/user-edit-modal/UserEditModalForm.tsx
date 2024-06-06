@@ -1,4 +1,4 @@
-import { FC, useState, ChangeEvent } from "react"
+import { FC, useState, useEffect, ChangeEvent } from "react"
 import * as Yup from "yup"
 import { useFormik } from "formik"
 import { isNotEmpty, toAbsoluteUrl } from "../../../../../../_metronic/helpers"
@@ -6,13 +6,16 @@ import { User } from "../core/_models"
 import clsx from "clsx"
 import { useListView } from "../core/ListViewProvider"
 import { UsersListLoading } from "../components/loading/UsersListLoading"
-import { createUser, updateUser } from "../core/_requests"
+import { updateUser } from "../core/_requests"
 import { useQueryResponse } from "../core/QueryResponseProvider"
 
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import { firebaseApp } from "../../../../../../firebase/BaseConfig"
 import { httpsCallable, getFunctions } from "firebase/functions"
 import { getAuth } from "@firebase/auth"
+
+import { Office } from "../../../office-management/offices-list/core/_models"
+import { getAllOffices } from "../../../office-management/offices-list/core/_requests"
 
 const storage = getStorage(firebaseApp)
 const auth = getAuth()
@@ -39,18 +42,24 @@ const editUserSchema = Yup.object().shape({
     .min(3, "E-posta en az 3 karakterden oluşmalı")
     .max(50, "E-posta 50 karakterden oluşmalı")
     .required("E-posta girilmesi zorunludur"),
+  officeId: Yup.string().required("Bir ofis seçilmesi zorunludur"),
 })
 
 const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
   const { setItemIdForUpdate } = useListView()
   const { refetch } = useQueryResponse()
+
   const [uploadedImage, setUploadedImage] = useState<File | string | null>(null)
   const [userForEdit, setUserForEdit] = useState<User>({
     ...user,
   })
+
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(
     userForEdit.photoURL as string
   )
+
+  const [offices, setOffices] = useState<Office[]>()
+
   const blankImg = toAbsoluteUrl("media/svg/avatars/blank.svg")
 
   const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -91,25 +100,31 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
               )
               await uploadBytes(storageRef, uploadedImage as File)
               const downloadURL = await getDownloadURL(storageRef)
-              console.log(downloadURL)
               values.photoURL = downloadURL
             } catch (error) {
               console.error("Error uploading image:", error)
             }
           }
+
           await updateUser(values)
           await updateEmail({ uid: values.uid, newEmail: values.email })
-        } else {
-          await createUser(values)
         }
-      } catch (ex) {
-        console.error(ex)
+      } catch (error) {
+        console.error(error)
       } finally {
         setSubmitting(false)
         cancel(true)
       }
     },
   })
+
+  const fetchOffices = async () => {
+    setOffices(await getAllOffices())
+  }
+
+  useEffect(() => {
+    fetchOffices()
+  }, [])
 
   return (
     <>
@@ -287,6 +302,42 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
             {formik.touched.email && formik.errors.firstName && (
               <div className="fv-plugins-message-container">
                 <span role="alert">{formik.errors.firstName}</span>
+              </div>
+            )}
+          </div>
+          {/* end::Input group */}
+
+          {/* begin::Input group */}
+          <div className="fv-row mb-7">
+            {/* begin::Label */}
+            <label className="required fw-bold fs-6 mb-2">Ofisi</label>
+            {/* end::Label */}
+
+            {/* begin::Input */}
+            <select
+              className="form-select form-select-lg form-select-solid"
+              name="officeId"
+              value={formik.values.officeId}
+              onChange={(e) => {
+                formik.setFieldValue("officeId", e.target.value)
+              }}
+            >
+              <option></option>
+              {offices &&
+                offices.map((office) => (
+                  <option
+                    value={office.id}
+                    office-id={office.id}
+                    key={office.id}
+                  >
+                    Keya {office.name}
+                  </option>
+                ))}
+            </select>
+            {/* end::Input */}
+            {formik.touched.officeId && formik.errors.officeId && (
+              <div className="fv-plugins-message-container">
+                <span role="alert">{formik.errors.officeId}</span>
               </div>
             )}
           </div>

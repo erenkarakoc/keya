@@ -6,23 +6,32 @@ import { useQueryResponse } from "../../core/QueryResponseProvider"
 import { deleteUser } from "../../core/_requests"
 import { UserDeleteModal } from "../../user-delete-modal/UserDeleteModal"
 
+import toast from "react-hot-toast"
+
 type Props = {
   id: ID
 }
 
 const UserActionsCell: FC<Props> = ({ id }) => {
-  const { setItemIdForUpdate } = useListView()
+  const { setItemIdForUpdate, setItemIdForDelete, itemIdForDelete } =
+    useListView()
 
   const { query } = useQueryResponse()
   const queryClient = useQueryClient()
 
-  const deleteItem = useMutation(() => deleteUser(id), {
+  const deleteItem = useMutation(() => deleteUser(itemIdForDelete), {
     onSuccess: () => {
+      toast.success("Kullanıcı başarıyla silindi!")
       queryClient.invalidateQueries([`${QUERIES.USERS_LIST}-${query}`])
+    },
+    onError: (error) => {
+      toast.error("Kullanıcı silinirken bir hata oluştu!")
+      console.error(error)
     },
   })
 
   const openEditModal = () => setItemIdForUpdate(id)
+  const openDeleteModal = () => setItemIdForDelete(id)
 
   return (
     <>
@@ -58,6 +67,7 @@ const UserActionsCell: FC<Props> = ({ id }) => {
             data-kt-users-table-filter="delete_row"
             data-bs-toggle="modal"
             data-bs-target="#kt_modal_delete_confirmation_single"
+            onClick={openDeleteModal}
           >
             Sil
           </a>

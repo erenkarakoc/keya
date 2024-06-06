@@ -80,8 +80,8 @@
 
 .ky-footer-item .ky-external-link {
   position: absolute;
-  top: -5px;
-  right: -15px;
+  top: 0;
+  right: -16px;
   color: var(--ky-light-3);
 }
 

@@ -3,24 +3,35 @@ import { useMutation, useQueryClient } from "react-query"
 import { ID, KTIcon, QUERIES } from "../../../../../../../_metronic/helpers"
 import { useListView } from "../../core/ListViewProvider"
 import { useQueryResponse } from "../../core/QueryResponseProvider"
-import { deleteUser } from "../../core/_requests"
+import { deleteOffice } from "../../core/_requests"
 import { OfficeDeleteModal } from "../../office-delete-modal/OfficeDeleteModal"
+
+import toast from "react-hot-toast"
 
 type Props = {
   id: ID
 }
 
 const OfficeActionsCell: FC<Props> = ({ id }) => {
-  const { setItemIdForUpdate } = useListView()
+  const { setItemIdForUpdate, setItemIdForDelete, itemIdForDelete } =
+    useListView()
 
   const { query } = useQueryResponse()
   const queryClient = useQueryClient()
 
-  const deleteItem = useMutation(() => deleteUser(id), {
-    onSuccess: () => {
-      queryClient.invalidateQueries([`${QUERIES.USERS_LIST}-${query}`])
-    },
-  })
+  const deleteItem = useMutation(
+    () => deleteOffice(itemIdForDelete as string),
+    {
+      onSuccess: () => {
+        toast.success("Kullanıcı başarıyla silindi!")
+        queryClient.invalidateQueries([`${QUERIES.USERS_LIST}-${query}`])
+      },
+      onError: (error) => {
+        toast.error("Kullanıcı silinirken bir hata oluştu!")
+        console.error(error)
+      },
+    }
+  )
 
   const openEditModal = () => setItemIdForUpdate(id)
 
@@ -55,9 +66,10 @@ const OfficeActionsCell: FC<Props> = ({ id }) => {
         <div className="menu-item px-3">
           <a
             className="menu-link px-3"
-            data-kt-users-table-filter="delete_row"
+            data-kt-offices-table-filter="delete_row"
             data-bs-toggle="modal"
             data-bs-target="#kt_modal_delete_confirmation_single"
+            onClick={() => setItemIdForDelete(id)}
           >
             Sil
           </a>

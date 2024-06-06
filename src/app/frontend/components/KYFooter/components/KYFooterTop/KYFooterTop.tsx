@@ -23,7 +23,7 @@ const KYFooterTop = () => {
             Yıllardır sizlere güvenle hizmet veren bir emlak firması olmanın
             mutluluğunu yaşıyoruz.
           </KYText>
-          <KYButton to="/" text="Hemen Başla" secondary />
+          <KYButton to="/sat-kirala" text="Hemen Başla" secondary />
         </div>
 
         <div className="ky-footer-top-right">

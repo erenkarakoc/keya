@@ -38,6 +38,13 @@
   letter-spacing: 0.2px;
 }
 
+/* Page */
+.ky-page-content {
+  position: relative;
+  padding: 0 100px;
+  z-index: 1;
+}
+
 /* Form */
 .ky-form-group {
   display: flex;
@@ -56,14 +63,24 @@
 }
 
 .ky-form-section:not(:first-of-type) {
-  margin-top: 50px;
+  margin-top: 40px;
 }
 
 .ky-form-row {
   display: flex;
+  flex-direction: row;
   align-items: center;
   width: 100%;
   gap: 10px;
+}
+
+.ky-form-row .ky-checkbox,
+.ky-form-row .ky-radio {
+  width: fit-content;
+}
+.ky-form-row .ky-checkbox:not(:last-of-type),
+.ky-form-row .ky-radio:not(:last-of-type) {
+  margin-right: 15px;
 }
 
 .ky-form-label {
@@ -75,5 +92,38 @@
 
 .ky-form-group .ky-button {
   width: 100% !important;
-  margin-top: 50px;
+  margin-top: 40px;
+}
+
+/* Card */
+.ky-card {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border: 2px solid var(--ky-midnight-3);
+  border-radius: 20px;
+  background-color: var(--ky-midnight-4);
+}
+
+.ky-card-header {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  color: var(--ky-light);
+  font-size: 18px;
+  font-weight: 700;
+  text-align: left;
+}
+
+.ky-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 20px;
+}
+
+.ky-card-content .ky-form-group {
+  max-width: unset;
+  margin-right: 0;
+  margin-left: 0;
 }

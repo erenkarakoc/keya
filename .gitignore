@@ -23,5 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
+# Secrets
 functions/lib/serviceAccountKey.json
 functions/src/serviceAccountKey.json

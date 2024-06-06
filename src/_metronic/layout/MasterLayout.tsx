@@ -8,7 +8,6 @@ import { Content } from "./components/Content"
 import { PageDataProvider } from "./core"
 import { ActivityDrawer, InviteUsers, UpgradePlan } from "../partials"
 import { MenuComponent } from "../assets/ts/components"
-import { Sidebar } from "./components/Sidebar"
 
 const MasterLayout = () => {
   const location = useLocation()
@@ -40,7 +39,6 @@ const MasterLayout = () => {
             </div>
             <Footer />
           </div>
-          <Sidebar />
         </div>
       </div>
 

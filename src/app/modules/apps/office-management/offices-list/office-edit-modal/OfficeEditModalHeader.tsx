@@ -1,27 +1,27 @@
-import {KTIcon} from '../../../../../../_metronic/helpers'
-import {useListView} from '../core/ListViewProvider'
+import { KTIcon } from "../../../../../../_metronic/helpers"
+import { useListView } from "../core/ListViewProvider"
 
 const OfficeEditModalHeader = () => {
-  const {setItemIdForUpdate} = useListView()
+  const { setItemIdForUpdate } = useListView()
 
   return (
-    <div className='modal-header'>
+    <div className="modal-header">
       {/* begin::Modal title */}
-      <h2 className='fw-bolder m-0'>Düzenle</h2>
+      <h2 className="fw-bolder m-0">Düzenle</h2>
       {/* end::Modal title */}
 
       {/* begin::Close */}
       <div
-        className='btn btn-icon btn-sm btn-active-icon-primary ms-auto'
-        data-kt-users-modal-action='close'
+        className="btn btn-icon btn-sm btn-active-icon-primary ms-auto"
+        data-kt-offices-modal-action="close"
         onClick={() => setItemIdForUpdate(undefined)}
-        style={{cursor: 'pointer'}}
+        style={{ cursor: "pointer" }}
       >
-        <KTIcon iconName='cross' iconType='solid' className='fs-1' />
+        <KTIcon iconName="cross" iconType="solid" className="fs-1" />
       </div>
       {/* end::Close */}
     </div>
   )
 }
 
-export {OfficeEditModalHeader}
+export { OfficeEditModalHeader }

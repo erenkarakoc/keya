@@ -1,40 +1,64 @@
-import { FC, useState, ChangeEvent } from "react"
-import * as Yup from "yup"
-import { useFormik } from "formik"
-import { isNotEmpty, toAbsoluteUrl } from "../../../../../../_metronic/helpers"
-import { User } from "../core/_models"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { FC, useState, useEffect, ChangeEvent } from "react"
+
 import clsx from "clsx"
-import { useListView } from "../core/ListViewProvider"
+import toast from "react-hot-toast"
+
+import * as Yup from "yup"
+import { Formik, Form, Field, ErrorMessage } from "formik"
+
+import {
+  Country,
+  State,
+  City,
+} from "../../../../../../_metronic/helpers/address-helper/_models"
+import { Office } from "../core/_models"
+
+import {
+  generateRandomName,
+  slugify,
+} from "../../../../../../_metronic/helpers/kyHelpers"
+import {
+  getCountries,
+  getStatesByCountry,
+  getCitiesByState,
+} from "../../../../../../_metronic/helpers/kyHelpers"
+
 import { OfficesListLoading } from "../components/loading/OfficesListLoading"
-import { updateUser } from "../core/_requests"
+import { useListView } from "../core/ListViewProvider"
 import { useQueryResponse } from "../core/QueryResponseProvider"
+
+import { getUsersByRole } from "../../../user-management/users-list/core/_requests"
+import { updateOffice } from "../core/_requests"
 
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import { firebaseApp } from "../../../../../../firebase/BaseConfig"
-import { httpsCallable, getFunctions } from "firebase/functions"
 import { getAuth } from "@firebase/auth"
-import toast from "react-hot-toast"
+
+import Lightbox from "yet-another-react-lightbox"
+import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails"
+import "yet-another-react-lightbox/styles.css"
+import "yet-another-react-lightbox/plugins/thumbnails.css"
+
+import MultiSelect from "../../../components/multiselect/MultiSelect"
+
+import { AsYouType } from "libphonenumber-js"
 
 const storage = getStorage(firebaseApp)
 const auth = getAuth()
-const functions = getFunctions()
-const updateEmail = httpsCallable(functions, "updateEmail")
 
 type Props = {
-  isUserLoading: boolean
-  user: User
+  isOfficeLoading: boolean
+  office: Office
 }
 
-const editUserSchema = Yup.object().shape({
+const editOfficeSchema = Yup.object().shape({
   avatar: Yup.string(),
-  firstName: Yup.string()
+  name: Yup.string()
     .min(3, "Ad en az 3 karakterden oluşmalı")
     .max(50, "Ad fazla 50 karakterden oluşmalı")
     .required("Ad alanı zorunludur"),
-  lastName: Yup.string()
-    .min(3, "Soyad en az 3 karakterden oluşmalı")
-    .max(50, "Soyad en fazla 50 karakterden oluşmalı")
-    .required("Soyad alanı zorunludur"),
+  about: Yup.string().required("Hakkında alanı zorunludur"),
   email: Yup.string()
     .email("Geçerli bir e-posta adresi gir")
     .min(3, "E-posta en az 3 karakterden oluşmalı")
@@ -42,37 +66,132 @@ const editUserSchema = Yup.object().shape({
     .required("E-posta girilmesi zorunludur"),
 })
 
-const OfficeEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
+const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
   const { setItemIdForUpdate } = useListView()
   const { refetch } = useQueryResponse()
-  const [uploadedImage, setUploadedImage] = useState<File | string | null>(null)
-  const [userForEdit, setUserForEdit] = useState<User>({
-    ...user,
-  })
-  const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(
-    userForEdit.photoURL as string
-  )
-  const blankImg = toAbsoluteUrl("media/svg/avatars/blank.svg")
 
-  const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) {
-      const selectedFile = e.target.files[0]
-      setUploadedImage(selectedFile)
-      setUploadedImageUrl(URL.createObjectURL(selectedFile))
-      setUserForEdit((prevUser) => ({
-        ...prevUser,
-        photoURL: URL.createObjectURL(selectedFile),
-      }))
+  const [submittingForm, setSubmittingForm] = useState<boolean>(false)
+
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+
+  const [uploadedImageUrls, setUploadedImageUrls] = useState<string[]>([])
+
+  const [brokers, setBrokers] = useState<{ id: string; label: string }[]>([])
+  const [chosenBrokers, setChosenBrokers] = useState<
+    { id: string; label: string }[]
+  >([])
+
+  const [countries, setCountries] = useState<Country[]>([])
+
+  const [currentCountry, setCurrentCountry] = useState<string | null>("Türkiye")
+  const [currentState, setCurrentState] = useState<string | null>("")
+  const [currentCity, setCurrentCity] = useState<string | null>("")
+
+  const [states, setStates] = useState<State[]>([])
+  const [cities, setCities] = useState<City[]>([])
+
+  const [countrySelected, setCountrySelected] = useState<boolean>(false)
+  const [stateSelected, setStateSelected] = useState<boolean>(false)
+
+  const [currentPhoneNumber, setCurrentPhoneNumber] = useState<string | null>(
+    "+90 312"
+  )
+  const [countryCode, setCountryCode] = useState<string | null>("TR")
+
+  const handleImageChange = async (
+    e: ChangeEvent<HTMLInputElement>,
+    setFieldValue: any
+  ) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const files = Array.from(e.target.files)
+      const uploadPromises: Promise<void>[] = []
+
+      files.forEach((file) => {
+        const fileSizeInMB = file.size / (1024 * 1024)
+        if (fileSizeInMB > 2) {
+          toast.error(
+            `${file.name} adlı dosya yüklenemedi. Dosya boyutu 2 MB'den küçük olmalıdır!`
+          )
+          return
+        }
+
+        const randomName = generateRandomName()
+        const storageRef = ref(
+          storage,
+          `images/offices/${slugify(office.name)}-${randomName}`
+        )
+        const uploadPromise = uploadBytes(storageRef, file)
+          .then(() => getDownloadURL(storageRef))
+          .then((downloadURL) => {
+            setUploadedImageUrls((prevUrls) => [...prevUrls, downloadURL])
+            setFieldValue("photoURLs", [...uploadedImageUrls, downloadURL])
+          })
+          .catch((error) => console.error("Error uploading image:", error))
+
+        uploadPromises.push(uploadPromise)
+      })
+
+      await Promise.all(uploadPromises)
     }
   }
 
-  const handleImageRemove = () => {
-    setUploadedImage(null)
-    setUploadedImageUrl(null)
-    setUserForEdit((prevUser) => ({
-      ...prevUser,
-      photoURL: null,
-    }))
+  const handleCountryChange = (
+    e: ChangeEvent<HTMLSelectElement>,
+    setFieldValue: any
+  ) => {
+    setFieldValue("country", e.target.value)
+    setCurrentCountry(e.target.value)
+
+    if (e.target.value) {
+      const selectedOption = e.target.selectedOptions[0]
+      const countryId = selectedOption.getAttribute("country-id")
+      const statesArr = getStatesByCountry(parseInt(countryId as string))
+      setStates(statesArr || [])
+      setCountrySelected(true)
+    } else {
+      setStates([])
+      setCountrySelected(false)
+    }
+  }
+
+  const handleStateChange = async (
+    e: ChangeEvent<HTMLSelectElement>,
+    setFieldValue: any
+  ) => {
+    setCurrentState(e.target.value)
+    setFieldValue("state", e.target.value)
+
+    if (e.target.value) {
+      const selectedOption = e.target.selectedOptions[0]
+      const stateId = selectedOption.getAttribute("state-id")
+      const citiesArr = getCitiesByState(parseInt(stateId as string))
+      setCities(citiesArr || [])
+      setStateSelected(true)
+    } else {
+      setCities([])
+      setStateSelected(false)
+    }
+  }
+
+  const handleCityChange = (
+    e: ChangeEvent<HTMLSelectElement>,
+    setFieldValue: any
+  ) => {
+    setCurrentCity(e.target.value)
+    setFieldValue("city", e.target.value)
+  }
+
+  const handlePhoneNumberChange = (
+    e: ChangeEvent<HTMLInputElement>,
+    setFieldValue: any
+  ) => {
+    const asYouType = new AsYouType()
+    const formatted = asYouType.input(e.target.value)
+    const countryCode = asYouType.getNumber()?.country
+
+    setCurrentPhoneNumber(formatted)
+    setFieldValue("phoneNumber", formatted)
+    setCountryCode(countryCode ? countryCode : "")
   }
 
   const cancel = (withRefresh?: boolean) => {
@@ -82,494 +201,535 @@ const OfficeEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
     setItemIdForUpdate(undefined)
   }
 
-  const formik = useFormik({
-    initialValues: userForEdit,
-    validationSchema: editUserSchema,
-    onSubmit: async (values, { setSubmitting }) => {
-      setSubmitting(true)
-      try {
-        if (isNotEmpty(values.id)) {
-          if (!auth.currentUser) {
-            console.log("User is not authenticated. Please sign in.")
-            return
-          }
-          values.photoURL = userForEdit.photoURL
-          if (uploadedImage) {
-            try {
-              const storageRef = ref(
-                storage,
-                `images/avatars/avatar-${userForEdit.uid}`
-              )
-              await uploadBytes(storageRef, uploadedImage as File)
-              const downloadURL = await getDownloadURL(storageRef)
-              values.photoURL = downloadURL
-            } catch (error) {
-              toast.error(
-                "Görsel karşıya yüklenirken bir sorun oluştu! Lütfen daha sonra tekrar deneyin."
-              )
-              console.error("Error uploading image:", error)
-            }
-          }
-          await updateUser(values)
-          updateEmail({ uid: values.uid, newEmail: values.email })
-        }
-      } catch (ex) {
-        console.error(ex)
-      } finally {
-        setSubmitting(false)
-        cancel(true)
+  const handleSubmit = async (values: Office) => {
+    setSubmittingForm(true)
+    try {
+      if (!auth.currentUser) {
+        console.log("User is not authenticated. Please sign in.")
+        return
       }
-    },
-  })
+      values.photoURLs = uploadedImageUrls
+      await updateOffice(values)
+    } catch (ex) {
+      console.error(ex)
+    } finally {
+      setSubmittingForm(false)
+      cancel(true)
+    }
+  }
+
+  useEffect(() => {
+    const fetchBrokers = async () => {
+      try {
+        const response = await getUsersByRole("broker")
+        if (response) {
+          const brokersArr = response.map((user) => ({
+            id: user.id,
+            label: user.email,
+          }))
+
+          const owners: string[] = office.owners
+
+          const chosenBrokersArr = brokersArr
+            .filter((broker) => owners.includes(broker.id))
+            .map((broker) => ({
+              id: broker.id,
+              label: broker.label,
+            }))
+
+          setChosenBrokers(chosenBrokersArr)
+          setBrokers(brokersArr)
+        }
+      } catch (error) {
+        console.error("Error fetching brokers:", error)
+      }
+    }
+
+    fetchBrokers()
+    setUploadedImageUrls(office.photoURLs)
+  }, [office])
+
+  useEffect(() => {
+    const data = getCountries()
+    setCountries(data)
+
+    const statesArr = getStatesByCountry(225)
+    setStates(statesArr || [])
+    setCountrySelected(true)
+  }, [])
+
+  // useEffect(() => {
+  //   setFieldValue("country", currentCountry as string)
+  // }, [setFieldValue, currentCountry])
 
   return (
     <>
-      <form
-        id="kt_modal_add_user_form"
+      <Formik
+        id="kt_modal_add_office_form"
         className="form"
-        onSubmit={formik.handleSubmit}
+        onSubmit={handleSubmit}
+        initialValues={office}
+        validationSchema={editOfficeSchema}
+        enableReinitialize={true}
         noValidate
       >
-        {/* begin::Scroll */}
-        <div
-          className="d-flex flex-column me-n7 pe-7 pt-5"
-          id="kt_modal_add_user_scroll"
-          data-kt-scroll="true"
-          data-kt-scroll-activate="{default: false, lg: true}"
-          data-kt-scroll-max-height="auto"
-          data-kt-scroll-dependencies="#kt_modal_add_user_header"
-          data-kt-scroll-wrappers="#kt_modal_add_user_scroll"
-          data-kt-scroll-offset="300px"
-        >
-          {/* begin::Input group */}
-          <div className="fv-row mb-7">
-            {/* begin::Image input */}
+        {({ values, setFieldValue, dirty, isValid }) => (
+          <Form noValidate id="office_edit_modal_form" placeholder={undefined}>
+            {/* begin::Scroll */}
             <div
-              className="image-input image-input-outline"
-              data-kt-image-input="true"
-              style={{
-                backgroundImage: `url('${
-                  userForEdit.photoURL ? userForEdit.photoURL : blankImg
-                }')`,
-              }}
+              className="d-flex flex-column me-n7 pe-7 pt-5"
+              id="kt_modal_add_office_scroll"
+              data-kt-scroll="true"
+              data-kt-scroll-activate="{default: false, lg: true}"
+              data-kt-scroll-max-height="auto"
+              data-kt-scroll-dependencies="#kt_modal_add_office_header"
+              data-kt-scroll-wrappers="#kt_modal_add_office_scroll"
+              data-kt-scroll-offset="300px"
             >
-              {/* begin::Preview existing avatar */}
-              <div
-                className="image-input-wrapper w-125px h-125px"
-                style={{
-                  backgroundImage: `url('${
-                    uploadedImageUrl ? uploadedImageUrl : blankImg
-                  }')`,
-                }}
-              ></div>
-              {/* end::Preview existing avatar */}
-
-              {/* begin::Label */}
-              <label
-                className="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                data-kt-image-input-action="change"
-                data-bs-toggle="tooltip"
-                title="Change avatar"
-              >
-                <i className="bi bi-pencil-fill fs-7"></i>
+              <div className="fv-row mb-7">
+                <label className="form-label mb-5 w-100 required">
+                  Bilgisayarınızdan seçin
+                </label>
 
                 <input
                   type="file"
-                  name="avatar"
                   accept=".png, .jpg, .jpeg"
-                  onChange={handleImageChange}
+                  onChange={(e) => handleImageChange(e, setFieldValue)}
+                  multiple
                 />
-                {/* <input type="hidden" name="avatar_remove" /> */}
-              </label>
-              {/* end::Label */}
 
-              {/* begin::Cancel */}
-              <span
-                className="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                data-kt-image-input-action="cancel"
-                data-bs-toggle="tooltip"
-                title="Cancel avatar"
-              >
-                <i className="bi bi-x fs-2"></i>
-              </span>
-              {/* end::Cancel */}
+                <div
+                  className="image-input image-input-outline d-flex flex-wrap mt-6"
+                  data-kt-image-input="true"
+                >
+                  {uploadedImageUrls.map((url, index) => (
+                    <div
+                      key={index}
+                      className="image-input-wrapper position-relative w-125px h-125px"
+                      style={{
+                        backgroundImage: `url(${url})`,
+                        cursor: "pointer",
+                        flexShrink: 0,
+                      }}
+                      onClick={() => {
+                        setLightboxOpen(true)
+                      }}
+                    >
+                      <label
+                        className="btn btn-icon btn-circle btn-color-white w-20px h-20px bg-gray-300 bg-hover-gray-400 shadow"
+                        data-kt-image-input-action="change"
+                        data-bs-toggle="tooltip"
+                        title="Fotoğrafı Sil"
+                        style={{
+                          zIndex: 999,
+                          top: 15,
+                          left: 15,
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation()
 
-              {/* begin::Remove */}
-              <span
-                className="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                data-kt-image-input-action="remove"
-                data-bs-toggle="tooltip"
-                title="Remove avatar"
-                onClick={handleImageRemove}
-              >
-                <i className="bi bi-x fs-2"></i>
-              </span>
-              {/* end::Remove */}
-            </div>
-            {/* end::Image input */}
+                          const index = uploadedImageUrls.indexOf(url)
+                          if (index !== -1) {
+                            const updatedUrls = [...uploadedImageUrls]
+                            updatedUrls.splice(index, 1)
+                            setUploadedImageUrls(updatedUrls)
+                          }
+                        }}
+                      >
+                        <i className="bi bi-x fs-7"></i>
+                        <input type="hidden" name="avatar_remove" />
+                      </label>
+                    </div>
+                  ))}
+                </div>
 
-            {/* begin::Hint */}
-            <div className="form-text">
-              İzin verilen dosya türleri: png, jpg, jpeg.
-            </div>
-            {/* end::Hint */}
-          </div>
-          {/* end::Input group */}
+                <div className="form-text mt-6">
+                  İzin verilen dosya türleri: png, jpg, jpeg.
+                </div>
 
-          {/* begin::Input group */}
-          <div className="fv-row mb-7">
-            {/* begin::Label */}
-            <label className="required fw-bold fs-6 mb-2">Ad</label>
-            {/* end::Label */}
+                <Lightbox
+                  open={lightboxOpen}
+                  close={() => setLightboxOpen(false)}
+                  slides={[...values.photoURLs.map((url) => ({ src: url }))]}
+                  plugins={[Thumbnails]}
+                />
+              </div>
 
-            {/* begin::Input */}
-            <input
-              placeholder="Ad"
-              {...formik.getFieldProps("firstName")}
-              type="text"
-              name="firstName"
-              value={formik.values.firstName}
-              className={clsx(
-                "form-control form-control-solid mb-3 mb-lg-0",
-                {
-                  "is-invalid":
-                    formik.touched.firstName && formik.errors.firstName,
-                },
-                {
-                  "is-valid":
-                    formik.touched.firstName && !formik.errors.firstName,
-                }
-              )}
-              autoComplete="off"
-              disabled={formik.isSubmitting || isUserLoading}
-            />
-            {formik.touched.firstName && formik.errors.firstName && (
-              <div className="fv-plugins-message-container">
-                <div className="fv-help-block">
-                  <span role="alert">{formik.errors.firstName}</span>
+              <div className="fv-row mb-7">
+                {/* begin::Label */}
+                <label className="required fw-bold fs-6 mb-2">Ofis Adı</label>
+                {/* end::Label */}
+
+                {/* begin::Input */}
+                <Field
+                  placeholder="Ofis Adı"
+                  type="text"
+                  name="name"
+                  className={clsx(
+                    "form-control form-control-solid mb-3 mb-lg-0",
+                    {
+                      "is-invalid": submittingForm && values.name === "",
+                    },
+                    {
+                      "is-valid": !submittingForm && values.name !== "",
+                    }
+                  )}
+                  value={values.name}
+                  autoComplete="off"
+                  disabled={submittingForm || isOfficeLoading}
+                />
+                <ErrorMessage name="name" />
+                {/* end::Input */}
+              </div>
+
+              <div className="fv-row mb-7">
+                {/* begin::Label */}
+                <label className="required fw-bold fs-6 mb-2">
+                  Ofis Hakkında
+                </label>
+                {/* end::Label */}
+
+                {/* begin::Textarea */}
+                <Field
+                  placeholder="Ofis Hakkında"
+                  name="about"
+                  as="textarea"
+                  rows={3}
+                  className={clsx(
+                    "form-control form-control-solid mb-3 mb-lg-0",
+                    {
+                      "is-invalid": submittingForm && values.about === "",
+                    },
+                    {
+                      "is-valid": !submittingForm && values.about !== "",
+                    }
+                  )}
+                  autoComplete="off"
+                  disabled={submittingForm || isOfficeLoading}
+                />
+                <ErrorMessage name="about" />
+                {/* end::Textarea */}
+              </div>
+
+              <div className="fv-row mb-7">
+                {/* begin::Label */}
+                <label className="required fw-bold fs-6 mb-2">
+                  Broker/Brokerlar
+                </label>
+                {/* end::Label */}
+
+                {/* begin::Input */}
+                <MultiSelect
+                  options={brokers}
+                  defaultValue={chosenBrokers}
+                  id="owners"
+                  name="owners"
+                  notFoundText="Aramanızla eşleşen bir Broker bulunamadı."
+                  className={clsx(
+                    "form-control form-control-solid mb-3 mb-lg-0",
+                    {
+                      "is-invalid":
+                        submittingForm && values.owners.length === 0,
+                    },
+                    {
+                      "is-valid": !submittingForm && values.owners.length > 0,
+                    }
+                  )}
+                  disabled={submittingForm || isOfficeLoading}
+                  placeholder="Broker/Brokerlar"
+                />
+
+                {/* end::Input */}
+                <ErrorMessage name="owners" />
+              </div>
+
+              <div className="fv-row mb-7">
+                {/* begin::Label */}
+                <label className="required fw-bold fs-6 mb-2">E-posta</label>
+                {/* end::Label */}
+
+                {/* begin::Input */}
+                <Field
+                  placeholder="Email"
+                  type="email"
+                  name="email"
+                  className={clsx(
+                    "form-control form-control-solid mb-3 mb-lg-0",
+                    {
+                      "is-invalid": submittingForm && values.email === "",
+                    },
+                    {
+                      "is-valid": !submittingForm && values.email !== "",
+                    }
+                  )}
+                  autoComplete="off"
+                  value={values.email}
+                  disabled={submittingForm || isOfficeLoading}
+                />
+                <ErrorMessage name="email" />
+                {/* end::Input */}
+              </div>
+
+              <div className="fv-row mb-10">
+                <label className="form-label required">E-posta Adresi</label>
+
+                <div className="position-relative">
+                  <Field
+                    className="form-control form-control-lg form-control-solid"
+                    name="email"
+                  />
+                </div>
+                <div className="text-danger mt-2">
+                  <ErrorMessage name="email" />
                 </div>
               </div>
-            )}
-            {/* end::Input */}
-          </div>
-          {/* end::Input group */}
 
-          {/* begin::Input group */}
-          <div className="fv-row mb-7">
-            {/* begin::Label */}
-            <label className="required fw-bold fs-6 mb-2">Soyad</label>
-            {/* end::Label */}
+              <div className="fv-row mb-10">
+                <label className="form-label required">Telefon Numarası</label>
 
-            {/* begin::Input */}
-            <input
-              placeholder="Soyad"
-              {...formik.getFieldProps("lastName")}
-              type="text"
-              name="lastName"
-              value={formik.values.lastName}
-              className={clsx(
-                "form-control form-control-solid mb-3 mb-lg-0",
-                {
-                  "is-invalid":
-                    formik.touched.lastName && formik.errors.lastName,
-                },
-                {
-                  "is-valid":
-                    formik.touched.lastName && !formik.errors.lastName,
-                }
-              )}
-              autoComplete="off"
-              disabled={formik.isSubmitting || isUserLoading}
-            />
-            {formik.touched.lastName && formik.errors.lastName && (
-              <div className="fv-plugins-message-container">
-                <div className="fv-help-block">
-                  <span role="alert">{formik.errors.lastName}</span>
+                <div className="position-relative">
+                  <Field
+                    className="form-control form-control-lg form-control-solid"
+                    placeholder="+90 5xx xxx xx xx"
+                    onChange={handlePhoneNumberChange}
+                    value={currentPhoneNumber}
+                    style={{ paddingLeft: "40px" }}
+                    name="phoneNumber"
+                  />
+                  <span
+                    className={`fi fi-${countryCode?.toLowerCase()} position-absolute`}
+                    style={{
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      left: "13px",
+                    }}
+                  ></span>
+                </div>
+                <div className="text-danger mt-2">
+                  <ErrorMessage name="phoneNumber" />
+                </div>
+                <div className="form-text">
+                  Lütfen numaranın başında ülke kodu bulundurun. Örn. +90
                 </div>
               </div>
-            )}
-            {/* end::Input */}
-          </div>
-          {/* end::Input group */}
 
-          {/* begin::Input group */}
-          <div className="fv-row mb-7">
-            {/* begin::Label */}
-            <label className="required fw-bold fs-6 mb-2">E-posta</label>
-            {/* end::Label */}
+              <div className="fv-row mb-10">
+                <label className="form-label">Ülke</label>
 
-            {/* begin::Input */}
-            <input
-              placeholder="Email"
-              {...formik.getFieldProps("email")}
-              value={formik.values.email}
-              className={clsx(
-                "form-control form-control-solid mb-3 mb-lg-0",
-                {
-                  "is-invalid": formik.touched.email && formik.errors.email,
-                },
-                {
-                  "is-valid": formik.touched.email && !formik.errors.email,
+                <Field
+                  as="select"
+                  className="form-select form-select-lg form-select-solid"
+                  onChange={(e: any) => handleCountryChange(e, setFieldValue)}
+                  name="country"
+                  value={currentCountry}
+                >
+                  <option></option>
+                  {countries &&
+                    countries.map((country) => (
+                      <option
+                        country-id={country.id}
+                        value={country.translations.tr}
+                        key={country.id}
+                      >
+                        {country.translations.tr}
+                      </option>
+                    ))}
+                </Field>
+                <div className="text-danger mt-2">
+                  <ErrorMessage name="country" />
+                </div>
+              </div>
+
+              <div className="fv-row mb-10">
+                <label className="form-label">İl</label>
+
+                <Field
+                  as="select"
+                  className="form-select form-select-lg form-select-solid"
+                  onChange={(e: any) => handleStateChange(e, setFieldValue)}
+                  name="state"
+                  disabled={!countrySelected}
+                  value={currentState}
+                >
+                  <option></option>
+                  {countrySelected
+                    ? states.map((state) => (
+                        <option
+                          value={state.name}
+                          state-id={state.id}
+                          key={state.id}
+                        >
+                          {state.name}
+                        </option>
+                      ))
+                    : ""}
+                </Field>
+                <div className="text-danger mt-2">
+                  <ErrorMessage name="state" />
+                </div>
+              </div>
+
+              <div className="fv-row mb-10">
+                <label className="form-label">İlçe</label>
+
+                <Field
+                  as="select"
+                  className="form-select form-select-lg form-select-solid"
+                  onChange={(e: any) => handleCityChange(e, setFieldValue)}
+                  name="city"
+                  disabled={!stateSelected && !countrySelected}
+                  value={currentCity}
+                >
+                  <option></option>
+                  {countrySelected && stateSelected
+                    ? cities.map((city) => (
+                        <option
+                          value={city.name}
+                          city-id={city.id}
+                          key={city.id}
+                        >
+                          {city.name}
+                        </option>
+                      ))
+                    : ""}
+                </Field>
+                <div className="text-danger mt-2">
+                  <ErrorMessage name="city" />
+                </div>
+              </div>
+
+              <div className="fv-row mb-10">
+                <label className="d-flex align-items-center form-label">
+                  <span>Adres</span>
+                </label>
+
+                <Field
+                  className="form-control form-control-lg form-control-solid"
+                  name="addressLine"
+                />
+                <div className="text-danger mt-2">
+                  <ErrorMessage name="addressLine" />
+                </div>
+
+                <div className="form-text">Detaylı adres bilgisi</div>
+              </div>
+
+              <div className="fv-row mb-10">
+                <label className="form-label">Sosyal Medya Linkleri</label>
+
+                <div className="row">
+                  <div className="col-lg-6">
+                    <Field
+                      className="form-control form-control-lg form-control-solid"
+                      name="instagram"
+                      placeholder="Instagram"
+                    />
+                    <div className="text-danger mt-2">
+                      <ErrorMessage name="instagram" />
+                    </div>
+                  </div>
+                  <div className="col-lg-6">
+                    <Field
+                      className="form-control form-control-lg form-control-solid"
+                      name="twitter"
+                      placeholder="Twitter"
+                    />
+                    <div className="text-danger mt-2">
+                      <ErrorMessage name="twitter" />
+                    </div>
+                  </div>
+                  <div className="col-lg-6 mt-2">
+                    <Field
+                      className="form-control form-control-lg form-control-solid"
+                      name="facebook"
+                      placeholder="Facebook"
+                    />
+                    <div className="text-danger mt-2">
+                      <ErrorMessage name="facebook" />
+                    </div>
+                  </div>
+                  <div className="col-lg-6 mt-2">
+                    <Field
+                      className="form-control form-control-lg form-control-solid"
+                      name="whatsapp"
+                      placeholder="WhatsApp"
+                    />
+                    <div className="text-danger mt-2">
+                      <ErrorMessage name="whatsapp" />
+                    </div>
+                  </div>
+                  <div className="col-lg-6 mt-2">
+                    <Field
+                      className="form-control form-control-lg form-control-solid"
+                      name="linkedin"
+                      placeholder="Linkedin"
+                    />
+                    <div className="text-danger mt-2">
+                      <ErrorMessage name="linkedin" />
+                    </div>
+                  </div>
+                  <div className="col-lg-6 mt-2">
+                    <Field
+                      className="form-control form-control-lg form-control-solid"
+                      name="youtube"
+                      placeholder="YouTube"
+                    />
+                    <div className="text-danger mt-2">
+                      <ErrorMessage name="youtube" />
+                    </div>
+                  </div>
+                  <div className="col-lg-12 mt-2">
+                    <Field
+                      className="form-control form-control-lg form-control-solid"
+                      name="website"
+                      placeholder="Website"
+                    />
+                    <div className="text-danger mt-2">
+                      <ErrorMessage name="website" />
+                    </div>
+                  </div>
+                  <div className="form-text">
+                    Lütfen "https://" ile başlayan geçerli bir link girin
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* end::Scroll */}
+
+            {/* begin::Actions */}
+            <div className="text-center pt-15">
+              <button
+                type="button"
+                onClick={() => cancel()}
+                className="btn btn-light me-3"
+                data-kt-offices-modal-action="cancel"
+                disabled={submittingForm || isOfficeLoading}
+              >
+                İptal
+              </button>
+
+              <button
+                type="submit"
+                className="btn btn-primary"
+                data-kt-offices-modal-action="submit"
+                disabled={
+                  !dirty || !isValid || isOfficeLoading || submittingForm
                 }
-              )}
-              type="email"
-              name="email"
-              autoComplete="off"
-              disabled={formik.isSubmitting || isUserLoading}
-            />
-            {/* end::Input */}
-            {formik.touched.email && formik.errors.firstName && (
-              <div className="fv-plugins-message-container">
-                <span role="alert">{formik.errors.firstName}</span>
-              </div>
-            )}
-          </div>
-          {/* end::Input group */}
-
-          {/* begin::Input group */}
-          <div className="mb-7">
-            {/* begin::Label */}
-            <label className="required fw-bold fs-6 mb-5">Ünvan</label>
-            {/* end::Label */}
-            {/* begin::Roles */}
-            {/* begin::Input row */}
-            <div className="d-flex fv-row">
-              {/* begin::Radio */}
-              <div className="form-check form-check-custom form-check-solid">
-                {/* begin::Input */}
-                <input
-                  className="form-check-input me-3"
-                  {...formik.getFieldProps("role")}
-                  name="role"
-                  type="radio"
-                  value="admin"
-                  id="kt_modal_update_role_option_0"
-                  checked={formik.values.role === "admin"}
-                  disabled={formik.isSubmitting || isUserLoading}
-                />
-
-                {/* end::Input */}
-                {/* begin::Label */}
-                <label
-                  className="form-check-label"
-                  htmlFor="kt_modal_update_role_option_0"
-                >
-                  <div className="fw-bolder text-gray-800">Yönetici</div>
-                  <div className="text-gray-600">Tüm yetkiler</div>
-                </label>
-                {/* end::Label */}
-              </div>
-              {/* end::Radio */}
+              >
+                <span className="indicator-label">Kaydet</span>
+                {submittingForm && (
+                  <span className="indicator-progress">
+                    Lütfen Bekleyin...{" "}
+                    <span className="spinner-border spinner-border-sm align-middle ms-2"></span>
+                  </span>
+                )}
+              </button>
             </div>
-            {/* end::Input row */}
-            <div className="separator separator-dashed my-5"></div>
-            {/* begin::Input row */}
-            <div className="d-flex fv-row">
-              {/* begin::Radio */}
-              <div className="form-check form-check-custom form-check-solid">
-                {/* begin::Input */}
-                <input
-                  className="form-check-input me-3"
-                  {...formik.getFieldProps("role")}
-                  name="role"
-                  type="radio"
-                  value="broker"
-                  id="kt_modal_update_role_option_1"
-                  checked={formik.values.role === "broker"}
-                  disabled={formik.isSubmitting || isUserLoading}
-                />
-                {/* end::Input */}
-                {/* begin::Label */}
-                <label
-                  className="form-check-label"
-                  htmlFor="kt_modal_update_role_option_1"
-                >
-                  <div className="fw-bolder text-gray-800">Broker</div>
-                  <div className="text-gray-600">
-                    Franchise ofisi dahilinde tüm yetkiler
-                  </div>
-                </label>
-                {/* end::Label */}
-              </div>
-              {/* end::Radio */}
-            </div>
-            {/* end::Input row */}
-            <div className="separator separator-dashed my-5"></div>
-            {/* begin::Input row */}
-            <div className="d-flex fv-row">
-              {/* begin::Radio */}
-              <div className="form-check form-check-custom form-check-solid">
-                {/* begin::Input */}
-                <input
-                  className="form-check-input me-3"
-                  {...formik.getFieldProps("role")}
-                  name="role"
-                  type="radio"
-                  value="assistant"
-                  id="kt_modal_update_role_option_2"
-                  checked={formik.values.role === "assistant"}
-                  disabled={formik.isSubmitting || isUserLoading}
-                />
-
-                {/* end::Input */}
-                {/* begin::Label */}
-                <label
-                  className="form-check-label"
-                  htmlFor="kt_modal_update_role_option_2"
-                >
-                  <div className="fw-bolder text-gray-800">Ofis Asistanı</div>
-                  <div className="text-gray-600">
-                    Franchise ofisi dahilinde üst düzey yetkiler
-                  </div>
-                </label>
-                {/* end::Label */}
-              </div>
-              {/* end::Radio */}
-            </div>
-            {/* end::Input row */}
-            <div className="separator separator-dashed my-5"></div>
-            {/* begin::Input row */}
-            <div className="d-flex fv-row">
-              {/* begin::Radio */}
-              <div className="form-check form-check-custom form-check-solid">
-                {/* begin::Input */}
-                <input
-                  className="form-check-input me-3"
-                  {...formik.getFieldProps("role")}
-                  name="role"
-                  type="radio"
-                  value="human-resources"
-                  id="kt_modal_update_role_option_3"
-                  checked={formik.values.role === "human-resources"}
-                  disabled={formik.isSubmitting || isUserLoading}
-                />
-                {/* end::Input */}
-                {/* begin::Label */}
-                <label
-                  className="form-check-label"
-                  htmlFor="kt_modal_update_role_option_3"
-                >
-                  <div className="fw-bolder text-gray-800">
-                    İnsan Kaynakları
-                  </div>
-                  <div className="text-gray-600">
-                    Danışmanlar ve personeller dahilinde yetkiler
-                  </div>
-                </label>
-                {/* end::Label */}
-              </div>
-              {/* end::Radio */}
-            </div>
-            {/* end::Input row */}
-            <div className="separator separator-dashed my-5"></div>
-            {/* begin::Input row */}
-            <div className="d-flex fv-row">
-              {/* begin::Radio */}
-              <div className="form-check form-check-custom form-check-solid">
-                {/* begin::Input */}
-                <input
-                  className="form-check-input me-3"
-                  {...formik.getFieldProps("role")}
-                  name="role"
-                  type="radio"
-                  id="kt_modal_update_role_option_4"
-                  value="franchise-manager"
-                  checked={formik.values.role === "franchise-manager"}
-                  disabled={formik.isSubmitting || isUserLoading}
-                />
-                {/* end::Input */}
-                {/* begin::Label */}
-                <label
-                  className="form-check-label"
-                  htmlFor="kt_modal_update_role_option_4"
-                >
-                  <div className="fw-bolder text-gray-800">
-                    Franchise Yöneticisi
-                  </div>
-                  <div className="text-gray-600">
-                    Franchise ofisler ve yeni broker adayları dahilinde yetkiler
-                  </div>
-                </label>
-                {/* end::Label */}
-              </div>
-              {/* end::Radio */}
-            </div>
-            {/* end::Input row */}
-            <div className="separator separator-dashed my-5"></div>
-            {/* begin::Input row */}
-            <div className="d-flex fv-row">
-              {/* begin::Radio */}
-              <div className="form-check form-check-custom form-check-solid">
-                {/* begin::Input */}
-                <input
-                  className="form-check-input me-3"
-                  {...formik.getFieldProps("role")}
-                  name="role"
-                  type="radio"
-                  id="kt_modal_update_role_option_5"
-                  value="agent"
-                  checked={formik.values.role === "agent"}
-                  disabled={formik.isSubmitting || isUserLoading}
-                />
-                {/* end::Input */}
-                {/* begin::Label */}
-                <label
-                  className="form-check-label"
-                  htmlFor="kt_modal_update_role_option_5"
-                >
-                  <div className="fw-bolder text-gray-800">
-                    Gayrimenkul Danışmanı
-                  </div>
-                  <div className="text-gray-600">
-                    Kendi portföyleri dahilinde yetkiler
-                  </div>
-                </label>
-                {/* end::Label */}
-              </div>
-              {/* end::Radio */}
-            </div>
-            {/* end::Input row */}
-            {/* end::Roles */}
-          </div>
-          {/* end::Input group */}
-        </div>
-        {/* end::Scroll */}
-
-        {/* begin::Actions */}
-        <div className="text-center pt-15">
-          <button
-            type="reset"
-            onClick={() => cancel()}
-            className="btn btn-light me-3"
-            data-kt-users-modal-action="cancel"
-            disabled={formik.isSubmitting || isUserLoading}
-          >
-            İptal
-          </button>
-
-          <button
-            type="submit"
-            className="btn btn-primary"
-            data-kt-users-modal-action="submit"
-            disabled={
-              isUserLoading ||
-              formik.isSubmitting ||
-              !formik.isValid ||
-              !formik.touched
-            }
-          >
-            <span className="indicator-label">Kaydet</span>
-            {(formik.isSubmitting || isUserLoading) && (
-              <span className="indicator-progress">
-                Please wait...{" "}
-                <span className="spinner-border spinner-border-sm align-middle ms-2"></span>
-              </span>
-            )}
-          </button>
-        </div>
-        {/* end::Actions */}
-      </form>
-      {(formik.isSubmitting || isUserLoading) && <OfficesListLoading />}
+            {/* end::Actions */}
+          </Form>
+        )}
+      </Formik>
+      {isOfficeLoading && <OfficesListLoading />}
     </>
   )
 }

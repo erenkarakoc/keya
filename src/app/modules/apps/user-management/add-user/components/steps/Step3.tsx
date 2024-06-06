@@ -1,16 +1,58 @@
-import React, { FC } from "react"
+import React, { FC, useState, useEffect, ChangeEvent } from "react"
 import { KTIcon } from "../../../../../../../_metronic/helpers"
 import { ErrorMessage, Field } from "formik"
+import { getAllOffices } from "../../../../office-management/offices-list/core/_requests"
+
+interface Office {
+  id: string
+  name: string
+}
 
 const Step3: FC = () => {
+  const [offices, setOffices] = useState<Office[]>()
+  const [currentOffice, setCurrentOffice] = useState("")
+
+  const handleOfficeChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setCurrentOffice(e.target.value)
+  }
+
+  const fetchOffices = async () => {
+    setOffices(await getAllOffices())
+  }
+
+  useEffect(() => {
+    fetchOffices()
+  }, [])
+
   return (
     <div className="w-100">
       <div className="pb-10 pb-lg-15">
-        <h2 className="fw-bolder text-gray-900">Rol ve Yetkiler</h2>
+        <h2 className="fw-bolder text-gray-900">Ofis ve Yetkiler</h2>
 
         <div className="text-gray-500 fw-bold fs-6">
-          Kullanıcının ofisinizde hangi role ve yetkilere sahip olacağını seçin.
+          Kullanıcının hangi ofiste olacağını ve hangi role sahip olacağını
+          seçin.
         </div>
+      </div>
+
+      <div className="fv-row mb-10">
+        <label className="form-label">Bağlı Olduğu Ofis</label>
+
+        <Field
+          as="select"
+          className="form-select form-select-lg form-select-solid"
+          onChange={handleOfficeChange}
+          name="officeId"
+          value={currentOffice}
+        >
+          <option></option>
+          {offices &&
+            offices.map((office) => (
+              <option value={office.name} office-id={office.id} key={office.id}>
+                Keya {office.name}
+              </option>
+            ))}
+        </Field>
       </div>
 
       <div className="mb-10 fv-row">

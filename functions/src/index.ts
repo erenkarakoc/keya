@@ -20,8 +20,7 @@ const serviceAccountConfig: admin.ServiceAccount =
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccountConfig),
   databaseURL:
-    "https://keya-web-default-rtdb." +
-    "europe-west1.firebasedatabase.app",
+    "https://keya-web-default-rtdb." + "europe-west1.firebasedatabase.app",
 });
 
 export const registerUser = functions.https.onCall(async (data) => {
@@ -34,6 +33,7 @@ export const registerUser = functions.https.onCall(async (data) => {
       confirmpassword,
       photoURL,
       phoneNumber,
+      officeId,
       role,
       country,
       state,
@@ -59,6 +59,7 @@ export const registerUser = functions.https.onCall(async (data) => {
       lastName,
       photoURL,
       phoneNumber,
+      officeId,
       role,
       address: {
         country,
@@ -69,7 +70,8 @@ export const registerUser = functions.https.onCall(async (data) => {
       permissions: [],
       createdAt: userRecord.metadata.creationTime || "",
       lastLoginAt: userRecord.metadata.lastSignInTime || "",
-      searchIndex: email,
+      searchIndexEmail: email,
+      searchIndexName: firstName + " " + lastName,
     });
     return {success: true, message: "User registered successfully."};
   } catch (error) {

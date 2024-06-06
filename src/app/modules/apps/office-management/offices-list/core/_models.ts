@@ -1,26 +1,25 @@
 import { Response } from "../../../../../../_metronic/helpers"
 
-export interface UserAddressModel {
-  country: string
-  state: string
-  city: string
-  addressLine: string
-}
-
-export type User = {
+export type Office = {
   id: string
-  uid: string
-  email: string
-  firstName: string
-  lastName: string
-  photoURL?: string | null
-  phoneNumber?: string
-  role?: string
-  permissions?: Array<number>
-  address?: UserAddressModel
-  createdAt: string
-  lastLoginAt: string
-  searchIndex: string
+  name: string
+  about: string
+  owners: string[]
+  email?: string
+  phoneNumber: string
+  country?: string
+  state?: string
+  city?: string
+  addressLine?: string
+  instagram?: string
+  twitter?: string
+  facebook?: string
+  whatsapp?: string
+  linkedin?: string
+  youtube?: string
+  website?: string
+  photoURLs: string[]
+  users?: string[]
 }
 
-export type UsersQueryResponse = Response<Array<User>>
+export type OfficesQueryResponse = Response<Array<Office>>

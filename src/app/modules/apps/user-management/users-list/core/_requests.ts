@@ -1,5 +1,4 @@
-import axios, { AxiosResponse } from "axios"
-import { ID, Response } from "../../../../../../_metronic/helpers"
+import { ID } from "../../../../../../_metronic/helpers"
 import { User, UsersQueryResponse } from "./_models"
 
 import { slugify } from "../../../../../../_metronic/helpers/kyHelpers"
@@ -28,9 +27,6 @@ const db = getFirestore()
 const functions = getFunctions()
 const deleteUserFromFirebase = httpsCallable(functions, "deleteUser")
 
-const API_URL = import.meta.env.VITE_APP_THEME_API_URL
-const USER_URL = `${API_URL}/user`
-
 const getUsers = async (queryString: string): Promise<UsersQueryResponse> => {
   try {
     const params = new URLSearchParams(queryString)
@@ -44,7 +40,6 @@ const getUsers = async (queryString: string): Promise<UsersQueryResponse> => {
     const sortOrder = params.get("order") || "asc" // Default sort order
     const searchQuery = params.get("search") || "" // Search input value
 
-    const db = getFirestore()
     const usersCollection = collection(db, "users")
 
     let q = query(usersCollection)
@@ -53,12 +48,10 @@ const getUsers = async (queryString: string): Promise<UsersQueryResponse> => {
     if (searchQuery) {
       const slugifiedSearchQuery = slugify(searchQuery)
 
-      console.log(slugifiedSearchQuery)
-
       q = query(
         usersCollection,
-        where("searchIndex", ">=", slugifiedSearchQuery),
-        where("searchIndex", "<=", slugifiedSearchQuery + "\uf8ff")
+        where("searchIndexEmail", ">=", slugifiedSearchQuery),
+        where("searchIndexEmail", "<=", slugifiedSearchQuery + "\uf8ff")
       )
     }
 
@@ -149,7 +142,6 @@ const getUserById = async (id: ID): Promise<User | undefined> => {
     if (!id) {
       return undefined
     }
-    const db = getFirestore()
     const userDocRef = doc(db, "users", id as string)
     const userDocSnapshot = await getDoc(userDocRef)
 
@@ -170,7 +162,6 @@ const getUsersById = async (ids: string[]): Promise<UserModel[]> => {
       return []
     }
 
-    const db = getFirestore()
     const users: UserModel[] = []
 
     for (const id of ids) {
@@ -190,11 +181,26 @@ const getUsersById = async (ids: string[]): Promise<UserModel[]> => {
   }
 }
 
-const createUser = (user: User): Promise<User | undefined> => {
-  return axios
-    .put(USER_URL, user)
-    .then((response: AxiosResponse<Response<User>>) => response.data)
-    .then((response: Response<User>) => response.data)
+const getUsersByRole = async (role: string): Promise<User[] | undefined> => {
+  try {
+    const usersCollection = collection(db, "users")
+
+    const q = query(usersCollection, where("role", "==", role))
+
+    const snapshot = await getDocs(q)
+
+    const users: User[] = []
+    snapshot.forEach((doc) => {
+      if (doc.exists()) {
+        users.push(doc.data() as User)
+      }
+    })
+
+    return users
+  } catch (error) {
+    console.error("Error fetching users by role:", error)
+    return undefined
+  }
 }
 
 const updateUser = async (user: User): Promise<User | undefined> => {
@@ -215,8 +221,8 @@ const deleteUser = async (userId: ID): Promise<void> => {
 const deleteSelectedUsers = async (userIds: Array<ID>): Promise<void> => {
   try {
     await Promise.all(
-      userIds.map((uid) => {
-        deleteUserFromFirebase({ uid: uid })
+      userIds.map(async (userId) => {
+        await deleteUserFromFirebase({ uid: userId })
       })
     )
   } catch (error) {
@@ -227,10 +233,10 @@ const deleteSelectedUsers = async (userIds: Array<ID>): Promise<void> => {
 
 export {
   getUsers,
-  deleteUser,
-  deleteSelectedUsers,
   getUserById,
   getUsersById,
-  createUser,
+  getUsersByRole,
+  deleteUser,
+  deleteSelectedUsers,
   updateUser,
 }

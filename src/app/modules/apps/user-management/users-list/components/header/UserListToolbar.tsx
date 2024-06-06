@@ -1,13 +1,8 @@
+import { Link } from "react-router-dom"
 import { KTIcon } from "../../../../../../../_metronic/helpers"
-import { useListView } from "../../core/ListViewProvider"
 import { UsersListFilter } from "./UsersListFilter"
 
 const UsersListToolbar = () => {
-  const { setItemIdForUpdate } = useListView()
-  const openAddUserModal = () => {
-    setItemIdForUpdate(null)
-  }
-
   return (
     <div
       className="d-flex justify-content-end"
@@ -23,14 +18,10 @@ const UsersListToolbar = () => {
       {/* end::Export */}
 
       {/* begin::Add user */}
-      <button
-        type="button"
-        className="btn btn-primary"
-        onClick={openAddUserModal}
-      >
+      <Link to="/arayuz/kullanici-yonetimi/kullanici-ekle" className="btn btn-primary">
         <KTIcon iconName="plus" className="fs-2" />
         Ekle
-      </button>
+      </Link>
       {/* end::Add user */}
     </div>
   )

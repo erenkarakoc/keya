@@ -1,6 +1,6 @@
 .ky-text,
 .ky-text * {
-  color: var(--light);
+  color: var(--ky-light);
   margin: 0;
   padding: 0;
 }
@@ -27,7 +27,7 @@
 }
 .ky-text.ky-subtitle .ky-text-highlight,
 .ky-text.ky-subtitle .ky-text-highlight * {
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .ky-text.ky-caption,

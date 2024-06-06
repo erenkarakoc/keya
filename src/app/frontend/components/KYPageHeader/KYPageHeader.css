@@ -13,10 +13,10 @@
   top: -225px;
   left: 50%;
   transform: translateX(-50%);
-  animation: fadeIn 0.5s;
+  animation: fadeInPagePattern 0.5s;
 }
 
-@keyframes fadeIn {
+@keyframes fadeInPagePattern {
   0% {
     top: -320px;
   }

@@ -1,17 +1,12 @@
+import { Link } from "react-router-dom"
 import { KTIcon } from "../../../../../../../_metronic/helpers"
-import { useListView } from "../../core/ListViewProvider"
 import { OfficesListFilter } from "./OfficesListFilter"
 
 const OfficesListToolbar = () => {
-  const { setItemIdForUpdate } = useListView()
-  const openAddUserModal = () => {
-    setItemIdForUpdate(null)
-  }
-
   return (
     <div
       className="d-flex justify-content-end"
-      data-kt-user-table-toolbar="base"
+      data-kt-office-table-toolbar="base"
     >
       <OfficesListFilter />
 
@@ -22,16 +17,12 @@ const OfficesListToolbar = () => {
       </button>
       {/* end::Export */}
 
-      {/* begin::Add user */}
-      <button
-        type="button"
-        className="btn btn-primary"
-        onClick={openAddUserModal}
-      >
+      {/* begin::Add office */}
+      <Link to="/arayuz/ofis-yonetimi/ofis-ekle" className="btn btn-primary">
         <KTIcon iconName="plus" className="fs-2" />
         Ekle
-      </button>
-      {/* end::Add user */}
+      </Link>
+      {/* end::Add office */}
     </div>
   )
 }

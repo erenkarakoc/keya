@@ -92,6 +92,7 @@ const UserDeleteModal: React.FC<UserDeleteModalProps> = ({
             <button
               type="button"
               className="btn btn-danger"
+              data-bs-dismiss="modal"
               onClick={onApproval}
             >
               Sil

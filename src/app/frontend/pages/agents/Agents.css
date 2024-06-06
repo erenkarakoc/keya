@@ -1,0 +1,12 @@
+.ky-page-agents .ky-page-content {
+  padding-top: 100px;
+}
+
+.ky-page-agents .ky-agents-search {
+  position: sticky;
+  top: 20px;
+}
+
+.ky-agents-list {
+  row-gap: var(--bs-gutter-x);
+}

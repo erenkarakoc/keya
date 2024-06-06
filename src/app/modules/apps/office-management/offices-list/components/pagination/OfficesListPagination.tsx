@@ -1,17 +1,19 @@
-
-import clsx from 'clsx'
-import {useQueryResponseLoading, useQueryResponsePagination} from '../../core/QueryResponseProvider'
-import {useQueryRequest} from '../../core/QueryRequestProvider'
-import {PaginationState} from '../../../../../../../_metronic/helpers'
-import {useMemo} from 'react'
+import clsx from "clsx"
+import {
+  useQueryResponseLoading,
+  useQueryResponsePagination,
+} from "../../core/QueryResponseProvider"
+import { useQueryRequest } from "../../core/QueryRequestProvider"
+import { PaginationState } from "../../../../../../../_metronic/helpers"
+import { useMemo } from "react"
 
 const mappedLabel = (label: string): string => {
-  if (label === '&laquo; Previous') {
-    return 'Önceki'
+  if (label === "&laquo; Previous") {
+    return "Önceki"
   }
 
-  if (label === 'Next &raquo;') {
-    return 'Sonraki'
+  if (label === "Next &raquo;") {
+    return "Sonraki"
   }
 
   return label
@@ -20,13 +22,13 @@ const mappedLabel = (label: string): string => {
 const OfficesListPagination = () => {
   const pagination = useQueryResponsePagination()
   const isLoading = useQueryResponseLoading()
-  const {updateState} = useQueryRequest()
+  const { updateState } = useQueryRequest()
   const updatePage = (page: number | undefined | null) => {
     if (!page || isLoading || pagination.page === page) {
       return
     }
 
-    updateState({page, items_per_page: pagination.items_per_page || 10})
+    updateState({ page, items_per_page: pagination.items_per_page || 10 })
   }
 
   const PAGINATION_PAGES_COUNT = 5
@@ -43,10 +45,18 @@ const OfficesListPagination = () => {
       url: string | null
       page: number | null
     }> = []
-    const previousLink: {label: string; active: boolean; url: string | null; page: number | null} =
-      scopedLinks.shift()!
-    const nextLink: {label: string; active: boolean; url: string | null; page: number | null} =
-      scopedLinks.pop()!
+    const previousLink: {
+      label: string
+      active: boolean
+      url: string | null
+      page: number | null
+    } = scopedLinks.shift()!
+    const nextLink: {
+      label: string
+      active: boolean
+      url: string | null
+      page: number | null
+    } = scopedLinks.pop()!
 
     const halfOfPagesCount = Math.floor(PAGINATION_PAGES_COUNT / 2)
 
@@ -56,7 +66,10 @@ const OfficesListPagination = () => {
       pagination.page <= Math.round(PAGINATION_PAGES_COUNT / 2) ||
       scopedLinks.length <= PAGINATION_PAGES_COUNT
     ) {
-      pageLinks = [...pageLinks, ...scopedLinks.slice(0, PAGINATION_PAGES_COUNT)]
+      pageLinks = [
+        ...pageLinks,
+        ...scopedLinks.slice(0, PAGINATION_PAGES_COUNT),
+      ]
     }
 
     if (
@@ -65,7 +78,10 @@ const OfficesListPagination = () => {
     ) {
       pageLinks = [
         ...pageLinks,
-        ...scopedLinks.slice(scopedLinks.length - PAGINATION_PAGES_COUNT, scopedLinks.length),
+        ...scopedLinks.slice(
+          scopedLinks.length - PAGINATION_PAGES_COUNT,
+          scopedLinks.length
+        ),
       ]
     }
 
@@ -93,55 +109,62 @@ const OfficesListPagination = () => {
   const paginationLinks = useMemo(() => sliceLinks(pagination), [pagination])
 
   return (
-    <div className='row'>
-      <div className='col-sm-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start'></div>
-      <div className='col-sm-12 col-md-7 d-flex align-items-center justify-content-center justify-content-md-end'>
-        <div id='kt_table_users_paginate'>
-          <ul className='pagination'>
+    <div className="row">
+      <div className="col-sm-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start"></div>
+      <div className="col-sm-12 col-md-7 d-flex align-items-center justify-content-center justify-content-md-end">
+        <div id="kt_table_offices_paginate">
+          <ul className="pagination">
             <li
-              className={clsx('page-item', {
+              className={clsx("page-item", {
                 disabled: isLoading || pagination.page === 1,
               })}
             >
-              <a onClick={() => updatePage(1)} style={{cursor: 'pointer'}} className='page-link'>
+              <a
+                onClick={() => updatePage(1)}
+                style={{ cursor: "pointer" }}
+                className="page-link"
+              >
                 İlk Sayfa
               </a>
             </li>
             {paginationLinks
               ?.map((link) => {
-                return {...link, label: mappedLabel(link.label)}
+                return { ...link, label: mappedLabel(link.label) }
               })
               .map((link) => (
                 <li
                   key={link.label}
-                  className={clsx('page-item', {
+                  className={clsx("page-item", {
                     active: pagination.page === link.page,
                     disabled: isLoading,
-                    previous: link.label === 'Önceki',
-                    next: link.label === 'Sonraki',
+                    previous: link.label === "Önceki",
+                    next: link.label === "Sonraki",
                   })}
                 >
                   <a
-                    className={clsx('page-link', {
-                      'page-text': link.label === 'Önceki' || link.label === 'Sonraki',
-                      'me-5': link.label === 'Önceki',
+                    className={clsx("page-link", {
+                      "page-text":
+                        link.label === "Önceki" || link.label === "Sonraki",
+                      "me-5": link.label === "Önceki",
                     })}
                     onClick={() => updatePage(link.page)}
-                    style={{cursor: 'pointer'}}
+                    style={{ cursor: "pointer" }}
                   >
                     {mappedLabel(link.label)}
                   </a>
                 </li>
               ))}
             <li
-              className={clsx('page-item', {
-                disabled: isLoading || pagination.page === (pagination.links?.length || 3) - 2,
+              className={clsx("page-item", {
+                disabled:
+                  isLoading ||
+                  pagination.page === (pagination.links?.length || 3) - 2,
               })}
             >
               <a
                 onClick={() => updatePage((pagination.links?.length || 3) - 2)}
-                style={{cursor: 'pointer'}}
-                className='page-link'
+                style={{ cursor: "pointer" }}
+                className="page-link"
               >
                 Son Sayfa
               </a>
@@ -153,4 +176,4 @@ const OfficesListPagination = () => {
   )
 }
 
-export {OfficesListPagination}
+export { OfficesListPagination }

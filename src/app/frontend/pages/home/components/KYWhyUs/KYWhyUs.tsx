@@ -5,12 +5,16 @@ import { KYText } from "../../../../components/KYText/KYText"
 
 import { motion } from "framer-motion"
 
-const KYWhyUs = () => {
+interface KYWhyUsProps {
+  ref?: React.RefObject<HTMLElement>
+}
+
+const KYWhyUs: React.FC<KYWhyUsProps> = ({ ref }) => {
   const whyUsHidden = { opacity: 0, x: -30 }
   const whyUsVisible = { opacity: 1, x: 0 }
 
   return (
-    <section className="ky-why-us-section">
+    <section className="ky-why-us-section" ref={ref}>
       <motion.div
         initial={{ opacity: 0, y: 25 }}
         whileInView={{ opacity: 1, y: 0 }}

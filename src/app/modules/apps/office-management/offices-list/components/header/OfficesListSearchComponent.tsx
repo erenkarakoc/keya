@@ -34,9 +34,9 @@ const OfficesListSearchComponent = () => {
         <KTIcon iconName="magnifier" className="fs-1 position-absolute ms-6" />
         <input
           type="text"
-          data-kt-user-table-filter="search"
+          data-kt-office-table-filter="search"
           className="form-control form-control-solid w-250px ps-14"
-          placeholder="Kullanıcı Ara"
+          placeholder="Ofis Ara"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
