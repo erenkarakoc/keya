@@ -4,7 +4,7 @@ import { ErrorMessage, Field } from "formik"
 
 import MultiSelect from "./../../../../components/multiselect/MultiSelect"
 
-import { getUsersByRole } from "../../../../user-management/users-list/core/_requests"
+import { getUsersByRole } from "../../../../user-management/_core/_requests"
 
 const Step1: FC = () => {
   const [brokers, setBrokers] = useState<{ id: string; label: string }[]>([])

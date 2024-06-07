@@ -1,7 +1,7 @@
 
 import clsx from 'clsx'
-import {useQueryResponseLoading, useQueryResponsePagination} from '../../core/QueryResponseProvider'
-import {useQueryRequest} from '../../core/QueryRequestProvider'
+import {useQueryResponseLoading, useQueryResponsePagination} from '../../../_core/QueryResponseProvider'
+import {useQueryRequest} from '../../../_core/QueryRequestProvider'
 import {PaginationState} from '../../../../../../../_metronic/helpers'
 import {useMemo} from 'react'
 

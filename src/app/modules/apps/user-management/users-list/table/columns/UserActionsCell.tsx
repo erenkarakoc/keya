@@ -1,9 +1,9 @@
 import { FC } from "react"
 import { useMutation, useQueryClient } from "react-query"
 import { ID, KTIcon, QUERIES } from "../../../../../../../_metronic/helpers"
-import { useListView } from "../../core/ListViewProvider"
-import { useQueryResponse } from "../../core/QueryResponseProvider"
-import { deleteUser } from "../../core/_requests"
+import { useListView } from "../../../_core/ListViewProvider"
+import { useQueryResponse } from "../../../_core/QueryResponseProvider"
+import { deleteUser } from "../../../_core/_requests"
 import { UserDeleteModal } from "../../user-delete-modal/UserDeleteModal"
 
 import toast from "react-hot-toast"

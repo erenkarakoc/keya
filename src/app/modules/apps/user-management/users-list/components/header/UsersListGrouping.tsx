@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react"
 import { useQueryClient, useMutation } from "react-query"
 import { QUERIES } from "../../../../../../../_metronic/helpers"
-import { useListView } from "../../core/ListViewProvider"
-import { useQueryResponse } from "../../core/QueryResponseProvider"
-import { deleteSelectedUsers } from "../../core/_requests"
+import { useListView } from "../../../_core/ListViewProvider"
+import { useQueryResponse } from "../../../_core/QueryResponseProvider"
+import { deleteSelectedUsers } from "../../../_core/_requests"
 
 import { UserModel } from "../../../../../auth"
 
@@ -88,7 +88,7 @@ const UsersListGrouping = () => {
               silinecektir:"
         onApproval={async () => await deleteSelectedItems.mutateAsync()}
         selectedUsersForDelete={selectedUsersForDelete}
-      ></UserDeleteModal>
+      />
     </div>
   )
 }

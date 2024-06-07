@@ -1,7 +1,7 @@
 import { FC, PropsWithChildren } from "react"
 import { HeaderProps } from "react-table"
-import { useListView } from "../../core/ListViewProvider"
-import { Office } from "../../core/_models"
+import { useListView } from "../../../_core/ListViewProvider"
+import { Office } from "../../../_core/_models"
 
 type Props = {
   tableProps: PropsWithChildren<HeaderProps<Office>>

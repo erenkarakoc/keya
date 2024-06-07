@@ -1,4 +1,4 @@
-import { Response } from "../../../../../../_metronic/helpers"
+import { Response } from "../../../../../_metronic/helpers"
 
 export interface UserAddressModel {
   country: string
@@ -15,9 +15,8 @@ export type User = {
   lastName: string
   photoURL?: string | null
   phoneNumber?: string
-  role?: string
+  role: string
   officeId: string
-  permissions?: Array<number>
   address?: UserAddressModel
   createdAt: string
   lastLoginAt: string

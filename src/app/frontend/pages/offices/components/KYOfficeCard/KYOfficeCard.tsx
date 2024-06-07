@@ -5,9 +5,9 @@ import "./KYOfficeCard.css"
 
 import { getUserNameInitials } from "../../../../../../_metronic/helpers/kyHelpers"
 
-import { Office } from "../../../../../modules/apps/office-management/offices-list/core/_models"
-import { User } from "../../../../../modules/apps/user-management/users-list/core/_models"
-import { getUserById } from "../../../../../modules/apps/user-management/users-list/core/_requests"
+import { Office } from "../../../../../modules/apps/office-management/_core/_models"
+import { User } from "../../../../../modules/apps/user-management/_core/_models"
+import { getUserById } from "../../../../../modules/apps/user-management/_core/_requests"
 
 interface KYOfficeCardProps {
   office: Office

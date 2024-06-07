@@ -12,7 +12,7 @@ import {
   State,
   City,
 } from "../../../../../../_metronic/helpers/address-helper/_models"
-import { Office } from "../core/_models"
+import { Office } from "../../_core/_models"
 
 import {
   generateRandomName,
@@ -25,11 +25,11 @@ import {
 } from "../../../../../../_metronic/helpers/kyHelpers"
 
 import { OfficesListLoading } from "../components/loading/OfficesListLoading"
-import { useListView } from "../core/ListViewProvider"
-import { useQueryResponse } from "../core/QueryResponseProvider"
+import { useListView } from "../../_core/ListViewProvider"
+import { useQueryResponse } from "../../_core/QueryResponseProvider"
 
-import { getUsersByRole } from "../../../user-management/users-list/core/_requests"
-import { updateOffice } from "../core/_requests"
+import { getUsersByRole } from "../../../user-management/_core/_requests"
+import { updateOffice } from "../../_core/_requests"
 
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import { firebaseApp } from "../../../../../../firebase/BaseConfig"
@@ -208,9 +208,17 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
         console.log("User is not authenticated. Please sign in.")
         return
       }
+
       values.photoURLs = uploadedImageUrls
+
       await updateOffice(values)
+
+      toast.success("Ofis bilgileri güncellendi.")
     } catch (ex) {
+      toast.error(
+        "Ofis bilgileri güncellenirken bir hata oluştu, lütfen tekrar deneyin."
+      )
+
       console.error(ex)
     } finally {
       setSubmittingForm(false)
@@ -468,20 +476,6 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                 />
                 <ErrorMessage name="email" />
                 {/* end::Input */}
-              </div>
-
-              <div className="fv-row mb-10">
-                <label className="form-label required">E-posta Adresi</label>
-
-                <div className="position-relative">
-                  <Field
-                    className="form-control form-control-lg form-control-solid"
-                    name="email"
-                  />
-                </div>
-                <div className="text-danger mt-2">
-                  <ErrorMessage name="email" />
-                </div>
               </div>
 
               <div className="fv-row mb-10">

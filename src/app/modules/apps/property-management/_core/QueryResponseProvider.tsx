@@ -10,12 +10,12 @@ import {
   QUERIES,
   stringifyRequestQuery,
   WithChildren,
-} from "../../../../../../_metronic/helpers"
-import { getOffices } from "../../../office-management/offices-list/core/_requests"
-import { Office } from "../../../office-management/offices-list/core/_models"
+} from "../../../../../_metronic/helpers"
+import { getProperties } from "./_requests"
+import { Property } from "./_models"
 import { useQueryRequest } from "./QueryRequestProvider"
 
-const QueryResponseContext = createResponseContext<Office>(initialQueryResponse)
+const QueryResponseContext = createResponseContext<Property>(initialQueryResponse)
 const QueryResponseProvider: FC<WithChildren> = ({ children }) => {
   const { state } = useQueryRequest()
   const [query, setQuery] = useState<string>(stringifyRequestQuery(state))
@@ -34,7 +34,7 @@ const QueryResponseProvider: FC<WithChildren> = ({ children }) => {
   } = useQuery(
     `${QUERIES.USERS_LIST}-${query}`,
     () => {
-      return getOffices(query)
+      return getProperties(query)
     },
     { cacheTime: 0, keepPreviousData: true, refetchOnWindowFocus: false }
   )

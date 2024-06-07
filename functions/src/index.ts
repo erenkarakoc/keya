@@ -67,7 +67,6 @@ export const registerUser = functions.https.onCall(async (data) => {
         city,
         addressLine,
       },
-      permissions: [],
       createdAt: userRecord.metadata.creationTime || "",
       lastLoginAt: userRecord.metadata.lastSignInTime || "",
       searchIndexEmail: email,

@@ -1,9 +1,9 @@
-import { ID } from "../../../../../../_metronic/helpers"
+import { ID } from "../../../../../_metronic/helpers"
 import { User, UsersQueryResponse } from "./_models"
 
-import { slugify } from "../../../../../../_metronic/helpers/kyHelpers"
+import { slugify } from "../../../../../_metronic/helpers/kyHelpers"
 
-import { firebaseConfig } from "../../../../../../firebase/BaseConfig"
+import { firebaseConfig } from "../../../../../firebase/BaseConfig"
 import { initializeApp } from "firebase/app"
 import {
   getFirestore,
@@ -19,7 +19,7 @@ import {
   limit,
 } from "firebase/firestore"
 import { getFunctions, httpsCallable } from "firebase/functions"
-import { UserModel } from "../../../../auth"
+import { UserModel } from "../../../auth"
 
 initializeApp(firebaseConfig)
 const db = getFirestore()
@@ -203,6 +203,48 @@ const getUsersByRole = async (role: string): Promise<User[] | undefined> => {
   }
 }
 
+const addUsersToOffice = async (officeId: string, userIds: string[]) => {
+  try {
+    const officeDocRef = doc(db, "offices", officeId)
+    const officeDocSnap = await getDoc(officeDocRef)
+
+    if (officeDocSnap.exists()) {
+      const officeData = officeDocSnap.data()
+
+      const existingUserIds = new Set(officeData.users)
+      const newUsers = userIds.filter((userId) => !existingUserIds.has(userId))
+      const updatedUsers = [...officeData.users, ...newUsers]
+
+      await updateDoc(officeDocRef, { users: updatedUsers })
+    } else {
+      console.error("Office document with the provided ID does not exist")
+    }
+  } catch (error) {
+    console.error("Error adding users to office:", error)
+  }
+}
+
+const removeUsersFromOffice = async (officeId: string, userIds: string[]) => {
+  try {
+    const officeDocRef = doc(db, "offices", officeId)
+    const officeDocSnap = await getDoc(officeDocRef)
+
+    if (officeDocSnap.exists()) {
+      const officeData = officeDocSnap.data()
+
+      const updatedUsers = officeData.users.filter(
+        (userId: string) => !userIds.includes(userId)
+      )
+
+      await updateDoc(officeDocRef, { users: updatedUsers })
+    } else {
+      console.error("Office document with the provided ID does not exist")
+    }
+  } catch (error) {
+    console.error("Error removing users from office:", error)
+  }
+}
+
 const updateUser = async (user: User): Promise<User | undefined> => {
   const userDocRef = doc(db, "users", user.id)
   await updateDoc(userDocRef, user)
@@ -236,6 +278,8 @@ export {
   getUserById,
   getUsersById,
   getUsersByRole,
+  addUsersToOffice,
+  removeUsersFromOffice,
   deleteUser,
   deleteSelectedUsers,
   updateUser,

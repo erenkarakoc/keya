@@ -40,7 +40,6 @@ export async function login(
         phoneNumber: userDataFromFirestore?.phone || "",
         officeId: userDataFromFirestore?.officeId || "",
         role: userDataFromFirestore?.role || "",
-        permissions: userDataFromFirestore?.permissions || [],
         address: {
           country: userDataFromFirestore?.address?.country || "",
           state: userDataFromFirestore?.address?.state || "",

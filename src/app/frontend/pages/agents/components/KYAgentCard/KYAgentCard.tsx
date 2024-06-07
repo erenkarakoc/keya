@@ -5,9 +5,9 @@ import { Link } from "react-router-dom"
 
 import { getUserRoleText } from "../../../../../../_metronic/helpers/kyHelpers"
 
-import { User } from "../../../../../modules/apps/user-management/users-list/core/_models"
-import { Office } from "../../../../../modules/apps/office-management/offices-list/core/_models"
-import { getOfficeById } from "../../../../../modules/apps/office-management/offices-list/core/_requests"
+import { User } from "../../../../../modules/apps/user-management//_core/_models"
+import { Office } from "../../../../../modules/apps/office-management/_core/_models"
+import { getOfficeById } from "../../../../../modules/apps/office-management/_core/_requests"
 
 interface KYAgentCardProps {
   user: User

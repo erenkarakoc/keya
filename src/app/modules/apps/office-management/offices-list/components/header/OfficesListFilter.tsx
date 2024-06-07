@@ -4,8 +4,8 @@ import {
   initialQueryState,
   KTIcon,
 } from "../../../../../../../_metronic/helpers"
-import { useQueryRequest } from "../../core/QueryRequestProvider"
-import { useQueryResponse } from "../../core/QueryResponseProvider"
+import { useQueryRequest } from "../../../_core/QueryRequestProvider"
+import { useQueryResponse } from "../../../_core/QueryResponseProvider"
 
 const OfficesListFilter = () => {
   const { updateState } = useQueryRequest()

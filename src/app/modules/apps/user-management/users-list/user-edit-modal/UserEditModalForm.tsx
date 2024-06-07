@@ -1,21 +1,30 @@
 import { FC, useState, useEffect, ChangeEvent } from "react"
+
 import * as Yup from "yup"
 import { useFormik } from "formik"
-import { isNotEmpty, toAbsoluteUrl } from "../../../../../../_metronic/helpers"
-import { User } from "../core/_models"
-import clsx from "clsx"
-import { useListView } from "../core/ListViewProvider"
+
+import { User } from "../../_core/_models"
+import { useListView } from "../../_core/ListViewProvider"
+import {
+  addUsersToOffice,
+  removeUsersFromOffice,
+  updateUser,
+} from "../../_core/_requests"
+
 import { UsersListLoading } from "../components/loading/UsersListLoading"
-import { updateUser } from "../core/_requests"
-import { useQueryResponse } from "../core/QueryResponseProvider"
+import { useQueryResponse } from "../../_core/QueryResponseProvider"
+
+import { Office } from "../../../office-management/_core/_models"
+import { getAllOffices } from "../../../office-management/_core/_requests"
 
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import { firebaseApp } from "../../../../../../firebase/BaseConfig"
 import { httpsCallable, getFunctions } from "firebase/functions"
 import { getAuth } from "@firebase/auth"
 
-import { Office } from "../../../office-management/offices-list/core/_models"
-import { getAllOffices } from "../../../office-management/offices-list/core/_requests"
+import { isNotEmpty, toAbsoluteUrl } from "../../../../../../_metronic/helpers"
+import clsx from "clsx"
+import toast from "react-hot-toast"
 
 const storage = getStorage(firebaseApp)
 const auth = getAuth()
@@ -106,10 +115,22 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
             }
           }
 
+          const oldOfficeId = userForEdit.officeId
+          const newOfficeId = values.officeId
+
+          await removeUsersFromOffice(oldOfficeId, [values.uid])
+          await addUsersToOffice(newOfficeId, [values.uid])
+
           await updateUser(values)
           await updateEmail({ uid: values.uid, newEmail: values.email })
+
+          toast.success("Kullanıcı bilgileri güncellendi.")
         }
       } catch (error) {
+        toast.error(
+          "Kullanıcı bilgileri güncellenirken bir hata oluştu, lütfen tekrar deneyin."
+        )
+
         console.error(error)
       } finally {
         setSubmitting(false)

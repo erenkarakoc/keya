@@ -10,8 +10,8 @@ import {
 } from "../../../../_metronic/helpers/kyHelpers"
 import { KYButton } from "../../components/KYButton/KYButton"
 import { KYAgentCard } from "./components/KYAgentCard/KYAgentCard"
-import { User } from "../../../modules/apps/user-management/users-list/core/_models"
-import { getUsersByRole } from "../../../modules/apps/user-management/users-list/core/_requests"
+import { User } from "../../../modules/apps/user-management//_core/_models"
+import { getUsersByRole } from "../../../modules/apps/user-management//_core/_requests"
 import { motion } from "framer-motion"
 import { KYPagination } from "../../components/KYPagination/KYPagination"
 

@@ -3,14 +3,14 @@ import { useTable, ColumnInstance, Row } from "react-table"
 import { CustomHeaderColumn } from "./columns/CustomHeaderColumn"
 import { CustomRow } from "./columns/CustomRow"
 import { officesColumns } from "./columns/_columns"
-import { Office } from "../core/_models"
+import { Office } from "../../_core/_models"
 import { OfficesListLoading } from "../components/loading/OfficesListLoading"
 import { OfficesListPagination } from "../components/pagination/OfficesListPagination"
 import { KTCardBody } from "../../../../../../_metronic/helpers"
 import {
   useQueryResponseData,
   useQueryResponseLoading,
-} from "../core/QueryResponseProvider"
+} from "../../_core/QueryResponseProvider"
 import { MenuComponent } from "../../../../../../_metronic/assets/ts/components"
 
 const OfficesTable = () => {

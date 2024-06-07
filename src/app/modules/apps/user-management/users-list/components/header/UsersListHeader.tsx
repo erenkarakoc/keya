@@ -1,4 +1,4 @@
-import { useListView } from "../../core/ListViewProvider"
+import { useListView } from "../../../_core/ListViewProvider"
 import { UsersListToolbar } from "./UserListToolbar"
 import { UsersListGrouping } from "./UsersListGrouping"
 import { UsersListSearchComponent } from "./UsersListSearchComponent"

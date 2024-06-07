@@ -6,7 +6,7 @@ import {
   KTIcon,
   useDebounce,
 } from "../../../../../../../_metronic/helpers"
-import { useQueryRequest } from "../../core/QueryRequestProvider"
+import { useQueryRequest } from "../../../_core/QueryRequestProvider"
 
 const OfficesListSearchComponent = () => {
   const { updateState } = useQueryRequest()

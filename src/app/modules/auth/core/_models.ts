@@ -20,8 +20,7 @@ export type UserModel = {
   photoURL?: string
   phoneNumber?: string
   officeId?: string
-  role?: string
-  permissions?: Array<number>
+  role: string
   address?: UserAddressModel
   createdAt: string
   lastLoginAt: string

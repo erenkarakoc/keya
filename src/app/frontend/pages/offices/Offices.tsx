@@ -10,10 +10,10 @@ import {
 } from "../../../../_metronic/helpers/kyHelpers"
 import { KYButton } from "../../components/KYButton/KYButton"
 import { KYOfficeCard } from "./components/KYOfficeCard/KYOfficeCard"
-import { Office } from "../../../modules/apps/office-management/offices-list/core/_models"
+import { Office } from "../../../modules/apps/office-management/_core/_models"
 import { motion } from "framer-motion"
 import { KYPagination } from "../../components/KYPagination/KYPagination"
-import { getAllOffices } from "../../../modules/apps/office-management/offices-list/core/_requests"
+import { getAllOffices } from "../../../modules/apps/office-management/_core/_requests"
 
 interface Option {
   value: string

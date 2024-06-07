@@ -1,9 +1,10 @@
 import "./OfficeDeleteModal.css"
 
-import clsx from "clsx"
 import React, { useEffect, useState } from "react"
 
-import { Office } from "../core/_models"
+import { KYOfficeImage } from "../../../../../frontend/components/KYOfficeImage/KYOfficeImage"
+
+import { Office } from "../../_core/_models"
 
 interface OfficeDeleteModalProps {
   id: string
@@ -48,19 +49,13 @@ const OfficeDeleteModal: React.FC<OfficeDeleteModalProps> = ({
                   >
                     <div className="symbol symbol-circle symbol-50px overflow-hidden me-3">
                       <a href="#">
-                        {office.photoURLs ? (
-                          <div className="symbol-label">
-                            <img
-                              src={`${office.photoURLs}`}
-                              alt={office.name}
-                              className="w-100"
-                            />
-                          </div>
-                        ) : (
-                          <div className={clsx("symbol-label fs-3")}>
-                            {office.name.charAt(0)}
-                          </div>
-                        )}
+                        <div className="symbol-label">
+                          <KYOfficeImage
+                            height={50}
+                            width={50}
+                            officeName={office.name}
+                          />
+                        </div>
                       </a>
                     </div>
                     <div className="d-flex flex-column">
@@ -69,7 +64,7 @@ const OfficeDeleteModal: React.FC<OfficeDeleteModalProps> = ({
                         className="text-gray-800 text-hover-primary mb-1"
                         style={{ textAlign: "left" }}
                       >
-                        {office.name} {office.name}
+                        Keya {office.name}
                       </a>
                       <span>{office.email}</span>
                     </div>
@@ -92,6 +87,7 @@ const OfficeDeleteModal: React.FC<OfficeDeleteModalProps> = ({
               type="button"
               className="btn btn-danger"
               onClick={onApproval}
+              data-bs-dismiss="modal"
             >
               Sil
             </button>

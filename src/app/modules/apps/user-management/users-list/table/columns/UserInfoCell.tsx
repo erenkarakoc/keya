@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { FC } from "react"
-import { User } from "../../core/_models"
+import { User } from "../../../_core/_models"
 
 type Props = {
   user: User

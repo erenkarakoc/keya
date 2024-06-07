@@ -1,8 +1,8 @@
 import { useQuery } from "react-query"
 import { OfficeEditModalForm } from "./OfficeEditModalForm"
 import { isNotEmpty, QUERIES } from "../../../../../../_metronic/helpers"
-import { useListView } from "../core/ListViewProvider"
-import { getOfficeById } from "../core/_requests"
+import { useListView } from "../../_core/ListViewProvider"
+import { getOfficeById } from "../../_core/_requests"
 
 const OfficeEditModalFormWrapper = () => {
   const { itemIdForUpdate, setItemIdForUpdate } = useListView()

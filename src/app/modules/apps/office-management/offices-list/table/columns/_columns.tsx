@@ -6,7 +6,7 @@ import {OfficeSelectionCell} from './OfficeSelectionCell'
 import {OfficeCustomHeader} from './OfficeCustomHeader'
 import {OfficeSelectionHeader} from './OfficeSelectionHeader'
 
-import {Office} from '../../core/_models'
+import {Office} from '../../../_core/_models'
 
 const officesColumns: ReadonlyArray<Column<Office>> = [
   {

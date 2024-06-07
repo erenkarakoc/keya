@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react"
 import { useQueryClient, useMutation } from "react-query"
 import { QUERIES } from "../../../../../../../_metronic/helpers"
-import { useListView } from "../../core/ListViewProvider"
-import { useQueryResponse } from "../../core/QueryResponseProvider"
-import { deleteSelectedOffices } from "../../core/_requests"
+import { useListView } from "../../../_core/ListViewProvider"
+import { useQueryResponse } from "../../../_core/QueryResponseProvider"
+import { deleteSelectedOffices } from "../../../_core/_requests"
 
-import { Office } from "../../core/_models"
+import { Office } from "../../../_core/_models"
 
 import { firebaseConfig } from "../../../../../../../firebase/BaseConfig"
 import { initializeApp } from "firebase/app"
@@ -84,11 +84,11 @@ const OfficesListGrouping = () => {
       <OfficeDeleteModal
         id="kt_modal_delete_confirmation"
         title="Emin misiniz?"
-        description="Devam etmeniz halinde aşağıdaki kullanıcılar kalıcı olarak
+        description="Devam etmeniz halinde aşağıdaki ofisler kalıcı olarak
               silinecektir:"
         onApproval={async () => await deleteSelectedItems.mutateAsync()}
         selectedOfficesForDelete={selectedOfficesForDelete}
-      ></OfficeDeleteModal>
+      />
     </div>
   )
 }

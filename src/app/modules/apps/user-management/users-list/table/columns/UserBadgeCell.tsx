@@ -1,6 +1,6 @@
 import { FC, useState, useEffect } from "react"
 import { getUserRoleText } from "../../../../../../../_metronic/helpers/kyHelpers"
-import { getOfficeNameById } from "../../../../office-management/offices-list/core/_requests"
+import { getOfficeNameById } from "../../../../office-management/_core/_requests"
 
 type Props = {
   text?: string

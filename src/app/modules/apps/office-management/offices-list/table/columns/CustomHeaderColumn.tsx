@@ -1,6 +1,6 @@
 import {FC} from 'react'
 import {ColumnInstance} from 'react-table'
-import {Office} from '../../core/_models'
+import {Office} from '../../../_core/_models'
 
 type Props = {
   column: ColumnInstance<Office>

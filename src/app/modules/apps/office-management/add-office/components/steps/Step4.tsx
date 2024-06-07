@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { ErrorMessage } from "formik"
 import MultiSelect from "../../../../components/multiselect/MultiSelect"
-import { getUsersByRole } from "../../../../user-management/users-list/core/_requests"
+import { getUsersByRole } from "../../../../user-management/_core/_requests"
 import { getUserRoleText } from "../../../../../../../_metronic/helpers/kyHelpers"
 import { Link } from "react-router-dom"
 

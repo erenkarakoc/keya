@@ -1,9 +1,9 @@
 import { FC } from "react"
 import { useMutation, useQueryClient } from "react-query"
 import { ID, KTIcon, QUERIES } from "../../../../../../../_metronic/helpers"
-import { useListView } from "../../core/ListViewProvider"
-import { useQueryResponse } from "../../core/QueryResponseProvider"
-import { deleteOffice } from "../../core/_requests"
+import { useListView } from "../../../_core/ListViewProvider"
+import { useQueryResponse } from "../../../_core/QueryResponseProvider"
+import { deleteOffice } from "../../../_core/_requests"
 import { OfficeDeleteModal } from "../../office-delete-modal/OfficeDeleteModal"
 
 import toast from "react-hot-toast"
@@ -23,11 +23,11 @@ const OfficeActionsCell: FC<Props> = ({ id }) => {
     () => deleteOffice(itemIdForDelete as string),
     {
       onSuccess: () => {
-        toast.success("Kullanıcı başarıyla silindi!")
+        toast.success("Ofis başarıyla silindi!")
         queryClient.invalidateQueries([`${QUERIES.USERS_LIST}-${query}`])
       },
       onError: (error) => {
-        toast.error("Kullanıcı silinirken bir hata oluştu!")
+        toast.error("Ofis silinirken bir hata oluştu!")
         console.error(error)
       },
     }
@@ -40,7 +40,7 @@ const OfficeActionsCell: FC<Props> = ({ id }) => {
       <OfficeDeleteModal
         id="kt_modal_delete_confirmation_single"
         title="Emin misiniz?"
-        description="Devam etmeniz halinde bu kullanıcı kalıcı olarak silinecektir."
+        description="Devam etmeniz halinde bu ofis kalıcı olarak silinecektir."
         onApproval={async () => await deleteItem.mutateAsync()}
       />
 

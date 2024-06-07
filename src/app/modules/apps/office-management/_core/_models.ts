@@ -1,4 +1,4 @@
-import { Response } from "../../../../../../_metronic/helpers"
+import { Response } from "../../../../../_metronic/helpers"
 
 export type Office = {
   id: string

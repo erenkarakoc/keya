@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect, ChangeEvent } from "react"
 import { KTIcon } from "../../../../../../../_metronic/helpers"
 import { ErrorMessage, Field } from "formik"
-import { getAllOffices } from "../../../../office-management/offices-list/core/_requests"
+import { getAllOffices } from "../../../../office-management/_core/_requests"
 
 interface Office {
   id: string

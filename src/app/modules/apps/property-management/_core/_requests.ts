@@ -1,9 +1,9 @@
-import { ID } from "../../../../../../_metronic/helpers"
-import { Office, OfficesQueryResponse } from "./_models"
+import { ID } from "../../../../../_metronic/helpers"
+import { Property, PropertiesQueryResponse } from "./_models"
 
-import { slugify } from "../../../../../../_metronic/helpers/kyHelpers"
+import { slugify } from "../../../../../_metronic/helpers/kyHelpers"
 
-import { firebaseConfig } from "../../../../../../firebase/BaseConfig"
+import { firebaseConfig } from "../../../../../firebase/BaseConfig"
 import { initializeApp } from "firebase/app"
 import {
   getFirestore,
@@ -23,9 +23,9 @@ import {
 initializeApp(firebaseConfig)
 const db = getFirestore()
 
-const getOffices = async (
+const getProperties = async (
   queryString: string
-): Promise<OfficesQueryResponse> => {
+): Promise<PropertiesQueryResponse> => {
   try {
     const params = new URLSearchParams(queryString)
     const page = parseInt(params.get("page") || "1", 10)
@@ -39,16 +39,16 @@ const getOffices = async (
     const searchQuery = params.get("search") || ""
 
     const db = getFirestore()
-    const officesCollection = collection(db, "offices")
+    const propertiesCollection = collection(db, "offices")
 
-    let q = query(officesCollection)
+    let q = query(propertiesCollection)
 
     // Apply search filter if search query is provided
     if (searchQuery) {
       const slugifiedSearchQuery = slugify(searchQuery)
 
       q = query(
-        officesCollection,
+        propertiesCollection,
         where("name", ">=", slugifiedSearchQuery),
         where("name", "<=", slugifiedSearchQuery + "\uf8ff")
       )
@@ -70,17 +70,17 @@ const getOffices = async (
 
     const snapshot = await getDocs(q)
 
-    const offices: Office[] = []
+    const properties: Property[] = []
     snapshot.forEach((doc) => {
       if (doc.exists()) {
-        offices.push(doc.data() as Office)
+        properties.push(doc.data() as Property)
       }
     })
 
     // Calculate pagination metadata
-    const totalOfficesQuery = await getDocs(collection(db, "offices"))
-    const totalOffices = totalOfficesQuery.size
-    const totalPages = Math.ceil(totalOffices / itemsPerPage)
+    const totalPropertiesQuery = await getDocs(collection(db, "offices"))
+    const totalProperties = totalPropertiesQuery.size
+    const totalPages = Math.ceil(totalProperties / itemsPerPage)
     const nextPage = page < totalPages ? page + 1 : null
     const prevPage = page > 1 ? page - 1 : null
 
@@ -112,7 +112,7 @@ const getOffices = async (
     }
 
     return {
-      data: offices,
+      data: properties,
       payload: {
         pagination: {
           page: page,
@@ -122,7 +122,7 @@ const getOffices = async (
       },
     }
   } catch (error) {
-    console.error("Error fetching offices:", error)
+    console.error("Error fetching properties:", error)
     return {
       data: [],
       payload: {
@@ -136,101 +136,105 @@ const getOffices = async (
   }
 }
 
-const getAllOffices = async (): Promise<Office[]> => {
+const getAllProperties = async (): Promise<Property[]> => {
   try {
     const db = getFirestore()
-    const officeCollectionRef = collection(db, "offices")
-    const officeDocSnapshot = await getDocs(officeCollectionRef)
+    const propertyCollectionRef = collection(db, "properties")
+    const propertyDocSnapshot = await getDocs(propertyCollectionRef)
 
-    const offices: Office[] = []
+    const properties: Property[] = []
 
-    officeDocSnapshot.forEach((doc) => {
-      const officeData = doc.data() as Office
-      offices.push({ ...officeData, id: doc.id })
+    propertyDocSnapshot.forEach((doc) => {
+      const propertyData = doc.data() as Property
+      properties.push({ ...propertyData, id: doc.id })
     })
 
-    return offices
+    return properties
   } catch (error) {
-    console.error("Error fetching offices:", error)
+    console.error("Error fetching properties:", error)
     return []
   }
 }
 
-const getOfficeById = async (id: string): Promise<Office | undefined> => {
+const getPropertyById = async (id: string): Promise<Property | undefined> => {
   try {
     const db = getFirestore()
-    const officeDocRef = doc(db, "offices", id)
-    const officeDocSnapshot = await getDoc(officeDocRef)
+    const propertyDocRef = doc(db, "properties", id)
+    const propertyDocSnapshot = await getDoc(propertyDocRef)
 
-    if (officeDocSnapshot.exists()) {
-      return officeDocSnapshot.data() as Office
+    if (propertyDocSnapshot.exists()) {
+      return propertyDocSnapshot.data() as Property
     } else {
       return undefined
     }
   } catch (error) {
-    console.error("Error fetching office:", error)
+    console.error("Error fetching property:", error)
     return undefined
   }
 }
 
-const getOfficeNameById = async (id: string): Promise<string | undefined> => {
+const getPropertyNameById = async (id: string): Promise<string | undefined> => {
   try {
     const db = getFirestore()
-    const officeDocRef = doc(db, "offices", id)
-    const officeDocSnapshot = await getDoc(officeDocRef)
+    const propertyDocRef = doc(db, "properties", id)
+    const propertyDocSnapshot = await getDoc(propertyDocRef)
 
-    if (officeDocSnapshot.exists()) {
-      const officeData = officeDocSnapshot.data()
-      if (officeData) {
-        return officeData.name as string
+    if (propertyDocSnapshot.exists()) {
+      const propertyData = propertyDocSnapshot.data()
+      if (propertyData) {
+        return propertyData.name as string
       }
     }
     return undefined
   } catch (error) {
-    console.error("Error fetching office:", error)
+    console.error("Error fetching property:", error)
     return undefined
   }
 }
 
-const updateOffice = async (office: Office): Promise<Office | undefined> => {
-  const officeDocRef = doc(db, "offices", office.id)
-  await updateDoc(officeDocRef, office)
-  return office
+const updateProperty = async (
+  property: Property
+): Promise<Property | undefined> => {
+  const propertyDocRef = doc(db, "offices", property.id)
+  await updateDoc(propertyDocRef, property)
+  return property
 }
 
-const deleteOffice = async (officeId: string): Promise<void> => {
+const deleteProperty = async (propertyId: string): Promise<void> => {
   try {
-    const officeRef = doc(db, "offices", officeId)
-    await deleteDoc(officeRef)
+    const propertyRef = doc(db, "offices", propertyId)
+    await deleteDoc(propertyRef)
   } catch (error) {
-    console.error("Error deleting office documents:", error)
+    console.error("Error deleting property documents:", error)
     throw error
   }
 }
 
-const deleteSelectedOffices = async (officeIds: Array<ID>): Promise<void> => {
+const deleteSelectedProperties = async (
+  propertyIds: Array<ID>
+): Promise<void> => {
   try {
     await Promise.all(
-      officeIds.map(async (officeId) => {
-        if (typeof officeId === "string") {
-          await deleteOffice(officeId)
+      propertyIds.map(async (propertyId) => {
+        if (typeof propertyId === "string") {
+          await deleteProperty(propertyId)
         } else {
-          console.error("Invalid officeId")
+          console.error("Invalid propertyId")
         }
       })
     )
   } catch (error) {
-    console.error("Error deleting offices:", error)
+    console.error("Error deleting properties:", error)
     throw error
   }
 }
 
 export {
-  getOffices,
-  getAllOffices,
-  getOfficeById,
-  getOfficeNameById,
-  deleteOffice,
-  deleteSelectedOffices,
-  updateOffice,
+  getProperties,
+  getAllProperties,
+  getPropertyById,
+  getPropertyNameById,
+  deleteProperty,
+  deleteSelectedProperties,
+  updateProperty,
 }

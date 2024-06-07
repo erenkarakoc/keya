@@ -1,14 +1,32 @@
-import { FC } from "react"
+import { FC, useState, useEffect } from "react"
 import { KTIcon } from "../../../../../../../_metronic/helpers"
+import { getUserById } from "../../../../user-management/_core/_requests"
 
 interface Step5Props {
   values: {
     email?: string
-    owners: []
+    owners: string[]
   }
 }
 
 const Step5: FC<Step5Props> = ({ values }) => {
+  const [brokerEmails, setBrokerEmails] = useState<string[]>([])
+
+  useEffect(() => {
+    const fetchBrokers = async (ids: string[]) => {
+      const brokersArr: string[] = []
+
+      ids.map(async (id) => {
+        const brokers = await getUserById(id)
+        brokersArr.push(brokers?.email as string)
+      })
+
+      setBrokerEmails(brokersArr)
+    }
+
+    fetchBrokers(values.owners)
+  }, [values])
+
   return (
     <div className="w-100">
       <div className="mb-0">
@@ -23,14 +41,14 @@ const Step5: FC<Step5Props> = ({ values }) => {
                   : "Ofis formunu başarıyla doldurdunuz. Kaydet butonuna basmadan önce gerekli talimatları Broker'a e-posta aracılığıyla iletin:"}
                 <br />
                 <div className="d-flex flex-column">
-                  {values.owners.map((owner: string, i) => (
+                  {brokerEmails.map((email, i) => (
                     <a
-                      href={`mailto:${values.email}`}
+                      href={`mailto:${email}`}
                       className="link-primary fw-bolder mt-2"
                       target="_blank"
                       key={i}
                     >
-                      {values.email}
+                      {email}
                     </a>
                   ))}
                 </div>

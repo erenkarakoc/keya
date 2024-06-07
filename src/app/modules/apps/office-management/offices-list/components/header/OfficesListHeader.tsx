@@ -1,5 +1,5 @@
-import { useListView } from "../../core/ListViewProvider"
-import { OfficesListToolbar } from "./OfficeListToolbar"
+import { useListView } from "../../../_core/ListViewProvider"
+import { OfficesListToolbar } from "./OfficesListToolbar"
 import { OfficesListGrouping } from "./OfficesListGrouping"
 import { OfficesListSearchComponent } from "./OfficesListSearchComponent"
 
