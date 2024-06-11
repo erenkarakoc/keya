@@ -68,6 +68,8 @@ const AddOffice = () => {
   const submitStep = async (values: ICreateAccount, actions: FormikValues) => {
     if (!stepper) return
 
+    window.scrollTo(0, 0)
+
     if (stepper.currentStepIndex !== stepper.totalStepsNumber) {
       stepper.goNext()
       setCurrentSchemaIndex((prevIndex) => prevIndex + 1)

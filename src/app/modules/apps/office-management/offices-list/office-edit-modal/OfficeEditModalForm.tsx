@@ -31,7 +31,13 @@ import { useQueryResponse } from "../../_core/QueryResponseProvider"
 import { getUsersByRole } from "../../../user-management/_core/_requests"
 import { updateOffice } from "../../_core/_requests"
 
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage"
 import { firebaseApp } from "../../../../../../firebase/BaseConfig"
 import { getAuth } from "@firebase/auth"
 
@@ -132,6 +138,23 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
       })
 
       await Promise.all(uploadPromises)
+    }
+  }
+
+  const handleImageDelete = async (url: string) => {
+    try {
+      const storageRef = ref(storage, url)
+
+      await deleteObject(storageRef)
+
+      setUploadedImageUrls((prevUrls) =>
+        prevUrls.filter((prevUrl) => prevUrl !== url)
+      )
+
+      toast.success("Görsel başarıyla silindi.")
+    } catch (error) {
+      console.error("Error deleting image:", error)
+      toast.error("Görsel silinirken bir hata oluştu.")
     }
   }
 
@@ -309,6 +332,7 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                 <div
                   className="image-input image-input-outline d-flex flex-wrap mt-6"
                   data-kt-image-input="true"
+                  style={{ maxHeight: 300, overflowY: "auto" }}
                 >
                   {uploadedImageUrls.map((url, index) => (
                     <div
@@ -335,13 +359,7 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                         }}
                         onClick={(e) => {
                           e.stopPropagation()
-
-                          const index = uploadedImageUrls.indexOf(url)
-                          if (index !== -1) {
-                            const updatedUrls = [...uploadedImageUrls]
-                            updatedUrls.splice(index, 1)
-                            setUploadedImageUrls(updatedUrls)
-                          }
+                          handleImageDelete(url)
                         }}
                       >
                         <i className="bi bi-x fs-7"></i>

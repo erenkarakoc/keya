@@ -203,6 +203,29 @@ const getUsersByRole = async (role: string): Promise<User[] | undefined> => {
   }
 }
 
+const getOfficeIdByUserId = async (id: string): Promise<string | undefined> => {
+  try {
+    if (!id) {
+      console.error("Invalid user ID")
+      return ""
+    }
+
+    const userDocRef = doc(db, "users", id)
+    const userDocSnapshot = await getDoc(userDocRef)
+
+    if (userDocSnapshot.exists()) {
+      const userData = userDocSnapshot.data()
+      return userData.officeId
+    } else {
+      console.error("User document with the provided ID does not exist")
+      return ""
+    }
+  } catch (error) {
+    console.error("Error fetching user office ID:", error)
+    return ""
+  }
+}
+
 const addUsersToOffice = async (officeId: string, userIds: string[]) => {
   try {
     const officeDocRef = doc(db, "offices", officeId)
@@ -278,6 +301,7 @@ export {
   getUserById,
   getUsersById,
   getUsersByRole,
+  getOfficeIdByUserId,
   addUsersToOffice,
   removeUsersFromOffice,
   deleteUser,

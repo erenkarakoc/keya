@@ -31,7 +31,13 @@ import { useQueryResponse } from "../../_core/QueryResponseProvider"
 import { getUsersByRole } from "../../../user-management/_core/_requests"
 import { updateProperty } from "../../_core/_requests"
 
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage"
 import { firebaseApp } from "../../../../../../firebase/BaseConfig"
 import { getAuth } from "@firebase/auth"
 
@@ -135,6 +141,23 @@ const PropertyEditModalForm: FC<Props> = ({ property, isPropertyLoading }) => {
     }
   }
 
+  const handleImageDelete = async (url: string) => {
+    try {
+      const storageRef = ref(storage, url)
+
+      await deleteObject(storageRef)
+
+      setUploadedImageUrls((prevUrls) =>
+        prevUrls.filter((prevUrl) => prevUrl !== url)
+      )
+
+      toast.success("Görsel başarıyla silindi.")
+    } catch (error) {
+      console.error("Error deleting image:", error)
+      toast.error("Görsel silinirken bir hata oluştu.")
+    }
+  }
+
   const handleCountryChange = (
     e: ChangeEvent<HTMLSelectElement>,
     setFieldValue: any
@@ -213,10 +236,10 @@ const PropertyEditModalForm: FC<Props> = ({ property, isPropertyLoading }) => {
 
       await updateProperty(values)
 
-      toast.success("İlan bilgileri güncellendi.")
+      toast.success("Ofis bilgileri güncellendi.")
     } catch (ex) {
       toast.error(
-        "İlan bilgileri güncellenirken bir hata oluştu, lütfen tekrar deneyin."
+        "Ofis bilgileri güncellenirken bir hata oluştu, lütfen tekrar deneyin."
       )
 
       console.error(ex)
@@ -309,6 +332,7 @@ const PropertyEditModalForm: FC<Props> = ({ property, isPropertyLoading }) => {
                 <div
                   className="image-input image-input-outline d-flex flex-wrap mt-6"
                   data-kt-image-input="true"
+                  style={{ maxHeight: 300, overflowY: "auto" }}
                 >
                   {uploadedImageUrls.map((url, index) => (
                     <div
@@ -335,13 +359,7 @@ const PropertyEditModalForm: FC<Props> = ({ property, isPropertyLoading }) => {
                         }}
                         onClick={(e) => {
                           e.stopPropagation()
-
-                          const index = uploadedImageUrls.indexOf(url)
-                          if (index !== -1) {
-                            const updatedUrls = [...uploadedImageUrls]
-                            updatedUrls.splice(index, 1)
-                            setUploadedImageUrls(updatedUrls)
-                          }
+                          handleImageDelete(url)
                         }}
                       >
                         <i className="bi bi-x fs-7"></i>
@@ -365,12 +383,12 @@ const PropertyEditModalForm: FC<Props> = ({ property, isPropertyLoading }) => {
 
               <div className="fv-row mb-7">
                 {/* begin::Label */}
-                <label className="required fw-bold fs-6 mb-2">İlan Adı</label>
+                <label className="required fw-bold fs-6 mb-2">Ofis Adı</label>
                 {/* end::Label */}
 
                 {/* begin::Input */}
                 <Field
-                  placeholder="İlan Adı"
+                  placeholder="Ofis Adı"
                   type="text"
                   name="name"
                   className={clsx(
@@ -393,13 +411,13 @@ const PropertyEditModalForm: FC<Props> = ({ property, isPropertyLoading }) => {
               <div className="fv-row mb-7">
                 {/* begin::Label */}
                 <label className="required fw-bold fs-6 mb-2">
-                  İlan Hakkında
+                  Ofis Hakkında
                 </label>
                 {/* end::Label */}
 
                 {/* begin::Textarea */}
                 <Field
-                  placeholder="İlan Hakkında"
+                  placeholder="Ofis Hakkında"
                   name="about"
                   as="textarea"
                   rows={3}

@@ -11,7 +11,7 @@ const Footer: FC = () => {
       >
         {/* begin::Copyright */}
         <div className="text-gray-900 order-2 order-md-1">
-          <span className="text-gray-500 fw-bold me-1">2024 ©</span>{" "}
+          <span className="text-gray-500 fw-bold">2024 ©</span>{" "}
           <a
             href="/"
             target="_blank"

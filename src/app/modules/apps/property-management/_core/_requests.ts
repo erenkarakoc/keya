@@ -34,12 +34,12 @@ const getProperties = async (
       | 30
       | 50
       | 100
-    const sortField = params.get("sort") || "name"
+    const sortField = params.get("sort") || "title"
     const sortOrder = params.get("order") || "asc"
     const searchQuery = params.get("search") || ""
 
     const db = getFirestore()
-    const propertiesCollection = collection(db, "offices")
+    const propertiesCollection = collection(db, "properties")
 
     let q = query(propertiesCollection)
 
@@ -49,8 +49,8 @@ const getProperties = async (
 
       q = query(
         propertiesCollection,
-        where("name", ">=", slugifiedSearchQuery),
-        where("name", "<=", slugifiedSearchQuery + "\uf8ff")
+        where("title", ">=", slugifiedSearchQuery),
+        where("title", "<=", slugifiedSearchQuery + "\uf8ff")
       )
     }
 
@@ -69,6 +69,10 @@ const getProperties = async (
     }
 
     const snapshot = await getDocs(q)
+
+    if (snapshot.empty) {
+      console.log("No documents found")
+    }
 
     const properties: Property[] = []
     snapshot.forEach((doc) => {

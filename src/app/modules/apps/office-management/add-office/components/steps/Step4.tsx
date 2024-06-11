@@ -107,7 +107,7 @@ const Step4 = () => {
             >
               Kullanıcı Ekle
             </Link>{" "}
-            bölümünden kaydedebilirsiniz.
+            sayfasından kaydedebilirsiniz.
           </div>
         </div>
       </div>

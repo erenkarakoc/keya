@@ -18,7 +18,13 @@ import {
 
 import toast from "react-hot-toast"
 
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage"
 import { firebaseApp } from "../../../../../../../firebase/BaseConfig"
 
 const storage = getStorage(firebaseApp)
@@ -84,6 +90,21 @@ const Step2: FC<Step2Props> = ({ setFieldValue, values }) => {
       } catch (error) {
         console.error("Error uploading image:", error)
         setUploadedImageUrl(null)
+      }
+    }
+  }
+
+  const handleImageDelete = async () => {
+    if (uploadedImageUrl) {
+      try {
+        const storageRef = ref(storage, uploadedImageUrl)
+        await deleteObject(storageRef)
+        setUploadedImageUrl(null)
+        setFieldValue("photoURL", "")
+        toast.success("Görsel başarıyla silindi.")
+      } catch (error) {
+        console.error("Error deleting image:", error)
+        toast.error("Görsel silinirken bir hata oluştu.")
       }
     }
   }
@@ -205,6 +226,20 @@ const Step2: FC<Step2Props> = ({ setFieldValue, values }) => {
             />
           </label>
           {/* end::Label */}
+
+          {/* begin::Cancel */}
+          {uploadedImageUrl && (
+            <span
+              className="btn btn-icon btn-circle btn-color-white w-25px h-25px bg-body shadow"
+              data-kt-image-input-action="remove"
+              data-bs-toggle="tooltip"
+              title="Fotoğrafı Sil"
+              onClick={handleImageDelete}
+            >
+              <i className="bi bi-x fs-7"></i>
+            </span>
+          )}
+          {/* end::Cancel */}
         </div>
         {/* end::Image input */}
 

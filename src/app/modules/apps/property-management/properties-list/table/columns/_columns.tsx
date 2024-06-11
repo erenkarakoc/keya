@@ -16,13 +16,13 @@ const propertiesColumns: ReadonlyArray<Column<Property>> = [
   },
   {
     Header: (props) => <PropertyCustomHeader tableProps={props} title='İlan' className='min-w-125px' />,
-    id: 'name',
+    id: 'title',
     Cell: ({...props}) => <PropertyInfoCell property={props.data[props.row.index]} />,
   },
   {
-    Header: (props) => <PropertyCustomHeader tableProps={props} title='Şehir' className='min-w-125px' />,
-    accessor: 'state',
-    Cell: ({...props}) => <PropertyBadgeCell text={props.data[props.row.index].state} />,
+    Header: (props) => <PropertyCustomHeader tableProps={props} title='Ofis Id' className='min-w-125px' />,
+    accessor: 'Ofis',
+    Cell: ({...props}) => <PropertyBadgeCell text={props.data[props.row.index].officeId} />,
   },
   {
     Header: (props) => (

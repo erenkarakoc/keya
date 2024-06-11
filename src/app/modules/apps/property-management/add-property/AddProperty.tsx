@@ -8,6 +8,8 @@ import { Step4 } from "./components/steps/Step4"
 import { Step5 } from "./components/steps/Step5"
 import { StepperComponent } from "../../../../../_metronic/assets/ts/components"
 
+import { APIProvider } from "@vis.gl/react-google-maps"
+
 import { Form, Formik, FormikValues } from "formik"
 import {
   step0Schema,
@@ -32,6 +34,7 @@ import {
 } from "firebase/firestore"
 
 import toast from "react-hot-toast"
+import { getOfficeIdByUserId } from "../../user-management/_core/_requests"
 
 initializeApp(firebaseConfig)
 const db = getFirestore(firebaseApp)
@@ -68,6 +71,9 @@ const AddProperty = () => {
   const submitStep = async (values: ICreateAccount, actions: FormikValues) => {
     if (!stepper) return
 
+    console.log(values)
+    window.scrollTo(0, 0)
+
     if (stepper.currentStepIndex !== stepper.totalStepsNumber) {
       stepper.goNext()
       setCurrentSchemaIndex((prevIndex) => prevIndex + 1)
@@ -76,37 +82,34 @@ const AddProperty = () => {
 
       try {
         const newPropertyRef = doc(collection(db, "properties"))
-        const ownersArr: string[] = []
 
-        values.owners.map((owner: string) => ownersArr.push(owner))
+        await setDoc(newPropertyRef, values)
 
-        await setDoc(newPropertyRef, {
-          name: values.name,
-          about: values.about,
-          owners: ownersArr,
-          phoneNumber: values.phoneNumber,
-          country: values.country,
-          state: values.state,
-          city: values.city,
-          addressLine: values.addressLine,
-          instagram: values.instagram,
-          twitter: values.twitter,
-          facebook: values.facebook,
-          whatsapp: values.whatsapp,
-          linkedin: values.linkedin,
-          youtube: values.youtube,
-          website: values.website,
-          photoURLs: values.photoURLs,
-          users: values.users,
+        const officeId = await getOfficeIdByUserId(values.userIds[0])
+        const permitDate = new Date(values?.ownerDetails?.permitDate ?? "")
+          .getTime()
+          .toString()
+        const permitUntilDate = new Date(
+          values?.ownerDetails?.permitUntilDate ?? ""
+        )
+          .getTime()
+          .toString()
+
+        await updateDoc(newPropertyRef, {
+          id: newPropertyRef.id,
+          officeId,
+          ownerDetails: {
+            permitDate,
+            permitUntilDate,
+          },
+          createdAt: new Date().getTime().toString(),
+          updatedAt: new Date().getTime().toString(),
         })
-
-        await updateDoc(newPropertyRef, { id: newPropertyRef.id })
 
         setSubmittingForm(false)
         actions.setSubmitting(false)
 
         toast.success("İlan başarıyla eklendi!")
-
         window.location.reload()
       } catch (error) {
         toast.error(
@@ -138,9 +141,10 @@ const AddProperty = () => {
               id="kt_create_property_stepper"
             >
               <div className="stepper-nav mb-5">
-                <div className="stepper-item">
-                  <h3 className="stepper-title"></h3>
-                </div>
+                <div
+                  className="stepper-item current"
+                  data-kt-stepper-element="nav"
+                ></div>
 
                 <div
                   className="stepper-item current"
@@ -150,19 +154,19 @@ const AddProperty = () => {
                 </div>
 
                 <div className="stepper-item" data-kt-stepper-element="nav">
-                  <h3 className="stepper-title">Gayrimenkul Bilgileri</h3>
+                  <h3 className="stepper-title">Detaylı Bilgiler</h3>
                 </div>
 
                 <div className="stepper-item" data-kt-stepper-element="nav">
-                  <h3 className="stepper-title">Muhit Bilgileri</h3>
+                  <h3 className="stepper-title">Özellikler</h3>
+                </div>
+
+                <div className="stepper-item" data-kt-stepper-element="nav">
+                  <h3 className="stepper-title">Konum</h3>
                 </div>
 
                 <div className="stepper-item" data-kt-stepper-element="nav">
                   <h3 className="stepper-title">Portföy</h3>
-                </div>
-
-                <div className="stepper-item" data-kt-stepper-element="nav">
-                  <h3 className="stepper-title">Son Bir Adım</h3>
                 </div>
               </div>
 
@@ -188,23 +192,30 @@ const AddProperty = () => {
                       </div>
 
                       <div data-kt-stepper-element="content">
-                        <Step1 />
+                        <Step1 setFieldValue={setFieldValue} />
                       </div>
 
                       <div data-kt-stepper-element="content">
-                        <Step2 setFieldValue={setFieldValue} />
+                        <Step2 values={values} setFieldValue={setFieldValue} />
                       </div>
 
                       <div data-kt-stepper-element="content">
-                        <Step3 values={values} />
+                        <Step3 values={values} setFieldValue={setFieldValue} />
                       </div>
 
                       <div data-kt-stepper-element="content">
-                        <Step4 />
+                        <APIProvider
+                          apiKey={import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY}
+                        >
+                          <Step4
+                            values={values}
+                            setFieldValue={setFieldValue}
+                          />
+                        </APIProvider>
                       </div>
 
                       <div data-kt-stepper-element="content">
-                        <Step5 values={values} />
+                        <Step5 setFieldValue={setFieldValue} />
                       </div>
 
                       <div className="d-flex flex-stack pt-10">
@@ -248,7 +259,7 @@ const AddProperty = () => {
                                 </>
                               ) : (
                                 <>
-                                  Devam et
+                                  İleri
                                   <KTIcon
                                     iconName="arrow-right"
                                     className="fs-3 ms-2 me-0"

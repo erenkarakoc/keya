@@ -204,7 +204,6 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
                   accept=".png, .jpg, .jpeg"
                   onChange={handleImageChange}
                 />
-                {/* <input type="hidden" name="avatar_remove" /> */}
               </label>
               {/* end::Label */}
             </div>
