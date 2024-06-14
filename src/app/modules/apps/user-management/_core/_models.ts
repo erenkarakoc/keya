@@ -1,9 +1,9 @@
 import { Response } from "../../../../../_metronic/helpers"
 
 export interface UserAddressModel {
-  country: string
-  state: string
-  city: string
+  country?: number
+  state?: number
+  city?: number
   addressLine: string
 }
 

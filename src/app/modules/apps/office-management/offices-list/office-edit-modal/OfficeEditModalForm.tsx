@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { FC, useState, useEffect, ChangeEvent } from "react"
+import { FC, useState, useEffect, ChangeEvent, DragEvent } from "react"
 
 import clsx from "clsx"
 import toast from "react-hot-toast"
 
-import * as Yup from "yup"
 import { Formik, Form, Field, ErrorMessage } from "formik"
 
 import {
@@ -50,6 +49,14 @@ import MultiSelect from "../../../components/multiselect/MultiSelect"
 
 import { AsYouType } from "libphonenumber-js"
 
+import {
+  step1Schema,
+  step2Schema,
+  step3Schema,
+  step4Schema,
+  step5Schema,
+} from "../../add-office/components/CreateOfficeWizardHelper"
+
 const storage = getStorage(firebaseApp)
 const auth = getAuth()
 
@@ -58,19 +65,11 @@ type Props = {
   office: Office
 }
 
-const editOfficeSchema = Yup.object().shape({
-  avatar: Yup.string(),
-  name: Yup.string()
-    .min(3, "Ad en az 3 karakterden oluşmalı")
-    .max(50, "Ad fazla 50 karakterden oluşmalı")
-    .required("Ad alanı zorunludur"),
-  about: Yup.string().required("Hakkında alanı zorunludur"),
-  email: Yup.string()
-    .email("Geçerli bir e-posta adresi gir")
-    .min(3, "E-posta en az 3 karakterden oluşmalı")
-    .max(50, "E-posta 50 karakterden oluşmalı")
-    .required("E-posta girilmesi zorunludur"),
-})
+const editOfficeSchema = step1Schema
+  .concat(step2Schema)
+  .concat(step3Schema)
+  .concat(step4Schema)
+  .concat(step5Schema)
 
 const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
   const { setItemIdForUpdate } = useListView()
@@ -78,9 +77,9 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
 
   const [submittingForm, setSubmittingForm] = useState<boolean>(false)
 
-  const [lightboxOpen, setLightboxOpen] = useState(false)
-
+  const [isDragging, setIsDragging] = useState(false)
   const [uploadedImageUrls, setUploadedImageUrls] = useState<string[]>([])
+  const [lightboxOpen, setLightboxOpen] = useState(false)
 
   const [brokers, setBrokers] = useState<{ id: string; label: string }[]>([])
   const [chosenBrokers, setChosenBrokers] = useState<
@@ -89,9 +88,9 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
 
   const [countries, setCountries] = useState<Country[]>([])
 
-  const [currentCountry, setCurrentCountry] = useState<string | null>("Türkiye")
-  const [currentState, setCurrentState] = useState<string | null>("")
-  const [currentCity, setCurrentCity] = useState<string | null>("")
+  const [currentCountry, setCurrentCountry] = useState<string | null>("")
+  const [currentState, setCurrentState] = useState<string | null>()
+  const [currentCity, setCurrentCity] = useState<string | null>()
 
   const [states, setStates] = useState<State[]>([])
   const [cities, setCities] = useState<City[]>([])
@@ -104,44 +103,58 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
   )
   const [countryCode, setCountryCode] = useState<string | null>("TR")
 
-  const handleImageChange = async (
-    e: ChangeEvent<HTMLInputElement>,
-    setFieldValue: any
-  ) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const files = Array.from(e.target.files)
-      const uploadPromises: Promise<void>[] = []
-
-      files.forEach((file) => {
-        const fileSizeInMB = file.size / (1024 * 1024)
-        if (fileSizeInMB > 2) {
-          toast.error(
-            `${file.name} adlı dosya yüklenemedi. Dosya boyutu 2 MB'den küçük olmalıdır!`
-          )
-          return
-        }
-
-        const randomName = generateRandomName()
-        const storageRef = ref(
-          storage,
-          `images/offices/${slugify(office.name)}-${randomName}`
-        )
-        const uploadPromise = uploadBytes(storageRef, file)
-          .then(() => getDownloadURL(storageRef))
-          .then((downloadURL) => {
-            setUploadedImageUrls((prevUrls) => [...prevUrls, downloadURL])
-            setFieldValue("photoURLs", [...uploadedImageUrls, downloadURL])
-          })
-          .catch((error) => console.error("Error uploading image:", error))
-
-        uploadPromises.push(uploadPromise)
-      })
-
-      await Promise.all(uploadPromises)
+  const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (files && files.length > 0) {
+      await handleFiles(Array.from(files))
     }
   }
 
-  const handleImageDelete = async (url: string) => {
+  const handleFiles = async (files: File[]) => {
+    const uploadPromises: Promise<void>[] = []
+    const currentCount = uploadedImageUrls.length
+    const remainingSlots = 50 - currentCount
+
+    if (currentCount >= 50) {
+      toast.error("En fazla 50 görsel ekleyebilirsiniz.")
+      return
+    }
+
+    const filesToUpload = files.slice(0, remainingSlots)
+    const excessFiles = files.slice(remainingSlots)
+
+    filesToUpload.forEach((file) => {
+      const fileSizeInMB = file.size / (1024 * 1024)
+      if (fileSizeInMB > 2) {
+        toast.error(
+          `${file.name} adlı dosya yüklenemedi. Dosya boyutu 2 MB'den küçük olmalıdır!`
+        )
+        return
+      }
+
+      const randomName = generateRandomName()
+      const storageRef = ref(
+        storage,
+        `images/offices/${slugify(office.name)}/${randomName}`
+      )
+      const uploadPromise = uploadBytes(storageRef, file)
+        .then(() => getDownloadURL(storageRef))
+        .then((downloadURL) => {
+          setUploadedImageUrls((prevUrls) => [...prevUrls, downloadURL])
+        })
+        .catch((error) => console.error("Error uploading image:", error))
+
+      uploadPromises.push(uploadPromise)
+    })
+
+    await Promise.all(uploadPromises)
+
+    if (excessFiles.length > 0) {
+      toast.error("En fazla 50 görsel ekleyebilirsiniz.")
+    }
+  }
+
+  const handleImageDelete = async (url: string, setFieldValue: any) => {
     try {
       const storageRef = ref(storage, url)
 
@@ -150,11 +163,9 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
       setUploadedImageUrls((prevUrls) =>
         prevUrls.filter((prevUrl) => prevUrl !== url)
       )
-
-      toast.success("Görsel başarıyla silindi.")
+      setFieldValue("photoURLs", uploadedImageUrls)
     } catch (error) {
       console.error("Error deleting image:", error)
-      toast.error("Görsel silinirken bir hata oluştu.")
     }
   }
 
@@ -162,17 +173,21 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
     e: ChangeEvent<HTMLSelectElement>,
     setFieldValue: any
   ) => {
-    setFieldValue("country", e.target.value)
     setCurrentCountry(e.target.value)
+    setFieldValue("country", e.target.value)
+    setFieldValue("state", "")
 
     if (e.target.value) {
       const selectedOption = e.target.selectedOptions[0]
       const countryId = selectedOption.getAttribute("country-id")
-      const statesArr = getStatesByCountry(parseInt(countryId as string))
+      const statesArr = getStatesByCountry(parseInt(countryId ?? ""))
       setStates(statesArr || [])
       setCountrySelected(true)
     } else {
       setStates([])
+      setCities([])
+      setFieldValue("state", "")
+      setFieldValue("city", "")
       setCountrySelected(false)
     }
   }
@@ -183,6 +198,7 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
   ) => {
     setCurrentState(e.target.value)
     setFieldValue("state", e.target.value)
+    setFieldValue("city", "")
 
     if (e.target.value) {
       const selectedOption = e.target.selectedOptions[0]
@@ -192,6 +208,7 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
       setStateSelected(true)
     } else {
       setCities([])
+      setFieldValue("city", "")
       setStateSelected(false)
     }
   }
@@ -252,6 +269,7 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
   useEffect(() => {
     const fetchBrokers = async () => {
       try {
+        2
         const response = await getUsersByRole("broker")
         if (response) {
           const brokersArr = response.map((user) => ({
@@ -277,21 +295,35 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
     }
 
     fetchBrokers()
-    setUploadedImageUrls(office.photoURLs)
   }, [office])
 
   useEffect(() => {
     const data = getCountries()
     setCountries(data)
 
-    const statesArr = getStatesByCountry(225)
-    setStates(statesArr || [])
-    setCountrySelected(true)
-  }, [])
+    if (office.country) {
+      const statesArr = getStatesByCountry(parseInt(office.country))
+      setStates(statesArr || [])
+      setCurrentCountry(office.country)
+      setCountrySelected(true)
+    }
 
-  // useEffect(() => {
-  //   setFieldValue("country", currentCountry as string)
-  // }, [setFieldValue, currentCountry])
+    if (office.state) {
+      const citiesArr = getCitiesByState(parseInt(office.state))
+      setCities(citiesArr || [])
+      setCurrentState(office.state)
+      setStateSelected(true)
+    }
+
+    if (office.city) {
+      setCurrentCity(office.city)
+    }
+  }, [office])
+
+  useEffect(() => {
+    setUploadedImageUrls(office.photoURLs)
+    setCurrentPhoneNumber(office.phoneNumber)
+  }, [office])
 
   return (
     <>
@@ -304,7 +336,7 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
         enableReinitialize={true}
         noValidate
       >
-        {({ values, setFieldValue, dirty, isValid }) => (
+        {({ values, setFieldValue }) => (
           <Form noValidate id="office_edit_modal_form" placeholder={undefined}>
             {/* begin::Scroll */}
             <div
@@ -322,12 +354,54 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                   Bilgisayarınızdan seçin
                 </label>
 
-                <input
-                  type="file"
-                  accept=".png, .jpg, .jpeg"
-                  onChange={(e) => handleImageChange(e, setFieldValue)}
-                  multiple
-                />
+                <div
+                  className={`ky-image-input${isDragging ? " dragging" : ""}`}
+                  onDragEnter={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    setIsDragging(true)
+                  }}
+                  onDragLeave={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    setIsDragging(false)
+                  }}
+                  onDragOver={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    setIsDragging(true)
+                  }}
+                  onDrop={async (e: DragEvent<HTMLDivElement>) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    setIsDragging(false)
+
+                    if (
+                      e.dataTransfer.files &&
+                      e.dataTransfer.files.length > 0
+                    ) {
+                      await handleFiles(Array.from(e.dataTransfer.files))
+                      e.dataTransfer.clearData()
+                    }
+                  }}
+                >
+                  <input
+                    id="ky-office-image-input"
+                    type="file"
+                    accept=".png, .jpg, .jpeg"
+                    onChange={(e) => {
+                      handleImageChange(e)
+                    }}
+                    multiple
+                  />
+                  <label htmlFor="ky-office-image-input">
+                    Görsel Seç veya Sürükle
+                  </label>
+                </div>
+
+                <div className="form-text mt-4">
+                  İzin verilen dosya türleri: png, jpg, jpeg.
+                </div>
 
                 <div
                   className="image-input image-input-outline d-flex flex-wrap mt-6"
@@ -359,7 +433,7 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                         }}
                         onClick={(e) => {
                           e.stopPropagation()
-                          handleImageDelete(url)
+                          handleImageDelete(url, setFieldValue)
                         }}
                       >
                         <i className="bi bi-x fs-7"></i>
@@ -369,16 +443,24 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                   ))}
                 </div>
 
-                <div className="form-text mt-6">
-                  İzin verilen dosya türleri: png, jpg, jpeg.
-                </div>
+                {uploadedImageUrls.length ? (
+                  <div className="form-text mt-2">
+                    {uploadedImageUrls.length} görsel yüklendi.
+                  </div>
+                ) : (
+                  ""
+                )}
 
                 <Lightbox
                   open={lightboxOpen}
                   close={() => setLightboxOpen(false)}
-                  slides={[...values.photoURLs.map((url) => ({ src: url }))]}
+                  slides={[...uploadedImageUrls.map((url) => ({ src: url }))]}
                   plugins={[Thumbnails]}
                 />
+
+                <div className="text-danger mt-2">
+                  <ErrorMessage name="photoURLs" className="mt-10" />
+                </div>
               </div>
 
               <div className="fv-row mb-7">
@@ -400,11 +482,13 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                       "is-valid": !submittingForm && values.name !== "",
                     }
                   )}
-                  value={values.name}
                   autoComplete="off"
                   disabled={submittingForm || isOfficeLoading}
                 />
-                <ErrorMessage name="name" />
+
+                <div className="text-danger mt-2">
+                  <ErrorMessage name="name" />
+                </div>
                 {/* end::Input */}
               </div>
 
@@ -433,7 +517,9 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                   autoComplete="off"
                   disabled={submittingForm || isOfficeLoading}
                 />
-                <ErrorMessage name="about" />
+                <div className="text-danger mt-2">
+                  <ErrorMessage name="about" />
+                </div>
                 {/* end::Textarea */}
               </div>
 
@@ -466,7 +552,9 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                 />
 
                 {/* end::Input */}
-                <ErrorMessage name="owners" />
+                <div className="text-danger mt-2">
+                  <ErrorMessage name="owners" />
+                </div>
               </div>
 
               <div className="fv-row mb-7">
@@ -492,7 +580,9 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                   value={values.email}
                   disabled={submittingForm || isOfficeLoading}
                 />
-                <ErrorMessage name="email" />
+                <div className="text-danger mt-2">
+                  <ErrorMessage name="email" />
+                </div>
                 {/* end::Input */}
               </div>
 
@@ -503,7 +593,9 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                   <Field
                     className="form-control form-control-lg form-control-solid"
                     placeholder="+90 5xx xxx xx xx"
-                    onChange={handlePhoneNumberChange}
+                    onChange={(e: any) =>
+                      handlePhoneNumberChange(e, setFieldValue)
+                    }
                     value={currentPhoneNumber}
                     style={{ paddingLeft: "40px" }}
                     name="phoneNumber"
@@ -540,7 +632,7 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                     countries.map((country) => (
                       <option
                         country-id={country.id}
-                        value={country.translations.tr}
+                        value={country.id}
                         key={country.id}
                       >
                         {country.translations.tr}
@@ -567,7 +659,7 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                   {countrySelected
                     ? states.map((state) => (
                         <option
-                          value={state.name}
+                          value={state.id}
                           state-id={state.id}
                           key={state.id}
                         >
@@ -595,11 +687,7 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                   <option></option>
                   {countrySelected && stateSelected
                     ? cities.map((city) => (
-                        <option
-                          value={city.name}
-                          city-id={city.id}
-                          key={city.id}
-                        >
+                        <option value={city.id} city-id={city.id} key={city.id}>
                           {city.name}
                         </option>
                       ))
@@ -700,9 +788,7 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                       <ErrorMessage name="website" />
                     </div>
                   </div>
-                  <div className="form-text">
-                    Lütfen "https://" ile başlayan geçerli bir link girin
-                  </div>
+                  <div className="form-text">Lütfen geçerli bir link girin</div>
                 </div>
               </div>
             </div>
@@ -724,9 +810,7 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                 type="submit"
                 className="btn btn-primary"
                 data-kt-offices-modal-action="submit"
-                disabled={
-                  !dirty || !isValid || isOfficeLoading || submittingForm
-                }
+                disabled={isOfficeLoading || submittingForm}
               >
                 <span className="indicator-label">Kaydet</span>
                 {submittingForm && (

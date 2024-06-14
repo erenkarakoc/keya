@@ -3,9 +3,6 @@ import { KYOfficeImage } from "../../../../../../frontend/components/KYOfficeIma
 interface OfficeInfoCellProps {
   office: {
     name: string
-    city?: string
-    state?: string
-    country?: string
   }
 }
 

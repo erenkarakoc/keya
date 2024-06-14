@@ -163,7 +163,7 @@ const Step2: FC<Step2Props> = ({ setFieldValue }) => {
             countries.map((country) => (
               <option
                 country-id={country.id}
-                value={country.translations.tr}
+                value={country.id}
                 key={country.id}
               >
                 {country.translations.tr}
@@ -189,7 +189,7 @@ const Step2: FC<Step2Props> = ({ setFieldValue }) => {
           <option></option>
           {countrySelected
             ? states.map((state) => (
-                <option value={state.name} state-id={state.id} key={state.id}>
+                <option value={state.id} state-id={state.id} key={state.id}>
                   {state.name}
                 </option>
               ))
@@ -214,7 +214,7 @@ const Step2: FC<Step2Props> = ({ setFieldValue }) => {
           <option></option>
           {countrySelected && stateSelected
             ? cities.map((city) => (
-                <option value={city.name} city-id={city.id} key={city.id}>
+                <option value={city.id} city-id={city.id} key={city.id}>
                   {city.name}
                 </option>
               ))

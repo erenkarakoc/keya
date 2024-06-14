@@ -53,7 +53,7 @@ const OfficesTable = () => {
               <tr>
                 <td colSpan={7}>
                   <div className="d-flex text-center w-100 align-content-center justify-content-center">
-                    Bu filtrelere uygun kullanıcı bulunamadı.
+                    Bu filtrelere uygun ofis bulunamadı.
                   </div>
                 </td>
               </tr>

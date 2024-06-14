@@ -21,12 +21,13 @@ const PropertyCustomHeader: FC<Props> = ({ className, title, tableProps }) => {
 
   const sortColumn = () => {
     // avoid sorting for these columns
-    // if (id === "actions" || id === "selection") {
+    if (id != "price" && id != "active") {
       return
-    // }
+    }
 
     if (!isSelectedForSorting) {
       // enable sort asc
+      console.log(id)
       updateState({ sort: id, order: "asc", ...initialQueryState })
       return
     }
@@ -51,6 +52,9 @@ const PropertyCustomHeader: FC<Props> = ({ className, title, tableProps }) => {
         isSelectedForSorting && order !== undefined && `table-sort-${order}`
       )}
       onClick={sortColumn}
+      style={{
+        cursor: id === "price" || id === "active" ? "pointer" : "default",
+      }}
     >
       {title}
     </th>

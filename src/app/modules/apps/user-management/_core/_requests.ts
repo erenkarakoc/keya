@@ -17,6 +17,7 @@ import {
   where,
   updateDoc,
   limit,
+  arrayRemove,
 } from "firebase/firestore"
 import { getFunctions, httpsCallable } from "firebase/functions"
 import { UserModel } from "../../../auth"
@@ -26,6 +27,26 @@ const db = getFirestore()
 
 const functions = getFunctions()
 const deleteUserFromFirebase = httpsCallable(functions, "deleteUser")
+
+const getAllUsers = async (): Promise<User[]> => {
+  try {
+    const db = getFirestore()
+    const usersCollectionRef = collection(db, "users")
+    const userDocSnapshot = await getDocs(usersCollectionRef)
+
+    const users: User[] = []
+
+    userDocSnapshot.forEach((doc) => {
+      const userData = doc.data() as User
+      users.push({ ...userData, id: doc.id })
+    })
+
+    return users
+  } catch (error) {
+    console.error("Error fetching offices:", error)
+    return []
+  }
+}
 
 const getUsers = async (queryString: string): Promise<UsersQueryResponse> => {
   try {
@@ -276,7 +297,21 @@ const updateUser = async (user: User): Promise<User | undefined> => {
 
 const deleteUser = async (userId: ID): Promise<void> => {
   try {
-    deleteUserFromFirebase({ uid: userId })
+    const userOfficeId = await getOfficeIdByUserId(userId as string)
+
+    if (userOfficeId) {
+      const officeDocRef = doc(db, "offices", userOfficeId)
+
+      await updateDoc(officeDocRef, {
+        users: arrayRemove(userId),
+      })
+
+      await deleteUserFromFirebase({ uid: userId })
+    } else {
+      console.error(
+        "Office ID for user not found. Cannot proceed with deletion."
+      )
+    }
   } catch (error) {
     console.error("Error deleting user documents:", error)
     throw error
@@ -287,7 +322,21 @@ const deleteSelectedUsers = async (userIds: Array<ID>): Promise<void> => {
   try {
     await Promise.all(
       userIds.map(async (userId) => {
-        await deleteUserFromFirebase({ uid: userId })
+        const userOfficeId = await getOfficeIdByUserId(userId as string)
+
+        if (userOfficeId) {
+          const officeDocRef = doc(db, "offices", userOfficeId)
+
+          await updateDoc(officeDocRef, {
+            users: arrayRemove(userId),
+          })
+
+          await deleteUserFromFirebase({ uid: userId })
+        } else {
+          console.error(
+            "Office ID for user not found. Cannot proceed with deletion."
+          )
+        }
       })
     )
   } catch (error) {
@@ -297,6 +346,7 @@ const deleteSelectedUsers = async (userIds: Array<ID>): Promise<void> => {
 }
 
 export {
+  getAllUsers,
   getUsers,
   getUserById,
   getUsersById,

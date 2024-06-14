@@ -1,12 +1,14 @@
 import {Column} from 'react-table'
 import {PropertyInfoCell} from './PropertyInfoCell'
-import {PropertyBadgeCell} from './PropertyBadgeCell'
+import {PropertyUsersCell} from './PropertyUsersCell'
 import {PropertyActionsCell} from "./PropertyActionsCell"
 import {PropertySelectionCell} from './PropertySelectionCell'
 import {PropertyCustomHeader} from './PropertyCustomHeader'
 import {PropertySelectionHeader} from './PropertySelectionHeader'
 
 import {Property} from '../../../_core/_models'
+import { PropertyBadgeCell } from './PropertyBadgeCell'
+import { PropertyActiveCell } from './PropertyActiveCell'
 
 const propertiesColumns: ReadonlyArray<Column<Property>> = [
   {
@@ -15,14 +17,24 @@ const propertiesColumns: ReadonlyArray<Column<Property>> = [
     Cell: ({...props}) => <PropertySelectionCell id={props.data[props.row.index].id} />,
   },
   {
-    Header: (props) => <PropertyCustomHeader tableProps={props} title='İlan' className='min-w-125px' />,
+    Header: (props) => <PropertyCustomHeader tableProps={props} title='İlan Başlığı' className='min-w-125px' />,
     id: 'title',
     Cell: ({...props}) => <PropertyInfoCell property={props.data[props.row.index]} />,
   },
   {
-    Header: (props) => <PropertyCustomHeader tableProps={props} title='Ofis Id' className='min-w-125px' />,
-    accessor: 'Ofis',
-    Cell: ({...props}) => <PropertyBadgeCell text={props.data[props.row.index].officeId} />,
+    Header: (props) => <PropertyCustomHeader tableProps={props} title='Danışman' className='min-w-125px' />,
+    id: "userIds",
+    Cell: ({...props}) => <PropertyUsersCell userIds={props.data[props.row.index].userIds} />,
+  },
+  {
+    Header: (props) => <PropertyCustomHeader tableProps={props} title='Fiyat' className='min-w-125px' />,
+    id: "price",
+    Cell: ({...props}) => <PropertyBadgeCell text={props.data[props.row.index].propertyDetails.price} />,
+  },
+  {
+    Header: (props) => <PropertyCustomHeader tableProps={props} title='Yayında' className='min-w-125px' />,
+    id: "active",
+    Cell: ({...props}) => <PropertyActiveCell isActive={props.data[props.row.index].saleDetails?.active} />,
   },
   {
     Header: (props) => (

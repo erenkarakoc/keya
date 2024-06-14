@@ -39,11 +39,11 @@ const getCountries = (): Country[] => {
 }
 
 const getCountryById = (countryId: number) => {
-  const country = countries.filter((country) => {
-    country.id === countryId
-  })
+  return countries.find((country) => country.id === countryId)
+}
 
-  return country
+const getStateById = (stateId: number) => {
+  return states.find((state) => state.id === stateId)
 }
 
 const getStatesByCountry = (countryId: number): State[] | undefined => {
@@ -59,6 +59,10 @@ const getStatesByCountry = (countryId: number): State[] | undefined => {
   } else {
     return undefined
   }
+}
+
+const getCityById = (cityId: number) => {
+  return cities.find((city) => city.id === cityId)
 }
 
 const getCitiesByState = (stateId: number): City[] | undefined => {
@@ -206,16 +210,18 @@ const generateRandomName = () => {
 const formatPrice = (price: string) => {
   const formattedPrice = formatValue({
     value: price,
-    intlConfig: { locale: "en-IN", currency: "INR" },
+    intlConfig: { locale: "tr-TR", currency: "TRY" },
   })
 
   return formattedPrice
 }
 
 export {
-  getCountries,
   getCountryById,
+  getCountries,
+  getStateById,
   getStatesByCountry,
+  getCityById,
   getCitiesByState,
   getUserRoleText,
   getUserNameInitials,

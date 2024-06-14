@@ -129,7 +129,16 @@ export type ICreateAccount = {
     permit?: string
     permitDate?: string
     permitUntilDate?: string
-    permitPrice?: number
+    permitPrice?: string
+  }
+
+  saleDetails?: {
+    agentFee?: string
+    officeFee?: string
+    sold?: boolean
+    soldPrice?: string
+    soldDate?: string
+    active: boolean
   }
 
   createdAt: string
@@ -141,6 +150,14 @@ const step0Schema = Yup.object({
 })
 
 const step1Schema = Yup.object({
+  saleDetails: Yup.object({
+    agentFee: Yup.string(),
+    officeFee: Yup.string(),
+    sold: Yup.boolean(),
+    soldPrice: Yup.string(),
+    soldDate: Yup.string(),
+    active: Yup.boolean(),
+  }),
   title: Yup.string().required("İlan Başlığı alanı zorunludur."),
   propertyDetails: Yup.object({
     description: Yup.string()
@@ -289,6 +306,15 @@ const inits: ICreateAccount = {
     permitDate: "",
     permitUntilDate: "",
     permitPrice: undefined,
+  },
+
+  saleDetails: {
+    agentFee: "",
+    officeFee: "",
+    sold: undefined,
+    soldPrice: "",
+    soldDate: "",
+    active: false,
   },
 
   createdAt: "",

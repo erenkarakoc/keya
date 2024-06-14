@@ -256,7 +256,7 @@ const AddUser = () => {
                   </div>
 
                   <div data-kt-stepper-element="content">
-                    <Step3 />
+                    <Step3 setFieldValue={setFieldValue} />
                   </div>
 
                   <div data-kt-stepper-element="content">

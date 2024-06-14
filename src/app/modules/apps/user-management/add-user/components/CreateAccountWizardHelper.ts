@@ -10,9 +10,9 @@ export type ICreateAccount = {
   phoneNumber: string
   officeId: string
   role: string
-  country?: string
-  state?: string
-  city?: string
+  country?: number
+  state?: number
+  city?: number
   addressLine?: string
 }
 
@@ -53,9 +53,9 @@ const step2Schema = Yup.object({
   phoneNumber: Yup.string()
     .matches(/^\+/, "Telefon numarası + işareti ile başlamalıdır")
     .required("Telefon numarası zorunludur"),
-  country: Yup.string(),
-  state: Yup.string(),
-  city: Yup.string(),
+  country: Yup.number(),
+  state: Yup.number(),
+  city: Yup.number(),
   addressLine: Yup.string(),
 })
 
@@ -77,9 +77,9 @@ const inits: ICreateAccount = {
   phoneNumber: "",
   officeId: "",
   role: "",
-  country: "",
-  state: "",
-  city: "",
+  country: undefined,
+  state: undefined,
+  city: undefined,
   addressLine: "",
 }
 

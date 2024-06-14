@@ -24,7 +24,8 @@ const PropertyDeleteModal: React.FC<PropertyDeleteModalProps> = ({
   const [propertiesArray, setPropertiesArray] = useState<Property[]>([])
 
   useEffect(() => {
-    selectedPropertiesForDelete && setPropertiesArray(selectedPropertiesForDelete)
+    selectedPropertiesForDelete &&
+      setPropertiesArray(selectedPropertiesForDelete)
   }, [selectedPropertiesForDelete])
 
   return (
@@ -41,14 +42,25 @@ const PropertyDeleteModal: React.FC<PropertyDeleteModalProps> = ({
             {selectedPropertiesForDelete && (
               <div className="confirmation-modal-properties">
                 {propertiesArray.map((property) => (
-                  <div
+                  <a
+                    href="#"
+                    target="_blank"
                     className="d-flex align-items-center confirmation-modal-property"
                     key={property.id}
                   >
                     <div className="symbol symbol-circle symbol-50px overflow-hidden me-3">
-                      <a href="#">
-                       
-                      </a>
+                      <div className="symbol-label">
+                        <img
+                          src={`${property.propertyDetails.photoURLs[0]}`}
+                          alt={property.title}
+                          className="w-100"
+                          style={{
+                            height: "100%",
+                            width: "100%",
+                            objectFit: "cover",
+                          }}
+                        />
+                      </div>
                     </div>
                     <div className="d-flex flex-column">
                       <a
@@ -56,11 +68,10 @@ const PropertyDeleteModal: React.FC<PropertyDeleteModalProps> = ({
                         className="text-gray-800 text-hover-primary mb-1"
                         style={{ textAlign: "left" }}
                       >
-                        Keya {property.name}
+                        {property.title}
                       </a>
-                      <span>{property.email}</span>
                     </div>
-                  </div>
+                  </a>
                 ))}
               </div>
             )}

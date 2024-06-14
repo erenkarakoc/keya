@@ -24,12 +24,11 @@
   width: 100%;
   padding: 0 150px 0 80px;
   border: 2px solid var(--ky-midnight-3);
-  border-radius: 24px;
+  border-radius: 18px;
   color: var(--ky-light);
   font-size: 20px;
   font-weight: 500;
   background-color: var(--ky-midnight-4);
-  box-shadow: 0px 40px 20px -30px rgba(0, 0, 0, 0.5);
   outline: none;
   transition: all 0.1s ease-out;
 }
@@ -38,7 +37,6 @@
 .ky-hero-search-input-has-value #KYHeroSearchInput,
 #KYHeroSearchInput:focus {
   border-color: var(--ky-midnight-3);
-  box-shadow: 0px 45px 25px -30px rgba(0, 0, 0, 0.5);
 }
 
 #KYHeroSearchInput::-webkit-search-cancel-button {
@@ -90,7 +88,7 @@
   height: 55px;
   padding: 0 30px;
   border: none;
-  border-radius: 20px;
+  border-radius: 14px;
   color: var(--ky-light-2);
   font-size: 20px;
   font-weight: 600;
@@ -122,7 +120,7 @@
   display: block;
   height: 100%;
   width: 100%;
-  border-radius: 20px;
+  border-radius: 14px;
   background: var(--ky-red-gradient);
   transition: all 0.1s ease-out;
   z-index: 0;

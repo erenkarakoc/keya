@@ -82,7 +82,7 @@ const getProperties = async (
     })
 
     // Calculate pagination metadata
-    const totalPropertiesQuery = await getDocs(collection(db, "offices"))
+    const totalPropertiesQuery = await getDocs(collection(db, "properties"))
     const totalProperties = totalPropertiesQuery.size
     const totalPages = Math.ceil(totalProperties / itemsPerPage)
     const nextPage = page < totalPages ? page + 1 : null
@@ -199,14 +199,14 @@ const getPropertyNameById = async (id: string): Promise<string | undefined> => {
 const updateProperty = async (
   property: Property
 ): Promise<Property | undefined> => {
-  const propertyDocRef = doc(db, "offices", property.id)
+  const propertyDocRef = doc(db, "properties", property.id)
   await updateDoc(propertyDocRef, property)
   return property
 }
 
 const deleteProperty = async (propertyId: string): Promise<void> => {
   try {
-    const propertyRef = doc(db, "offices", propertyId)
+    const propertyRef = doc(db, "properties", propertyId)
     await deleteDoc(propertyRef)
   } catch (error) {
     console.error("Error deleting property documents:", error)

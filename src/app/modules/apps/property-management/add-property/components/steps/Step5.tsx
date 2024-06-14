@@ -127,7 +127,7 @@ const Step5: FC<Step5Props> = ({ setFieldValue }) => {
       </div>
 
       <div className="mb-0">
-        <div className="mb-10 fv-row">
+        <div className="fv-row mb-10">
           <label className="form-label required mb-3">
             Gayrimenkul Danışmanı
           </label>

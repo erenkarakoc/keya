@@ -30,37 +30,41 @@ const PropertiesTable = () => {
 
   return (
     <KTCardBody className="py-4">
-      <div className="table-responsive">
-        <table
-          id="kt_table_properties"
-          className="table align-middle table-row-dashed fs-6 gy-5 dataTable no-footer"
-          {...getTableProps()}
-        >
-          <thead>
-            <tr className="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
-              {headers.map((column: ColumnInstance<Property>) => (
-                <CustomHeaderColumn key={column.id} column={column} />
-              ))}
-            </tr>
-          </thead>
-          <tbody className="text-gray-600 fw-bold" {...getTableBodyProps()}>
-            {rows.length > 0 ? (
-              rows.map((row: Row<Property>, i) => {
-                prepareRow(row)
-                return <CustomRow row={row} key={`row-${i}-${row.id}`} />
-              })
-            ) : (
-              <tr>
-                <td colSpan={7}>
-                  <div className="d-flex text-center w-100 align-content-center justify-content-center">
-                    Bu filtrelere uygun kullanıcı bulunamadı.
-                  </div>
-                </td>
+      {columns ? (
+        <div className="table-responsive">
+          <table
+            id="kt_table_properties"
+            className="table align-middle table-row-dashed fs-6 gy-5 dataTable no-footer"
+            {...getTableProps()}
+          >
+            <thead>
+              <tr className="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
+                {headers.map((column: ColumnInstance<Property>) => (
+                  <CustomHeaderColumn key={column.id} column={column} />
+                ))}
               </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody className="text-gray-600 fw-bold" {...getTableBodyProps()}>
+              {rows.length > 0 ? (
+                rows.map((row: Row<Property>, i) => {
+                  prepareRow(row)
+                  return <CustomRow row={row} key={`row-${i}-${row.id}`} />
+                })
+              ) : (
+                <tr>
+                  <td colSpan={7}>
+                    <div className="d-flex text-center w-100 align-content-center justify-content-center">
+                      Bu filtrelere uygun ilan bulunamadı.
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        ""
+      )}
       <PropertiesListPagination />
       {isLoading && <PropertiesListLoading />}
     </KTCardBody>

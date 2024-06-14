@@ -4,7 +4,7 @@ export type Property = {
   id: string
   title: string
 
-  userIds: string
+  userIds: string[]
   officeId: string
   sahibindenNo?: string
   emlakJetNo?: string
@@ -63,16 +63,22 @@ export type Property = {
       | "10+1"
       | "10+2"
       | "10++"
+      | ""
     bathroom?: number
     balcony?: boolean
     elevator?: boolean
-    parkingLot?: "closedParkingLot" | "openParkingLot"
+    parkingLot?:
+      | "openNclosedParkingLot"
+      | "closedParkingLot"
+      | "openParkingLot"
+      | ""
     deedStatus?:
       | "condominium"
       | "floorAltitude"
       | "shareTitleDeed"
       | "detachedTitleDeed"
       | "landTitleDeed"
+      | ""
     heating?:
       | "stove"
       | "naturalGasStove"
@@ -90,12 +96,13 @@ export type Property = {
       | "fireplace"
       | "VRV"
       | "heatPump"
+      | ""
     inComplex?: boolean
     buildingAge?: number
     buildingFloors?: number
     buildingAtFloor?: number
-    dues?: number
-    facade?: "north" | "east" | "south" | "west"
+    dues?: string
+    facade?: "north" | "east" | "south" | "west" | ""
     exchange?: boolean
 
     featuresInner?: string[]
@@ -107,22 +114,31 @@ export type Property = {
     featuresForDisabled?: string[]
 
     price: string
-    for: "sale" | "rent" | "lease-sale" | "lease-rent" | "other"
+    for: "sale" | "rent" | "lease-sale" | "lease-rent" | ""
 
     address: {
       label: string
-      lat: number
-      lng: number
+      lat: number | undefined
+      lng: number | undefined
     }
   }
 
   ownerDetails?: {
     ownerFullName?: string
     ownerPhoneNumber?: string
-    permit?: ""
+    permit?: string
     permitDate?: string
     permitUntilDate?: string
-    permitPrice?: number
+    permitPrice?: string
+  }
+
+  saleDetails?: {
+    agentFee?: string
+    officeFee?: string
+    sold?: boolean
+    soldPrice?: string
+    soldDate?: string
+    active: boolean
   }
 
   createdAt: string

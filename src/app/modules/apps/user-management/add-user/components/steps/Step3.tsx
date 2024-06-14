@@ -8,11 +8,20 @@ interface Office {
   name: string
 }
 
-const Step3: FC = () => {
+interface Step3Props {
+  setFieldValue: (
+    field: string,
+    value: string,
+    shouldValidate?: boolean
+  ) => void
+}
+
+const Step3: FC<Step3Props> = ({ setFieldValue }) => {
   const [offices, setOffices] = useState<Office[]>()
   const [currentOffice, setCurrentOffice] = useState("")
 
   const handleOfficeChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setFieldValue("officeId", e.target.value)
     setCurrentOffice(e.target.value)
   }
 
@@ -48,11 +57,15 @@ const Step3: FC = () => {
           <option></option>
           {offices &&
             offices.map((office) => (
-              <option value={office.name} office-id={office.id} key={office.id}>
+              <option value={office.id} office-id={office.id} key={office.id}>
                 Keya {office.name}
               </option>
             ))}
         </Field>
+
+        <div className="text-danger mt-2">
+            <ErrorMessage name="officeId" />
+          </div>
       </div>
 
       <div className="mb-10 fv-row">

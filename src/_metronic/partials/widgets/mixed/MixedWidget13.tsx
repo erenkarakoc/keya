@@ -48,7 +48,7 @@ const MixedWidget13: FC<Props> = ({className, backGroundColor, chartHeight}) => 
         <div className='d-flex flex-column flex-grow-1'>
           {/* begin::Title                    */}
           <a href='#' className='text-gray-900 text-hover-primary fw-bolder fs-3'>
-            Kazançlar
+            Ayın özeti
           </a>
           {/* end::Title */}
 
@@ -63,15 +63,15 @@ const MixedWidget13: FC<Props> = ({className, backGroundColor, chartHeight}) => 
         {/* begin::Stats */}
         <div className='pt-5'>
           {/* begin::Symbol */}
-          <span className='text-gray-900 fw-bolder fs-2x lh-0'>$</span>
+          <span className='text-gray-900 fw-bolder fs-2x lh-0'>₺</span>
           {/* end::Symbol */}
 
           {/* begin::Number */}
-          <span className='text-gray-900 fw-bolder fs-3x me-2 lh-0'>560</span>
+          <span className='text-gray-900 fw-bolder fs-3x me-2 lh-0'>124.500</span>
           {/* end::Number */}
 
           {/* begin::Text */}
-          <span className='text-gray-900 fw-bolder fs-6 lh-0'>+ 28% this week</span>
+          <span className='text-gray-900 fw-bolder fs-6 lh-0'>+ 28% artış</span>
           {/* end::Text */}
         </div>
         {/* end::Stats */}

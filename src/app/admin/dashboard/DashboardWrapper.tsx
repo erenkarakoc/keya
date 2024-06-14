@@ -3,11 +3,13 @@ import { EnableSidebar, PageTitle } from "../../../_metronic/layout/core"
 import {
   ListsWidget4,
   ListsWidget5,
-  TablesWidget9,
   MixedWidget13,
-  MixedWidget14,
   MixedWidget15,
 } from "../../../_metronic/partials/widgets"
+
+import { SalesProgress } from "./components/SalesProgress"
+import { DashboardUsersTable } from "./components/DashboardUsersTable"
+
 import { useAuth } from "../../modules/auth/core/Auth"
 
 const DashboardPage = () => (
@@ -25,9 +27,9 @@ const DashboardPage = () => (
 
       {/*begin::Col*/}
       <div className="col-xl-4">
-        <MixedWidget14
+        <SalesProgress
           className="card-xl-stretch mb-xl-10"
-          backGroundColor="#CBF0F4"
+          chartColor="#6f1a1af"
           chartHeight="100px"
         />
       </div>
@@ -44,7 +46,7 @@ const DashboardPage = () => (
     </div>
     {/*end::Row*/}
 
-    <TablesWidget9 className="mb-5 mb-xl-10" />
+    <DashboardUsersTable className="mb-5 mb-xl-10" />
 
     {/*begin::Row*/}
     <div className="row gy-5 g-xl-10">
