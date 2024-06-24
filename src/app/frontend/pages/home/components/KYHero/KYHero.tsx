@@ -75,14 +75,13 @@ const KYHero = () => {
         initial={{ opacity: 0, y: 25 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ delay: 0.4 }}
+        transition={{ delay: 0.8 }}
+        id="hero-mouse-icon-wrapper"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           version="1.1"
           viewBox="0 0 30 70"
-          height="45px"
-          id="hero-mouse-icon-wrapper"
         >
           <defs>
             <clipPath

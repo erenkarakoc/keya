@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react"
 
-import { Comment as CommentModel } from "../../../modules/apps/comment-management/_core/_models"
-import { User } from "../../../modules/apps/user-management/_core/_models"
-import { getCommentsByUserId } from "../../../modules/apps/comment-management/_core/_requests"
+import { Comment as CommentModel } from "../../../../modules/apps/comment-management/_core/_models"
+import { getCommentsByOfficeId } from "../../../../modules/apps/comment-management/_core/_requests"
 import { Comment } from "./Comment"
+import { Office } from "../../../../modules/apps/office-management/_core/_models"
 
 interface Props {
-  user: User
+  office: Office
 }
 
-const Comments: React.FC<Props> = ({ user }) => {
+const OfficeCommentsList: React.FC<Props> = ({ office }) => {
   const [comments, setComments] = useState<CommentModel[]>([])
   const [commentsLoading, setCommentsLoading] = useState(true)
 
   useEffect(() => {
     const fetchComments = async () => {
-      const commentsArr: CommentModel[] = await getCommentsByUserId(user.id)
+      const commentsArr: CommentModel[] = await getCommentsByOfficeId(office.id)
 
       if (commentsArr.length) setComments(commentsArr)
 
@@ -23,7 +23,7 @@ const Comments: React.FC<Props> = ({ user }) => {
     }
 
     fetchComments()
-  }, [user])
+  }, [office])
 
   return (
     <>
@@ -53,12 +53,12 @@ const Comments: React.FC<Props> = ({ user }) => {
           </div>
         ))
       ) : (
-        <div className="text-gray-600 fw-semibold fs-7 card py-20 rounded text-center border border-gray-200">
-          Kullanıcıya ait yorum bulunamadı.
+        <div className="text-gray-600 fw-semibold fs-7 py-20 rounded text-center border border-2 border-gray-200">
+          Ofise ait yorum bulunamadı.
         </div>
       )}
     </>
   )
 }
 
-export { Comments }
+export { OfficeCommentsList }

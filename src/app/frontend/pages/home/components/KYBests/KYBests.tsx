@@ -21,7 +21,7 @@ const KYBests = () => {
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
         >
-          <a href="#" target="_blank" className="ky-bests-item">
+          <a href="/ofis-detayi/B3U0cyMyf0n4sOz4YpSw" className="ky-bests-item">
             <KYText className="ky-bests-title" variant="subtitle">
               <span className="ky-text-highlight">Mayıs Ayının</span> En
               Başarılı Ofisi
@@ -43,7 +43,10 @@ const KYBests = () => {
           viewport={{ once: true }}
           transition={{ delay: 0.4 }}
         >
-          <a href="#" target="_blank" className="ky-bests-item">
+          <a
+            href="/kullanici-detayi/eVG5h7VPOeSJlVCs98x6olPyQ3l1/"
+            className="ky-bests-item"
+          >
             <KYText className="ky-bests-title" variant="subtitle">
               <span className="ky-text-highlight">Mayıs Ayının</span> En
               Başarılı Danışmanı
@@ -70,21 +73,24 @@ const KYBests = () => {
           viewport={{ once: true }}
           transition={{ delay: 0.6 }}
         >
-          <a href="#" target="_blank" className="ky-bests-item">
+          <a
+            href="/kullanici-detayi/GdnjRpbbbGhMcTa9RoKtsI1ostM2/"
+            className="ky-bests-item"
+          >
             <KYText className="ky-bests-title" variant="subtitle">
               <span className="ky-text-highlight">Geçen Haftanın</span> En
               Başarılı Danışmanı
             </KYText>
-            <div className="ky-bests-content">
+            <div className="ky-bests-content">  
               <div className="ky-bests-image">
                 <img
-                  src={toAbsoluteUrl("media/avatars/bahadir.jpg")}
-                  alt="Bahadır Angun"
+                  src={toAbsoluteUrl("media/avatars/gulnur.jpg")}
+                  alt="Gülnur Karabacak"
                 />
               </div>
               <div className="ky-bests-info">
-                <div className="ky-bests-name">Bahadır Angun</div>
-                <div className="ky-bests-desc">Keya Ankara</div>
+                <div className="ky-bests-name">Gülnur Karabacak</div>
+                <div className="ky-bests-desc">Keya Kıbrıs</div>
               </div>
             </div>
           </a>

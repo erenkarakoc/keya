@@ -2,37 +2,21 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 
-import "./KYOfficeCard.css"
+import "./KYPropertyCard.css"
 
-import {
-  getCountryById,
-  getStatesByCountry,
-  getUserNameInitials,
-  getCitiesByState,
-  getStateById,
-  getCityById,
-} from "../../../../../../_metronic/helpers/kyHelpers"
-
-import { Office } from "../../../../../modules/apps/office-management/_core/_models"
+import { Property } from "../../../../../modules/apps/property-management/_core/_models"
 import { User } from "../../../../../modules/apps/user-management/_core/_models"
 import { getUserById } from "../../../../../modules/apps/user-management/_core/_requests"
+import { getUserNameInitials } from "../../../../../../_metronic/helpers/kyHelpers"
 
-interface KYOfficeCardProps {
-  office: Office
+interface KYPropertyCardProps {
+  property: Property
 }
 
-const KYOfficeCard: React.FC<KYOfficeCardProps> = ({ office }) => {
+const KYPropertyCard: React.FC<KYPropertyCardProps> = ({ property }) => {
   const [opacity, setOpacity] = useState(0)
-  const [officeUsers, setOfficeUsers] = useState<User[]>([])
+  const [propertyUsers, setPropertyUsers] = useState<User[]>([])
   const [imagesLoaded, setImagesLoaded] = useState(false)
-
-  const [countryName, setCountryName] = useState("")
-  const [stateName, setStateName] = useState("")
-  const [cityName, setCityName] = useState("")
-
-  const [countries, setCountries] = useState<any>([])
-  const [states, setStates] = useState<any>([])
-  const [cities, setCities] = useState<any>([])
 
   const handleImageLoad = () => {
     setImagesLoaded(true)
@@ -58,12 +42,12 @@ const KYOfficeCard: React.FC<KYOfficeCardProps> = ({ office }) => {
       }
     }
 
-    const fetchOfficeUsers = async () => {
+    const fetchPropertyUsers = async () => {
       try {
-        if (office && office.users) {
-          const userIds = office.users.slice(0, 5)
+        if (property && property.userIds) {
+          const userIds = property.userIds.slice(0, 5)
           const users = await fetchUsers(userIds)
-          setOfficeUsers(users)
+          setPropertyUsers(users)
           setOpacity(1)
         }
       } catch (error) {
@@ -71,62 +55,35 @@ const KYOfficeCard: React.FC<KYOfficeCardProps> = ({ office }) => {
       }
     }
 
-    fetchOfficeUsers()
-  }, [office])
-
-  useEffect(() => {
-    const countriesArr = getCountryById(parseInt(office.address.country ?? ""))
-    const statesArr = getStatesByCountry(parseInt(office.address.country ?? ""))
-    const citiesArr = getCitiesByState(parseInt(office.address.state ?? ""))
-
-    setCountries(countriesArr)
-    setStates(statesArr)
-    setCities(citiesArr)
-  }, [office])
-
-  useEffect(() => {
-    if (office.address.country && countries) {
-      const country: any = getCountryById(
-        parseInt(office.address.country ?? "")
-      )
-      if (country.translations.tr) {
-        setCountryName(country.translations.tr)
-      } else {
-        setCountryName(country.name)
-      }
-    }
-    if (office.address.state && states) {
-      const state: any = getStateById(parseInt(office.address.state ?? ""))
-      setStateName(state.name)
-    }
-    if (office.address.city && cities) {
-      const city: any = getCityById(parseInt(office.address.city ?? ""))
-      setCityName(city.name)
-    }
-  }, [office, countries, states, cities])
+    fetchPropertyUsers()
+  }, [property])
 
   return (
-    <div className="ky-office-card">
-      <img
-        src={office.photoURLs[0]}
-        alt={`${office.name}`}
-        loading="lazy"
-        className="ky-office-card-bg-image"
-      />
-      <div className="ky-office-card-image">
-        <span>KEYA</span>
-        <span className="ky-office-card-image-name">{office.name}</span>
+    <div className="ky-property-card">
+      <div className="ky-property-card-image">
+        <img
+          src={property.propertyDetails.photoURLs[0]}
+          alt={`${property.title}`}
+          style={{ opacity: opacity }}
+          onLoad={() => setOpacity(1)}
+          loading="lazy"
+        />
       </div>
 
-      {officeUsers.length ? (
+      {propertyUsers.length ? (
         <div
-          className={`ky-office-card-users${
+          className={`ky-property-card-users${
             imagesLoaded ? " images-loaded" : ""
           }`}
         >
-          <div className="ky-office-card-user-images">
-            {officeUsers.map((user) => (
-              <div className="ky-office-card-user-image" key={user.id}>
+          <div className="ky-property-card-user-images">
+            {propertyUsers.map((user) => (
+              <a
+                href={`/kullanici-detayi/${user.id}/`}
+                target="_blank"
+                className="ky-property-card-user-image"
+                key={user.id}
+              >
                 {user.photoURL ? (
                   <img
                     src={user.photoURL}
@@ -136,47 +93,35 @@ const KYOfficeCard: React.FC<KYOfficeCardProps> = ({ office }) => {
                     loading="lazy"
                   />
                 ) : (
-                  <span className="ky-office-card-user-initials">
+                  <span className="ky-property-card-user-initials">
                     {getUserNameInitials(user.firstName, user.lastName)}
                   </span>
                 )}
-              </div>
+              </a>
             ))}
           </div>
-          <span>{officeUsers.length}+ Danışman</span>
         </div>
       ) : (
         ""
       )}
 
-      <div className="ky-office-card-footer">
-        <div className="ky-office-card-info">
-          <div className="ky-office-card-name">Keya {office.name}</div>
-          <div className="ky-office-card-title">
-            {(() => {
-              const locationString = `${cityName ? cityName + ", " : ""}${
-                stateName ? stateName + ", " : ""
-              }${countryName || ""}`
-              const locationLength = locationString.length
-
-              if (locationLength <= 50) {
-                return locationString
-              } else {
-                return countryName || ""
-              }
-            })()}
+      <div className="ky-property-card-footer">
+        <div className="ky-property-card-info">
+          <div className="ky-property-card-name">{property.title}</div>
+          <div className="ky-property-card-title">
+            {property.propertyDetails.address.label}
           </div>
         </div>
-        <div className="ky-office-card-actions">
+        <div className="ky-property-card-actions">
           <Link
-            to={`/ofis-detayi/${office.id}/`}
-            className="ky-office-card-action"
+            to={`/ilan-detayi/${property.id}/`}
+            className="ky-property-card-action"
           >
-            Ofise Git
+            İlana Git
           </Link>
           <a
-            href={`mailto:${office.email}`}
-            className="ky-office-card-action ky-office-card-action-square"
+            href={`mailto:`}
+            className="ky-property-card-action ky-property-card-action-square"
           >
             <svg
               width="25"
@@ -203,8 +148,8 @@ const KYOfficeCard: React.FC<KYOfficeCardProps> = ({ office }) => {
             </svg>
           </a>
           <a
-            href={`tel:${office.phoneNumber?.replace(/\s+/g, "")}`}
-            className="ky-office-card-action ky-office-card-action-square"
+            href={`tel:}`}
+            className="ky-property-card-action ky-property-card-action-square"
           >
             <svg
               width="23"
@@ -234,4 +179,4 @@ const KYOfficeCard: React.FC<KYOfficeCardProps> = ({ office }) => {
   )
 }
 
-export { KYOfficeCard }
+export { KYPropertyCard }

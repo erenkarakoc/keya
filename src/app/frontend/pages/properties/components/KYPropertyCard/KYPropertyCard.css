@@ -1,5 +1,5 @@
-.ky-office-card {
-  aspect-ratio: 1 / 1.33;
+.ky-property-card {
+  aspect-ratio: 1 / 1;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -12,7 +12,7 @@
   overflow: hidden;
 }
 
-.ky-office-card-office {
+.ky-property-card-office {
   user-select: none;
   cursor: pointer;
   position: absolute;
@@ -32,11 +32,11 @@
   -webkit-text-fill-color: transparent;
   z-index: 1;
 }
-.ky-office-card-office span {
+.ky-property-card-office span {
   font-family: var(--klavika);
   font-weight: 900;
 }
-.ky-office-card-office::after {
+.ky-property-card-office::after {
   content: "";
   opacity: 0;
   position: absolute;
@@ -51,27 +51,19 @@
   background-size: contain;
   transition: all 0.1s ease-out;
 }
-.ky-office-card-office:hover::after {
+.ky-property-card-office:hover::after {
   opacity: 1;
   left: 0;
 }
 
-.ky-office-card-bg-image {
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  opacity: 0.1;
-  object-fit: cover;
-}
-
-.ky-office-card-image {
+.ky-property-card-image {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
-.ky-office-card-image span {
+.ky-property-card-image span {
   user-select: none;
   font-family: var(--klavika);
   color: var(--ky-red);
@@ -84,12 +76,12 @@
   -webkit-text-fill-color: transparent;
 }
 
-.ky-office-card-image .ky-office-card-image-name {
+.ky-property-card-image .ky-property-card-image-name {
   font-size: 40px;
   font-weight: 900;
 }
 
-.ky-office-card-image img {
+.ky-property-card-image img {
   position: absolute;
   top: -2px;
   left: -2px;
@@ -99,7 +91,7 @@
   transition: opacity 0.2s ease-out;
 }
 
-.ky-office-card-users {
+.ky-property-card-users {
   opacity: 0;
   position: absolute;
   right: 0;
@@ -112,12 +104,12 @@
   padding: 0 10px;
   transition: all 0.2s ease-out;
 }
-.ky-office-card-users.images-loaded {
+.ky-property-card-users.images-loaded {
   opacity: 1;
   top: 10px;
 }
 
-.ky-office-card-users span {
+.ky-property-card-users span {
   user-select: none;
   margin-left: 10px;
   color: var(--ky-red);
@@ -126,12 +118,12 @@
   white-space: nowrap;
 }
 
-.ky-office-card-user-images {
+.ky-property-card-user-images {
   display: flex;
   align-items: center;
 }
 
-.ky-office-card-user-image {
+.ky-property-card-user-image {
   position: relative;
   display: flex;
   justify-content: center;
@@ -146,24 +138,24 @@
   transition: all 0.15s ease-out;
 }
 
-.ky-office-card-user-image:not(:first-of-type) {
+.ky-property-card-user-image:not(:first-of-type) {
   margin-left: -25px;
 }
 
-.ky-office-card-user-image:nth-of-type(1) {
+.ky-property-card-user-image:nth-of-type(1) {
   z-index: 5;
 }
-.ky-office-card-user-image:nth-of-type(2) {
+.ky-property-card-user-image:nth-of-type(2) {
   z-index: 4;
 }
-.ky-office-card-user-image:nth-of-type(3) {
+.ky-property-card-user-image:nth-of-type(3) {
   z-index: 3;
 }
-.ky-office-card-user-image:nth-of-type(4) {
+.ky-property-card-user-image:nth-of-type(4) {
   z-index: 2;
 }
 
-.ky-office-card-user-image img {
+.ky-property-card-user-image img {
   user-select: none;
   height: 100%;
   width: 100%;
@@ -171,7 +163,7 @@
   transition: opacity 0.2s ease-out;
 }
 
-.ky-office-card-user-initials {
+.ky-property-card-user-initials {
   margin: 0 !important;
   text-align: center;
   font-size: 14px !important;
@@ -182,7 +174,7 @@
   -webkit-text-fill-color: transparent;
 }
 
-.ky-office-card-footer {
+.ky-property-card-footer {
   position: absolute;
   left: -2px;
   bottom: -2px;
@@ -195,30 +187,36 @@
   overflow: hidden;
 }
 
-.ky-office-card-footer .ky-office-card-info {
+.ky-property-card-footer .ky-property-card-info {
   position: absolute;
-  text-align: right;
+  text-align: left;
   width: 100%;
-  padding: 10px;
+  padding: 10px 20px;
   transition: all 0.2s ease-out;
 }
 
-.ky-office-card-footer .ky-office-card-name {
+.ky-property-card-footer .ky-property-card-name {
   color: var(--ky-light);
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 600;
   line-height: 1;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
-.ky-office-card-footer .ky-office-card-title {
+.ky-property-card-footer .ky-property-card-title {
   margin-top: 4px;
   color: var(--ky-light-3);
   font-size: 12px;
   font-weight: 400;
   line-height: 1.5;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
-.ky-office-card-footer .ky-office-card-actions {
+.ky-property-card-footer .ky-property-card-actions {
   position: absolute;
   opacity: 0;
   bottom: -100px;
@@ -234,7 +232,7 @@
   transition: all 0.2s ease-out;
 }
 
-.ky-office-card-footer .ky-office-card-action {
+.ky-property-card-footer .ky-property-card-action {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -250,18 +248,18 @@
   white-space: nowrap;
   transition: all 0.5s ease-out;
 }
-.ky-office-card-footer .ky-office-card-action:hover {
+.ky-property-card-footer .ky-property-card-action:hover {
   background: var(--ky-red-gradient);
 }
-.ky-office-card-footer .ky-office-card-action-square {
+.ky-property-card-footer .ky-property-card-action-square {
   height: 40px;
   width: 40px;
 }
-.ky-office-card-footer .ky-office-card-action * {
+.ky-property-card-footer .ky-property-card-action * {
   flex-shrink: 0;
 }
 
-.ky-office-card:hover .ky-office-card-actions {
+.ky-property-card:hover .ky-property-card-actions {
   opacity: 1;
   bottom: 0;
 }

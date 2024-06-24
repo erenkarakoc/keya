@@ -30,7 +30,7 @@
     hue-rotate(0deg);
   background-color: transparent;
   background-image: radial-gradient(at top center, #000000 0%, #000000 100%);
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
 .ky-hero-section {
@@ -84,5 +84,14 @@
 #hero-mouse-icon-wrapper {
   position: absolute;
   bottom: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 45px;
+  width: 45px;
   z-index: 1;
+}
+
+#hero-mouse-icon-wrapper svg {
+  height: 45px;
 }

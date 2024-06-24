@@ -71,7 +71,10 @@ const KYAgentCard: React.FC<KYAgentCardProps> = ({ user }) => {
           </div>
         </div>
         <div className="ky-agent-card-actions">
-          <Link to="/" className="ky-agent-card-action">
+          <Link
+            to={`/kullanici-detayi/${user.id}/`}
+            className="ky-agent-card-action"
+          >
             Profile Git
           </Link>
           <a

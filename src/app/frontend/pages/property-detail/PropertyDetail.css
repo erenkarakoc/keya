@@ -1,0 +1,178 @@
+.ky-page-agent-detail {
+  margin-top: 20px;
+}
+
+.ky-property-row {
+  display: flex;
+  flex-direction: column;
+  background: var(--ky-midnight-3);
+  padding: 10px 14px;
+  border-radius: 5px;
+  border: 2px solid var(--ky-midnight-3);
+  transition: all 0.15s ease-out;
+}
+
+.ky-property-row:not(:first-of-type) {
+  margin-top: 20px;
+}
+
+.ky-property-row i {
+  color: var(--ky-light-3);
+}
+
+.ky-property-row-title {
+  color: var(--ky-light-3);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  transition: all 0.15s ease-out;
+}
+
+.ky-property-row-label {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: all 0.15s ease-out;
+}
+
+a.ky-property-row:hover .ky-property-row-label {
+  color: var(--ky-light-red);
+}
+
+.ky-property-detail-image {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  overflow: hidden;
+}
+
+.ky-property-detail-image img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.mainImages {
+  border-radius: 10px;
+}
+.mainImages .swiper-button-next::after,
+.mainImages .swiper-button-prev::after {
+  font-size: 14px;
+}
+
+.thumbnailSwiper {
+  margin-top: 10px;
+}
+.thumbnailSwiper .swiper-slide {
+  cursor: pointer;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.ky-property-name {
+  margin-top: 15px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--ky-light);
+}
+
+.ky-property-office-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ky-light-3);
+  transition: all 0.1s ease-out;
+}
+.ky-property-office-name:hover {
+  color: var(--ky-light-red);
+}
+
+.ky-property-about-title {
+  color: var(--ky-light);
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.ky-property-about-description {
+  color: var(--ky-light-2);
+  font-size: 16px;
+  line-height: 1.3;
+  margin-top: 20px;
+}
+
+.ky-property-tab-nav {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 10px 10px 0 0;
+}
+
+.ky-property-tab-nav ul {
+  display: flex;
+  align-items: center;
+  grid-gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.ky-property-tab-nav ul li {
+  position: relative;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+}
+
+.ky-property-tab-nav ul li span {
+  position: relative;
+  user-select: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  margin: 0 !important;
+  padding: 12px 20px;
+  border: 2px solid transparent;
+  border-radius: 5px;
+  color: var(--ky-light);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1;
+  transition: all 0.2s ease-out;
+  outline: none;
+  z-index: 1;
+}
+
+.ky-property-tab-nav ul li::before {
+  position: absolute;
+  content: "";
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 5px;
+  background-image: var(--ky-red-gradient);
+  transition: opacity 0.1s linear;
+  transform: scaleX(-1);
+  opacity: 0;
+}
+
+.ky-property-tab-nav ul li.active:hover span {
+  border-color: var(--ky-light-red);
+}
+
+.ky-property-tab-nav ul li:hover {
+  border-color: var(--ky-light-red);
+}
+
+.ky-property-tab-nav ul li:hover::before,
+.ky-property-tab-nav ul li.active::before {
+  opacity: 1;
+}
+
+.ky-property-tab {
+  height: calc(100% - 64px);
+  padding: 30px;
+  border-radius: 0 0 10px 10px;
+  border-top: 2px solid var(--ky-midnight-3);
+}

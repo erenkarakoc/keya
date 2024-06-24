@@ -374,3 +374,9 @@
   opacity: 1;
   top: -35px;
 }
+
+.three-dots-overflow {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}

@@ -10,3 +10,10 @@
 .ky-offices-list {
   row-gap: var(--bs-gutter-x);
 }
+
+.ky-office-card-image {
+  position: relative;
+  z-index: 0;
+  height: 100%;
+  width: 100%;;
+}

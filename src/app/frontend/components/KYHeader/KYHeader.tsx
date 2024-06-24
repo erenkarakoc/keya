@@ -51,9 +51,10 @@ const KYHeader = () => {
         <KYNav>
           <KYNavItem to="/" text="Ana Sayfa" />
           <KYNavItem to="/franchise" text="Franchise" />
+          <KYNavItem to="/ilanlar" text="İlanlarımız" />
           <KYNavItem to="/ofislerimiz" text="Ofislerimiz" />
           <KYNavItem to="/danismanlarimiz" text="Danışmanlarımız" />
-          <KYNavItem to="/kariyer" text="Kariyer" />
+          {/* <KYNavItem to="/kariyer" text="Kariyer" /> */}
           <KYButton secondary to="/sat-kirala" text="Sat & Kirala" />
         </KYNav>
       </div>

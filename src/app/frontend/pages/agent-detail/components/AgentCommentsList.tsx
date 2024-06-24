@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react"
 
-import { Comment as CommentModel } from "../../../modules/apps/comment-management/_core/_models"
-import { User } from "../../../modules/apps/user-management/_core/_models"
-import { getCommentsByUserId } from "../../../modules/apps/comment-management/_core/_requests"
+import { Comment as CommentModel } from "../../../../modules/apps/comment-management/_core/_models"
+import { getCommentsByUserId } from "../../../../modules/apps/comment-management/_core/_requests"
 import { Comment } from "./Comment"
+import { User } from "../../../../modules/apps/user-management/_core/_models"
 
 interface Props {
   user: User
 }
 
-const Comments: React.FC<Props> = ({ user }) => {
+const AgentCommentsList: React.FC<Props> = ({ user }) => {
   const [comments, setComments] = useState<CommentModel[]>([])
   const [commentsLoading, setCommentsLoading] = useState(true)
 
@@ -53,7 +53,7 @@ const Comments: React.FC<Props> = ({ user }) => {
           </div>
         ))
       ) : (
-        <div className="text-gray-600 fw-semibold fs-7 card py-20 rounded text-center border border-gray-200">
+        <div className="text-gray-600 fw-semibold fs-7 py-20 rounded text-center border border-2 border-gray-200">
           Kullanıcıya ait yorum bulunamadı.
         </div>
       )}
@@ -61,4 +61,4 @@ const Comments: React.FC<Props> = ({ user }) => {
   )
 }
 
-export { Comments }
+export { AgentCommentsList }
