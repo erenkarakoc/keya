@@ -230,7 +230,7 @@ const Step3: FC<Step3Props> = ({ values, setFieldValue }) => {
 
       <div className="fv-row mb-2">
         <label
-          className="form-label mb-8 active"
+          className="form-label active"
           data-accordion-toggle="featuresInner"
           onClick={(e) => {
             const target = e.target as HTMLElement
@@ -278,7 +278,7 @@ const Step3: FC<Step3Props> = ({ values, setFieldValue }) => {
 
       <div className="fv-row mb-2">
         <label
-          className="form-label mb-8"
+          className="form-label"
           data-accordion-toggle="featuresOuter"
           onClick={(e) => {
             const target = e.target as HTMLElement
@@ -326,7 +326,7 @@ const Step3: FC<Step3Props> = ({ values, setFieldValue }) => {
 
       <div className="fv-row mb-2">
         <label
-          className="form-label mb-8"
+          className="form-label"
           data-accordion-toggle="featuresNeighbourhood"
           onClick={(e) => {
             const target = e.target as HTMLElement
@@ -374,7 +374,7 @@ const Step3: FC<Step3Props> = ({ values, setFieldValue }) => {
 
       <div className="fv-row mb-2">
         <label
-          className="form-label mb-8"
+          className="form-label"
           data-accordion-toggle="featuresTransportation"
           onClick={(e) => {
             const target = e.target as HTMLElement
@@ -422,7 +422,7 @@ const Step3: FC<Step3Props> = ({ values, setFieldValue }) => {
 
       <div className="fv-row mb-2">
         <label
-          className="form-label mb-8"
+          className="form-label"
           data-accordion-toggle="featuresView"
           onClick={(e) => {
             const target = e.target as HTMLElement
@@ -470,7 +470,7 @@ const Step3: FC<Step3Props> = ({ values, setFieldValue }) => {
 
       <div className="fv-row mb-2">
         <label
-          className="form-label mb-8"
+          className="form-label"
           data-accordion-toggle="featuresRealEstateType"
           onClick={(e) => {
             const target = e.target as HTMLElement

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 import { useAuth } from "../../../../app/modules/auth"
 import { toAbsoluteUrl } from "../../../helpers"
-import { Languages } from "../header-menus/Languages"
+// import { Languages } from "../header-menus/Languages"
 
 const UserMenu = () => {
   const { currentUser, logout } = useAuth()
@@ -31,9 +31,9 @@ const UserMenu = () => {
             <div className="fw-bolder d-flex align-items-center fs-5">
               {currentUser?.firstName} {currentUser?.lastName}
             </div>
-            <a href="#" className="fw-bold text-muted text-hover-primary fs-7">
+            <span className="fw-bold text-muted fs-7">
               {currentUser?.email}
-            </a>
+            </span>
           </div>
           {/* end::Username */}
         </div>
@@ -46,7 +46,10 @@ const UserMenu = () => {
 
       {/* begin::Menu item */}
       <div className="menu-item px-5">
-        <Link to={"crafted/account/overview"} className="menu-link px-5">
+        <Link
+          to={`/arayuz/kullanici-detayi/${currentUser?.id}/genel`}
+          className="menu-link px-5"
+        >
           Profilim
         </Link>
       </div>
@@ -54,62 +57,17 @@ const UserMenu = () => {
 
       {/* begin::Menu item */}
       <div className="menu-item px-5">
-        <a href="#" className="menu-link px-5">
-          <span className="menu-text">Projelerim</span>
+        <a
+          href={`/arayuz/kullanici-detayi/${currentUser?.id}/portfoyler`}
+          className="menu-link px-5"
+        >
+          <span className="menu-text">Portföylerim</span>
           <span className="menu-badge">
             <span className="badge badge-light-danger badge-circle fw-bolder fs-7">
-              3
+              {}
             </span>
           </span>
         </a>
-      </div>
-      {/* end::Menu item */}
-      {/* begin::Menu item */}
-      <div
-        className="menu-item px-5"
-        data-kt-menu-trigger="hover"
-        data-kt-menu-placement="right-end"
-      >
-        <a href="#" className="menu-link px-5">
-          <span className="menu-title">İçerikli Menü</span>
-          <span className="menu-arrow"></span>
-        </a>
-
-        {/* begin::Menu sub */}
-        <div className="menu-sub menu-sub-dropdown w-175px py-4">
-          {/* begin::Menu item */}
-          <div className="menu-item px-3">
-            <a href="#" className="menu-link px-5">
-              İçerik
-            </a>
-          </div>
-          {/* end::Menu item */}
-
-          {/* begin::Menu separator */}
-          <div className="separator my-2"></div>
-          {/* end::Menu separator */}
-
-          {/* begin::Menu item */}
-          <div className="menu-item px-3">
-            <div className="menu-content px-3">
-              <label className="form-check form-switch form-check-custom form-check-solid">
-                <input
-                  className="form-check-input w-30px h-20px"
-                  type="checkbox"
-                  value="1"
-                  checked={true}
-                  name="notifications"
-                  onChange={() => {}}
-                />
-                <span className="form-check-label text-muted fs-7">
-                  Bildirimler
-                </span>
-              </label>
-            </div>
-          </div>
-          {/* end::Menu item */}
-        </div>
-        {/* end::Menu sub */}
       </div>
       {/* end::Menu item */}
 
@@ -117,11 +75,14 @@ const UserMenu = () => {
       <div className="separator my-2"> </div>
       {/* end::Menu separator */}
 
-      <Languages languageMenuPlacement="right-end" />
+      {/* <Languages languageMenuPlacement="right-end" /> */}
 
       {/* begin::Menu item */}
       <div className="menu-item px-5 my-1">
-        <Link to="crafted/account/settings" className="menu-link px-5">
+        <Link
+          to={`/arayuz/kullanici-detayi/${currentUser?.id}/duzenle`}
+          className="menu-link px-5"
+        >
           Hesap Ayarları
         </Link>
       </div>

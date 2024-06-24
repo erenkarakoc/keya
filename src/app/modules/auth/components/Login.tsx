@@ -37,7 +37,9 @@ export function Login() {
         const user = await login(values.email, values.password)
         setCurrentUser(user)
       } catch (error) {
-        toast.error("Kullanıcılar yüklenemedi! Lütfen daha sonra tekrar deneyin.")
+        toast.error(
+          "Kullanıcılar yüklenemedi! Lütfen daha sonra tekrar deneyin."
+        )
         console.error(error)
         setStatus("E-posta veya şifre yanlış. Lütfen tekrar deneyin.")
         setSubmitting(false)
@@ -57,7 +59,8 @@ export function Login() {
       <div className="text-center mb-11">
         <h1 className="text-gray-900 fw-bolder mb-3">Giriş Yap</h1>
         <div className="text-gray-500 fw-semibold fs-6">
-          Bireysel veya kurumsal Keya hesabına giriş yap.
+          Bireysel veya kurumsal {import.meta.env.VITE_APP_NAME} hesabına giriş
+          yap.
         </div>
       </div>
       {/* begin::Heading */}
@@ -69,8 +72,8 @@ export function Login() {
       ) : (
         <div className="mb-10 bg-light-info p-8 rounded">
           <div className="text-info">
-            Sana özel Keya arayüzüne giriş yapabilir, işlemlerini{" "}
-            <strong>kolayca</strong> gerçekleştirebilirsin.
+            Sana özel {import.meta.env.VITE_APP_NAME} arayüzüne giriş yapabilir,
+            işlemlerini <strong>kolayca</strong> gerçekleştirebilirsin.
           </div>
         </div>
       )}
@@ -163,7 +166,7 @@ export function Login() {
       {/* end::Action */}
 
       <div className="text-gray-500 text-center fw-semibold fs-6">
-        Keya ailesinin bir parçası olmak için bizimle{" "}
+        {import.meta.env.VITE_APP_NAME} ailesinin bir parçası olmak için bizimle{" "}
         <Link to="/iletisim" className="link-primary">
           iletişime
         </Link>{" "}

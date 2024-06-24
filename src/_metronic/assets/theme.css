@@ -95,6 +95,12 @@
   margin-top: 40px;
 }
 
+.ky-form-note {
+  color: var(--ky-midnight);
+  font-size: 12px;
+  font-weight: 500;
+}
+
 /* Custom Quill */
 .custom-quill {
   border-radius: 0.85rem;

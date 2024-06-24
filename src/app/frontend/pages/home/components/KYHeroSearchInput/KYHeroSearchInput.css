@@ -5,12 +5,6 @@
   transition: all 0.2s ease-out;
 }
 
-.ky-hero-search-input-hovered,
-.ky-hero-search-input-has-value,
-.ky-hero-search-input-focused {
-  transform: translateY(-2px);
-}
-
 .ky-hero-search-input .ky-icon-search {
   position: absolute;
   top: 50%;
@@ -23,12 +17,13 @@
   height: 100%;
   width: 100%;
   padding: 0 150px 0 80px;
-  border: 2px solid var(--ky-midnight-3);
+  border: none;
   border-radius: 18px;
-  color: var(--ky-light);
+  color: var(--ky-midnight-3);
   font-size: 20px;
-  font-weight: 500;
-  background-color: var(--ky-midnight-4);
+  font-weight: 400;
+  background-color: var(--ky-light);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.2);
   outline: none;
   transition: all 0.1s ease-out;
 }
@@ -36,7 +31,7 @@
 .ky-hero-search-input-hovered #KYHeroSearchInput,
 .ky-hero-search-input-has-value #KYHeroSearchInput,
 #KYHeroSearchInput:focus {
-  border-color: var(--ky-midnight-3);
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.2);
 }
 
 #KYHeroSearchInput::-webkit-search-cancel-button {
@@ -44,7 +39,7 @@
 }
 
 #KYHeroSearchInput::placeholder {
-  color: var(--ky-midnight-2);
+  color: var(--ky-midnight);
 }
 
 #KYHeroSearchFilter {
@@ -89,10 +84,10 @@
   padding: 0 30px;
   border: none;
   border-radius: 14px;
-  color: var(--ky-light-2);
+  color: var(--ky-light);
   font-size: 20px;
   font-weight: 600;
-  background-color: var(--ky-midnight-3);
+  background: var(--ky-red-gradient);
   z-index: 1;
   transition: all 0.2s ease-out;
 }

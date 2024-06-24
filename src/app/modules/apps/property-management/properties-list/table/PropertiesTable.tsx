@@ -44,22 +44,24 @@ const PropertiesTable = () => {
                 ))}
               </tr>
             </thead>
-            <tbody className="text-gray-600 fw-bold" {...getTableBodyProps()}>
-              {rows.length > 0 ? (
-                rows.map((row: Row<Property>, i) => {
-                  prepareRow(row)
-                  return <CustomRow row={row} key={`row-${i}-${row.id}`} />
-                })
-              ) : (
-                <tr>
-                  <td colSpan={7}>
-                    <div className="d-flex text-center w-100 align-content-center justify-content-center">
-                      Bu filtrelere uygun ilan bulunamadı.
-                    </div>
-                  </td>
-                </tr>
-              )}
-            </tbody>
+            {!isLoading && (
+              <tbody className="text-gray-600 fw-bold" {...getTableBodyProps()}>
+                {rows.length > 0 ? (
+                  rows.map((row: Row<Property>, i) => {
+                    prepareRow(row)
+                    return <CustomRow row={row} key={`row-${i}-${row.id}`} />
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan={7}>
+                      <div className="d-flex text-center w-100 align-content-center justify-content-center">
+                        Bu filtrelere uygun ilan bulunamadı.
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            )}
           </table>
         </div>
       ) : (

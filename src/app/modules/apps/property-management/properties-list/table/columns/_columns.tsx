@@ -1,14 +1,18 @@
 import {Column} from 'react-table'
+
+import {PropertyCustomHeader} from './PropertyCustomHeader'
+import {PropertySelectionHeader} from './PropertySelectionHeader'
+
 import {PropertyInfoCell} from './PropertyInfoCell'
 import {PropertyUsersCell} from './PropertyUsersCell'
 import {PropertyActionsCell} from "./PropertyActionsCell"
 import {PropertySelectionCell} from './PropertySelectionCell'
-import {PropertyCustomHeader} from './PropertyCustomHeader'
-import {PropertySelectionHeader} from './PropertySelectionHeader'
-
-import {Property} from '../../../_core/_models'
 import { PropertyBadgeCell } from './PropertyBadgeCell'
 import { PropertyActiveCell } from './PropertyActiveCell'
+import { PropertyPermitUntilCell } from './PropertyPermitUntilCell'
+
+import {Property} from '../../../_core/_models'
+
 
 const propertiesColumns: ReadonlyArray<Column<Property>> = [
   {
@@ -35,6 +39,11 @@ const propertiesColumns: ReadonlyArray<Column<Property>> = [
     Header: (props) => <PropertyCustomHeader tableProps={props} title='Yayında' className='min-w-125px' />,
     id: "active",
     Cell: ({...props}) => <PropertyActiveCell isActive={props.data[props.row.index].saleDetails?.active} />,
+  },
+  {
+    Header: (props) => <PropertyCustomHeader tableProps={props} title='Yetki Bitiş Tarihi' className='min-w-125px' />,
+    id: "permitUntilDate",
+    Cell: ({...props}) => <PropertyPermitUntilCell date={props.data[props.row.index].ownerDetails?.permitUntilDate} />,
   },
   {
     Header: (props) => (

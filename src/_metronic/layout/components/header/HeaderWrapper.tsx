@@ -67,8 +67,8 @@ export function HeaderWrapper() {
           {/* begin::Logo */}
 
           <Link to='/dashboard' className='d-flex align-items-center'>
-            <img alt='Keya Real Estate' src={toAbsoluteUrl('media/logos/logo-light.svg')} className='theme-light-show h-20px' />
-            <img alt='Keya Real Estate' src={toAbsoluteUrl('media/logos/logo-dark.svg')} className='theme-dark-show h-20px' />
+            <img alt={import.meta.env.VITE_APP_FULL_NAME} src={toAbsoluteUrl('media/logos/logo-light.svg')} className='theme-light-show h-20px' />
+            <img alt={import.meta.env.VITE_APP_FULL_NAME} src={toAbsoluteUrl('media/logos/logo-dark.svg')} className='theme-dark-show h-20px' />
           </Link>
           {/* end::Logo */}
         </div>

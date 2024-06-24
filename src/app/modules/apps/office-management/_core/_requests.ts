@@ -18,6 +18,7 @@ import {
   updateDoc,
   deleteDoc,
   limit,
+  deleteField,
 } from "firebase/firestore"
 
 initializeApp(firebaseConfig)
@@ -192,6 +193,25 @@ const getOfficeNameById = async (id: string): Promise<string | undefined> => {
   }
 }
 
+const removeOfficeAbout = async (officeId: string): Promise<boolean> => {
+  try {
+    const db = getFirestore()
+    const userDocRef = doc(collection(db, "offices"), officeId)
+
+    await updateDoc(userDocRef, {
+      about: deleteField(),
+    })
+
+    console.log(
+      `Successfully removed about field from user with ID: ${officeId}`
+    )
+    return true
+  } catch (error) {
+    console.error("Error removing about field:", officeId)
+    return false
+  }
+}
+
 const updateOffice = async (office: Office): Promise<Office | undefined> => {
   const officeDocRef = doc(db, "offices", office.id)
   await updateDoc(officeDocRef, office)
@@ -232,5 +252,6 @@ export {
   getOfficeNameById,
   deleteOffice,
   deleteSelectedOffices,
+  removeOfficeAbout,
   updateOffice,
 }

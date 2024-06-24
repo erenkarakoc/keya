@@ -35,10 +35,7 @@ export const registerUser = functions.https.onCall(async (data) => {
       phoneNumber,
       officeId,
       role,
-      country,
-      state,
-      city,
-      addressLine,
+      address,
     } = data;
     if (password !== confirmpassword) {
       throw new functions.https.HttpsError(
@@ -61,18 +58,16 @@ export const registerUser = functions.https.onCall(async (data) => {
       phoneNumber,
       officeId,
       role,
-      address: {
-        country,
-        state,
-        city,
-        addressLine,
-      },
+      address,
       createdAt: userRecord.metadata.creationTime || "",
-      lastLoginAt: userRecord.metadata.lastSignInTime || "",
       searchIndexEmail: email,
       searchIndexName: firstName + " " + lastName,
     });
-    return {success: true, message: "User registered successfully."};
+    return {
+      success: true,
+      message: "User registered successfully.",
+      userId: userRecord.uid,
+    };
   } catch (error) {
     console.error("Error when registering user:", error);
     throw new functions.https.HttpsError(

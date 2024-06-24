@@ -75,9 +75,9 @@ const KYOfficeCard: React.FC<KYOfficeCardProps> = ({ office }) => {
   }, [office])
 
   useEffect(() => {
-    const countriesArr = getCountryById(parseInt(office.country ?? ""))
-    const statesArr = getStatesByCountry(parseInt(office.country ?? ""))
-    const citiesArr = getCitiesByState(parseInt(office.state ?? ""))
+    const countriesArr = getCountryById(parseInt(office.address.country ?? ""))
+    const statesArr = getStatesByCountry(parseInt(office.address.country ?? ""))
+    const citiesArr = getCitiesByState(parseInt(office.address.state ?? ""))
 
     setCountries(countriesArr)
     setStates(statesArr)
@@ -85,20 +85,22 @@ const KYOfficeCard: React.FC<KYOfficeCardProps> = ({ office }) => {
   }, [office])
 
   useEffect(() => {
-    if (office.country && countries) {
-      const country: any = getCountryById(parseInt(office.country ?? ""))
+    if (office.address.country && countries) {
+      const country: any = getCountryById(
+        parseInt(office.address.country ?? "")
+      )
       if (country.translations.tr) {
         setCountryName(country.translations.tr)
       } else {
         setCountryName(country.name)
       }
     }
-    if (office.state && states) {
-      const state: any = getStateById(parseInt(office.state ?? ""))
+    if (office.address.state && states) {
+      const state: any = getStateById(parseInt(office.address.state ?? ""))
       setStateName(state.name)
     }
-    if (office.city && cities) {
-      const city: any = getCityById(parseInt(office.city ?? ""))
+    if (office.address.city && cities) {
+      const city: any = getCityById(parseInt(office.address.city ?? ""))
       setCityName(city.name)
     }
   }, [office, countries, states, cities])

@@ -160,6 +160,65 @@ const getAllProperties = async (): Promise<Property[]> => {
   }
 }
 
+const getPropertiesByUserIds = async (
+  userIds: string[]
+): Promise<Property[]> => {
+  if (!Array.isArray(userIds) || userIds.length === 0) {
+    console.error("Invalid or empty userIds array")
+    return []
+  }
+
+  try {
+    const db = getFirestore()
+    const propertyCollectionRef = collection(db, "properties")
+    const q = query(
+      propertyCollectionRef,
+      where("userIds", "array-contains-any", userIds)
+    )
+    const propertyDocSnapshot = await getDocs(q)
+
+    const properties: Property[] = []
+
+    propertyDocSnapshot.forEach((doc) => {
+      const propertyData = doc.data() as Property
+      properties.push({ ...propertyData, id: doc.id })
+    })
+
+    return properties
+  } catch (error) {
+    console.error("Error fetching properties by user IDs:", error)
+    return []
+  }
+}
+
+const getPropertiesByOfficeId = async (
+  officeId: string
+): Promise<Property[]> => {
+  if (!officeId) {
+    console.error("Invalid or empty officeId")
+    return []
+  }
+
+  try {
+    const db = getFirestore()
+    const propertyCollectionRef = collection(db, "properties")
+    const q = query(propertyCollectionRef, where("officeId", "==", officeId))
+    const propertyDocSnapshot = await getDocs(q)
+
+    const properties: Property[] = []
+
+    propertyDocSnapshot.forEach((doc) => {
+      const propertyData = doc.data() as Property
+      properties.push({ ...propertyData, id: doc.id })
+    })
+
+    return properties
+  } catch (error) {
+    console.error("Error fetching properties by office ID:", error)
+    return []
+  }
+}
+
 const getPropertyById = async (id: string): Promise<Property | undefined> => {
   try {
     const db = getFirestore()
@@ -236,6 +295,8 @@ const deleteSelectedProperties = async (
 export {
   getProperties,
   getAllProperties,
+  getPropertiesByUserIds,
+  getPropertiesByOfficeId,
   getPropertyById,
   getPropertyNameById,
   deleteProperty,

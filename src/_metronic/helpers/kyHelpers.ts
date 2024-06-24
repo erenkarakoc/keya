@@ -216,6 +216,29 @@ const formatPrice = (price: string) => {
   return formattedPrice
 }
 
+const convertToTurkishDate = (dateStr: string) => {
+  const months = [
+    "Oca",
+    "Şub",
+    "Mar",
+    "Nis",
+    "May",
+    "Haz",
+    "Tem",
+    "Ağu",
+    "Eyl",
+    "Eki",
+    "Kas",
+    "Ara",
+  ]
+
+  const [year, month, day] = dateStr.split("-")
+  const monthIndex = parseInt(month, 10) - 1
+  const monthName = months[monthIndex]
+
+  return `${day} ${monthName} ${year}`
+}
+
 export {
   getCountryById,
   getCountries,
@@ -229,4 +252,5 @@ export {
   urlify,
   generateRandomName,
   formatPrice,
+  convertToTurkishDate,
 }

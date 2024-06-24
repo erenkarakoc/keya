@@ -41,7 +41,7 @@ const Step2: FC<Step2Props> = ({ setFieldValue }) => {
 
   const handleCountryChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setCurrentCountry(e.target.value)
-    setFieldValue("country", e.target.value)
+    setFieldValue("address.country", e.target.value)
 
     if (e.target.value) {
       const selectedOption = e.target.selectedOptions[0]
@@ -57,7 +57,7 @@ const Step2: FC<Step2Props> = ({ setFieldValue }) => {
 
   const handleStateChange = async (e: ChangeEvent<HTMLSelectElement>) => {
     setCurrentState(e.target.value)
-    setFieldValue("state", e.target.value)
+    setFieldValue("address.state", e.target.value)
 
     if (e.target.value) {
       const selectedOption = e.target.selectedOptions[0]
@@ -73,7 +73,7 @@ const Step2: FC<Step2Props> = ({ setFieldValue }) => {
 
   const handleCityChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setCurrentCity(e.target.value)
-    setFieldValue("city", e.target.value)
+    setFieldValue("address.city", e.target.value)
   }
 
   const handlePhoneNumberChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -93,10 +93,11 @@ const Step2: FC<Step2Props> = ({ setFieldValue }) => {
     const statesArr = getStatesByCountry(225)
     setStates(statesArr || [])
     setCountrySelected(true)
+    setCurrentCountry("225")
   }, [])
 
   useEffect(() => {
-    setFieldValue("country", currentCountry as string)
+    setFieldValue("address.country", currentCountry as string)
   }, [setFieldValue, currentCountry])
 
   return (
@@ -155,7 +156,7 @@ const Step2: FC<Step2Props> = ({ setFieldValue }) => {
           as="select"
           className="form-select form-select-lg form-select-solid"
           onChange={handleCountryChange}
-          name="country"
+          name="address.country"
           value={currentCountry}
         >
           <option></option>
@@ -171,7 +172,7 @@ const Step2: FC<Step2Props> = ({ setFieldValue }) => {
             ))}
         </Field>
         <div className="text-danger mt-2">
-          <ErrorMessage name="country" />
+          <ErrorMessage name="address.country" />
         </div>
       </div>
 
@@ -182,7 +183,7 @@ const Step2: FC<Step2Props> = ({ setFieldValue }) => {
           as="select"
           className="form-select form-select-lg form-select-solid"
           onChange={handleStateChange}
-          name="state"
+          name="address.state"
           disabled={!countrySelected}
           value={currentState}
         >
@@ -196,7 +197,7 @@ const Step2: FC<Step2Props> = ({ setFieldValue }) => {
             : ""}
         </Field>
         <div className="text-danger mt-2">
-          <ErrorMessage name="state" />
+          <ErrorMessage name="address.state" />
         </div>
       </div>
 
@@ -207,7 +208,7 @@ const Step2: FC<Step2Props> = ({ setFieldValue }) => {
           as="select"
           className="form-select form-select-lg form-select-solid"
           onChange={handleCityChange}
-          name="city"
+          name="address.city"
           disabled={!stateSelected && !countrySelected}
           value={currentCity}
         >
@@ -221,7 +222,7 @@ const Step2: FC<Step2Props> = ({ setFieldValue }) => {
             : ""}
         </Field>
         <div className="text-danger mt-2">
-          <ErrorMessage name="city" />
+          <ErrorMessage name="address.city" />
         </div>
       </div>
 

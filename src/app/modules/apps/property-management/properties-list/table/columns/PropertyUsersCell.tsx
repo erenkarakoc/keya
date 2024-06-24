@@ -1,4 +1,3 @@
-import clsx from "clsx"
 import { FC, useEffect, useState } from "react"
 
 import { getUserById } from "../../../../user-management/_core/_requests"
@@ -48,7 +47,7 @@ const PropertyUsersCell: FC<Props> = ({ userIds }) => {
         return (
           <div className="position-relative" key={i}>
             <a
-              href="#"
+              href={`/arayuz/kullanici-detayi/${user.id}/genel`}
               target="_blank"
               key={user.id}
               className="symbol symbol-circle symbol-30px with-tooltip overflow-hidden"
@@ -65,7 +64,7 @@ const PropertyUsersCell: FC<Props> = ({ userIds }) => {
                     className="w-100"
                   />
                 ) : (
-                  <div className={clsx("symbol-label fs-3")}>{initials}</div>
+                  <div className="symbol-label fs-3">{initials}</div>
                 )}
               </div>
             </a>

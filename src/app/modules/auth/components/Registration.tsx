@@ -95,7 +95,7 @@ export function Registration() {
             className="btn btn-flex btn-outline btn-text-gray-700 btn-active-color-primary bg-state-light flex-center text-nowrap w-100"
           >
             <img
-              alt="Keya Real Estate"
+              alt={import.meta.env.VITE_APP_FULL_NAME}
               src={toAbsoluteUrl("media/svg/brand-logos/google-icon.svg")}
               className="h-15px me-3"
             />
@@ -113,12 +113,12 @@ export function Registration() {
             className="btn btn-flex btn-outline btn-text-gray-700 btn-active-color-primary bg-state-light flex-center text-nowrap w-100"
           >
             <img
-              alt="Keya Real Estate"
+              alt={import.meta.env.VITE_APP_FULL_NAME}
               src={toAbsoluteUrl("media/svg/brand-logos/apple-black.svg")}
               className="theme-light-show h-15px me-3"
             />
             <img
-              alt="Keya Real Estate"
+              alt={import.meta.env.VITE_APP_FULL_NAME}
               src={toAbsoluteUrl("media/svg/brand-logos/apple-black-dark.svg")}
               className="theme-dark-show h-15px me-3"
             />

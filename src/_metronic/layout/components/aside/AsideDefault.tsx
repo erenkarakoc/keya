@@ -27,7 +27,7 @@ const AsideDefault = () => {
         <Link to="/">
           {mode === "light" && (
             <img
-              alt="Keya Real Estate"
+              alt={import.meta.env.VITE_APP_FULL_NAME}
               className="h-20px logo theme-light-show ms-3"
               src={toAbsoluteUrl("media/logos/logo-light.svg")}
             />
@@ -35,7 +35,7 @@ const AsideDefault = () => {
 
           {mode === "dark" && (
             <img
-              alt="Keya Real Estate"
+              alt={import.meta.env.VITE_APP_FULL_NAME}
               className="h-20px logo theme-dark-show"
               src={toAbsoluteUrl("media/logos/logo-dark.svg")}
             />

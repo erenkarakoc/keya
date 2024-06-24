@@ -176,7 +176,7 @@ const step1Schema = Yup.object({
 const step2Schema = Yup.object({
   propertyDetails: Yup.object({
     photoURLs: Yup.array()
-      .min(0, "En az 20 görsel seçilmesi zorunludur.")
+      .min(20, "En az 20 görsel seçilmesi zorunludur.")
       .required("Görsel alanı zorunludur."),
     room: Yup.string(),
     squareGross: Yup.number(),

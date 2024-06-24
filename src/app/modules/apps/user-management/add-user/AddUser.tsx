@@ -23,6 +23,7 @@ import { firebaseConfig } from "../../../../../firebase/BaseConfig"
 import { getFunctions, httpsCallable } from "firebase/functions"
 
 import toast from "react-hot-toast"
+import { addUsersToOffice } from "../_core/_requests"
 
 initializeApp(firebaseConfig)
 const functions = getFunctions()
@@ -67,14 +68,18 @@ const AddUser = () => {
       setSubmittingForm(true)
 
       try {
-        await registerUser(values)
+        const res: any = await registerUser(values)
+
+        console.log(res)
 
         setSubmittingForm(false)
         actions.setSubmitting(false)
 
+        addUsersToOffice(values.officeId, [res?.data?.userId])
+
         toast.success("Kullanıcı başarıyla eklendi!")
 
-        window.location.reload()
+        window.location.href = "/arayuz/kullanici-yonetimi/kullanicilar"
       } catch (error) {
         toast.error(
           "Bir hata oluştu! Lütfen bilgileri kontrol edin veya daha sonra tekrar deneyin."
@@ -248,7 +253,7 @@ const AddUser = () => {
                   </div>
 
                   <div data-kt-stepper-element="content">
-                    <Step1 />
+                    <Step1 setFieldValue={setFieldValue} />
                   </div>
 
                   <div data-kt-stepper-element="content">

@@ -18,7 +18,7 @@ const PropertyInfoCell: FC<Props> = ({ property }) => {
     <div className="d-flex align-items-center">
       {/* begin:: Avatar */}
       <div className="symbol symbol-circle symbol-50px overflow-hidden me-3">
-        <a href="#">
+        <a href={`/arayuz/ilan-detayi/${property.id}/genel`}>
           <div
             className="symbol-label"
             style={{ background: "var(--bs-gray-200)" }}
@@ -37,7 +37,10 @@ const PropertyInfoCell: FC<Props> = ({ property }) => {
         </a>
       </div>
       <div className="d-flex flex-column">
-        <a href="#" className="text-gray-800 text-hover-primary">
+        <a
+          href={`/arayuz/ilan-detayi/${property.id}/genel`}
+          className="text-gray-800 text-hover-primary"
+        >
           {property?.title}
         </a>
       </div>

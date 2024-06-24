@@ -1,7 +1,26 @@
-import React, { FC } from "react"
+import React, { ChangeEvent, FC, useEffect, useState } from "react"
 import { ErrorMessage, Field } from "formik"
+import { getUserEmails } from "../../../_core/_requests"
 
-const Step1: FC = () => {
+interface Step1Props {
+  setFieldValue: (
+    field: string,
+    value: string,
+    shouldValidate?: boolean
+  ) => void
+}
+
+const Step1: FC<Step1Props> = ({ setFieldValue }) => {
+  const [currentEmail, setCurrentEmail] = useState("")
+  const [emails, setEmails] = useState<string[]>()
+  const [emailAlreadyExists, setEmailAlreadyExists] = useState(false)
+
+  useEffect(() => {
+    const fetchEmails = async () => setEmails(await getUserEmails())
+
+    fetchEmails()
+  }, [])
+
   return (
     <div className="w-100">
       <div className="pb-10 pb-lg-15">
@@ -47,10 +66,27 @@ const Step1: FC = () => {
           type="email"
           className="form-control form-control-lg form-control-solid"
           name="email"
+          value={currentEmail}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            setCurrentEmail(e.target.value ?? "")
+            setFieldValue("email", e.target.value ?? "")
+
+            if (emails && emails.includes(e.target.value)) {
+              setEmailAlreadyExists(true)
+            } else {
+              setEmailAlreadyExists(false)
+            }
+          }}
         />
-        <div className="text-danger mt-2">
-          <ErrorMessage name="email" />
-        </div>
+        {emailAlreadyExists ? (
+          <div className="text-danger mt-2">
+            Bu e-posta adresi başka bir kullanıcı tarafından kullanılıyor.
+          </div>
+        ) : (
+          <div className="text-danger mt-2">
+            <ErrorMessage name="email" />
+          </div>
+        )}
       </div>
 
       <div className="mb-10 fv-row row">

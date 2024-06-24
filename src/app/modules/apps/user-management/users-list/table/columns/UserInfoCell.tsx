@@ -16,7 +16,7 @@ const UserInfoCell: FC<Props> = ({ user }) => {
     <div className="d-flex align-items-center">
       {/* begin:: Avatar */}
       <div className="symbol symbol-circle symbol-50px overflow-hidden me-3">
-        <a href="#">
+        <a href={`/arayuz/kullanici-detayi/${user.id}/genel`}>
           {user.photoURL ? (
             <div className="symbol-label">
               <img
@@ -31,7 +31,10 @@ const UserInfoCell: FC<Props> = ({ user }) => {
         </a>
       </div>
       <div className="d-flex flex-column">
-        <a href="#" className="text-gray-800 text-hover-primary mb-1">
+        <a
+          href={`/arayuz/kullanici-detayi/${user.id}/genel`}
+          className="text-gray-800 text-hover-primary mb-1"
+        >
           {user.firstName} {user.lastName}
         </a>
         <span>{user.email}</span>

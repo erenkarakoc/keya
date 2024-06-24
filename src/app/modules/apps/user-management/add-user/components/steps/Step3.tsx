@@ -58,7 +58,7 @@ const Step3: FC<Step3Props> = ({ setFieldValue }) => {
           {offices &&
             offices.map((office) => (
               <option value={office.id} office-id={office.id} key={office.id}>
-                Keya {office.name}
+                {import.meta.env.VITE_APP_NAME} {office.name}
               </option>
             ))}
         </Field>

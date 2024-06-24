@@ -17,7 +17,9 @@ import {
   where,
   updateDoc,
   limit,
-  arrayRemove,
+  deleteField,
+  deleteDoc,
+  // deleteDoc,
 } from "firebase/firestore"
 import { getFunctions, httpsCallable } from "firebase/functions"
 import { UserModel } from "../../../auth"
@@ -224,6 +226,28 @@ const getUsersByRole = async (role: string): Promise<User[] | undefined> => {
   }
 }
 
+const getUserEmails = async (): Promise<string[]> => {
+  try {
+    const db = getFirestore()
+    const usersCollectionRef = collection(db, "users")
+    const userDocSnapshot = await getDocs(usersCollectionRef)
+
+    const userEmails: string[] = []
+
+    userDocSnapshot.forEach((doc) => {
+      const userData = doc.data() as User
+      if (userData.email) {
+        userEmails.push(userData.email)
+      }
+    })
+
+    return userEmails
+  } catch (error) {
+    console.error("Error fetching user emails:", error)
+    return []
+  }
+}
+
 const getOfficeIdByUserId = async (id: string): Promise<string | undefined> => {
   try {
     if (!id) {
@@ -289,6 +313,23 @@ const removeUsersFromOffice = async (officeId: string, userIds: string[]) => {
   }
 }
 
+const removeUserAbout = async (userId: string): Promise<boolean> => {
+  try {
+    const db = getFirestore()
+    const userDocRef = doc(collection(db, "users"), userId)
+
+    await updateDoc(userDocRef, {
+      about: deleteField(),
+    })
+
+    console.log(`Successfully removed about field from user with ID: ${userId}`)
+    return true
+  } catch (error) {
+    console.error("Error removing about field:", error)
+    return false
+  }
+}
+
 const updateUser = async (user: User): Promise<User | undefined> => {
   const userDocRef = doc(db, "users", user.id)
   await updateDoc(userDocRef, user)
@@ -297,21 +338,19 @@ const updateUser = async (user: User): Promise<User | undefined> => {
 
 const deleteUser = async (userId: ID): Promise<void> => {
   try {
-    const userOfficeId = await getOfficeIdByUserId(userId as string)
-
-    if (userOfficeId) {
-      const officeDocRef = doc(db, "offices", userOfficeId)
-
-      await updateDoc(officeDocRef, {
-        users: arrayRemove(userId),
-      })
-
-      await deleteUserFromFirebase({ uid: userId })
-    } else {
-      console.error(
-        "Office ID for user not found. Cannot proceed with deletion."
-      )
+    if (!userId) {
+      console.error("Provide a user ID")
+      return
     }
+
+    const userDocRef = doc(db, "users", userId.toString())
+
+    await deleteDoc(userDocRef)
+
+    const officeId = await getOfficeIdByUserId(userId.toString())
+    if (officeId) await removeUsersFromOffice(officeId, [userId.toString()])
+
+    await deleteUserFromFirebase({ uid: userId.toString() })
   } catch (error) {
     console.error("Error deleting user documents:", error)
     throw error
@@ -321,22 +360,20 @@ const deleteUser = async (userId: ID): Promise<void> => {
 const deleteSelectedUsers = async (userIds: Array<ID>): Promise<void> => {
   try {
     await Promise.all(
-      userIds.map(async (userId) => {
-        const userOfficeId = await getOfficeIdByUserId(userId as string)
-
-        if (userOfficeId) {
-          const officeDocRef = doc(db, "offices", userOfficeId)
-
-          await updateDoc(officeDocRef, {
-            users: arrayRemove(userId),
-          })
-
-          await deleteUserFromFirebase({ uid: userId })
-        } else {
-          console.error(
-            "Office ID for user not found. Cannot proceed with deletion."
-          )
+      userIds.map(async (userId: ID) => {
+        if (!userId) {
+          console.error("Provide a user ID")
+          return
         }
+
+        const userDocRef = doc(db, "users", userId.toString())
+
+        await deleteDoc(userDocRef)
+
+        const officeId = await getOfficeIdByUserId(userId.toString())
+        if (officeId) await removeUsersFromOffice(officeId, [userId.toString()])
+
+        await deleteUserFromFirebase({ uid: userId.toString() })
       })
     )
   } catch (error) {
@@ -351,9 +388,11 @@ export {
   getUserById,
   getUsersById,
   getUsersByRole,
+  getUserEmails,
   getOfficeIdByUserId,
   addUsersToOffice,
   removeUsersFromOffice,
+  removeUserAbout,
   deleteUser,
   deleteSelectedUsers,
   updateUser,

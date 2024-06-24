@@ -15,7 +15,9 @@ const UserBadgeCell: FC<Props> = ({ text, type }) => {
       if (text && type === "officeId") {
         try {
           const officeName = await getOfficeNameById(text)
-          setBadgeText(officeName ? "Keya " + officeName : "")
+          setBadgeText(
+            officeName ? import.meta.env.VITE_APP_NAME + " " + officeName : ""
+          )
         } catch (error) {
           console.error("Error fetching office name:", error)
           setBadgeText("")

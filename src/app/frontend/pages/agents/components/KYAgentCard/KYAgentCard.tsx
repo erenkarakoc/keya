@@ -43,7 +43,8 @@ const KYAgentCard: React.FC<KYAgentCardProps> = ({ user }) => {
       >
         {office ? (
           <a href="" target="_blank" className="ky-agent-card-office">
-            Keya<span>{office.name}</span>
+            {import.meta.env.VITE_APP_NAME}
+            <span>{office.name}</span>
           </a>
         ) : (
           ""

@@ -144,6 +144,10 @@ const SellRent = () => {
                 phoneInput="+90"
                 required
               />
+
+              <span className="ky-form-note">
+                Lütfen numaranın başında ülke kodu bulundurun. Örn. +90
+              </span>
             </motion.div>
 
             <motion.div

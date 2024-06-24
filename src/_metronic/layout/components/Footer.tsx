@@ -3,6 +3,9 @@ import { useLayout } from "../core"
 
 const Footer: FC = () => {
   const { classes } = useLayout()
+  const date = new Date()
+  const currentYear = date.getFullYear()
+
   return (
     <div className="footer py-4 d-flex flex-lg-column" id="kt_footer">
       {/* begin::Container */}
@@ -11,13 +14,13 @@ const Footer: FC = () => {
       >
         {/* begin::Copyright */}
         <div className="text-gray-900 order-2 order-md-1">
-          <span className="text-gray-500 fw-bold">2024 ©</span>{" "}
+          <span className="text-gray-500 fw-bold">{currentYear} ©</span>{" "}
           <a
             href="/"
             target="_blank"
             className="text-muted text-hover-primary fw-bold me-2 fs-6"
           >
-            Keya Real Estate
+            {import.meta.env.VITE_APP_FULL_NAME}
           </a>
         </div>
         {/* end::Copyright */}

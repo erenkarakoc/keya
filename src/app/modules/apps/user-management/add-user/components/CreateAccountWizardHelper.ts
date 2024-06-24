@@ -1,6 +1,7 @@
 import * as Yup from "yup"
 
 export type ICreateAccount = {
+  id: string
   email: string
   firstName: string
   lastName: string
@@ -10,10 +11,12 @@ export type ICreateAccount = {
   phoneNumber: string
   officeId: string
   role: string
-  country?: number
-  state?: number
-  city?: number
-  addressLine?: string
+  address: {
+    country?: number
+    state?: number
+    city?: number
+    addressLine?: string
+  }
 }
 
 const step0Schema = Yup.object({
@@ -53,10 +56,12 @@ const step2Schema = Yup.object({
   phoneNumber: Yup.string()
     .matches(/^\+/, "Telefon numarası + işareti ile başlamalıdır")
     .required("Telefon numarası zorunludur"),
-  country: Yup.number(),
-  state: Yup.number(),
-  city: Yup.number(),
-  addressLine: Yup.string(),
+  address: Yup.object({
+    country: Yup.number().nullable(),
+    state: Yup.number().nullable(),
+    city: Yup.number().nullable(),
+    addressLine: Yup.string(),
+  }),
 })
 
 const step3Schema = Yup.object({
@@ -68,6 +73,7 @@ const step4Schema = Yup.object({
 })
 
 const inits: ICreateAccount = {
+  id: "",
   email: "",
   firstName: "",
   lastName: "",
@@ -77,10 +83,12 @@ const inits: ICreateAccount = {
   phoneNumber: "",
   officeId: "",
   role: "",
-  country: undefined,
-  state: undefined,
-  city: undefined,
-  addressLine: "",
+  address: {
+    country: undefined,
+    state: undefined,
+    city: undefined,
+    addressLine: "",
+  },
 }
 
 export {

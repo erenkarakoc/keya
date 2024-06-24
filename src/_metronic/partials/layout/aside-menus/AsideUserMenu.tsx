@@ -20,7 +20,7 @@ const AsideUserMenu: FC = () => {
                   ? currentUser?.photoURL
                   : toAbsoluteUrl("media/svg/avatars/blank.svg")
               }
-              alt="avatar"
+              alt={currentUser?.firstName + " " + currentUser?.lastName}
               style={{ objectFit: "cover" }}
             />
           </div>
@@ -28,12 +28,12 @@ const AsideUserMenu: FC = () => {
           {/* begin::User info */}
           <div className="ms-2">
             <a
-              href="#"
+              href={`/arayuz/kullanici-detayi/${currentUser?.id}/genel`}
               className="text-gray-800 text-hover-primary fs-6 fw-bolder lh-1"
             >
               {currentUser?.firstName} {currentUser?.lastName}
             </a>
-            <span className="text-muted fw-bold d-block fs-7 lh-1">
+            <span className="text-muted fw-bold d-block fs-7 lh-1 mt-1">
               {getUserRoleText(currentUser?.role as string)}
             </span>
           </div>

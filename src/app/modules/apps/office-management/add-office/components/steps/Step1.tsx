@@ -56,19 +56,34 @@ const Step1: FC = () => {
       </div>
 
       <div className="mb-10 fv-row row">
+        <div className="col-md-12 mb-5">
+          <label className="form-label mb-3">Ofis Hakkında Başlığı</label>
+
+          <Field
+            className="form-control form-control-lg form-control-solid"
+            data-kt-autosize="true"
+            rows={4}
+            name="about.title"
+            placeholder="Başlık"
+          ></Field>
+          <div className="text-danger mt-2">
+            <ErrorMessage name="about.title" />
+          </div>
+        </div>
+
         <div className="col-md-12">
-          <label className="form-label mb-3">Ofis Hakkında</label>
+          <label className="form-label mb-3">Ofis Hakkında Açıklaması</label>
 
           <Field
             as="textarea"
             className="form-control form-control-lg form-control-solid"
             data-kt-autosize="true"
             rows={4}
-            name="about"
-            placeholder="Ofis hakkında bilgi..."
+            name="about.description"
+            placeholder="Açıklama"
           ></Field>
           <div className="text-danger mt-2">
-            <ErrorMessage name="about" />
+            <ErrorMessage name="about.description" />
           </div>
         </div>
       </div>

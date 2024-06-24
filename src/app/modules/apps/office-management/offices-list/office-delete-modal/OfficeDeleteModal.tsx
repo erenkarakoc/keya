@@ -64,7 +64,7 @@ const OfficeDeleteModal: React.FC<OfficeDeleteModalProps> = ({
                         className="text-gray-800 text-hover-primary mb-1"
                         style={{ textAlign: "left" }}
                       >
-                        Keya {office.name}
+                        {import.meta.env.VITE_APP_NAME} {office.name}
                       </a>
                       <span>{office.email}</span>
                     </div>

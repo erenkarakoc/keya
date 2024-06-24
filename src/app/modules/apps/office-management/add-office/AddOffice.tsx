@@ -69,6 +69,7 @@ const AddOffice = () => {
     if (!stepper) return
 
     window.scrollTo(0, 0)
+    console.log(values)
 
     if (stepper.currentStepIndex !== stepper.totalStepsNumber) {
       stepper.goNext()
@@ -87,10 +88,12 @@ const AddOffice = () => {
           about: values.about,
           owners: ownersArr,
           phoneNumber: values.phoneNumber,
-          country: values.country,
-          state: values.state,
-          city: values.city,
-          addressLine: values.addressLine,
+          address: {
+            country: values.address.country,
+            state: values.address.state,
+            city: values.address.city,
+            addressLine: values.address.addressLine,
+          },
           instagram: values.instagram,
           twitter: values.twitter,
           facebook: values.facebook,
@@ -109,7 +112,7 @@ const AddOffice = () => {
 
         toast.success("Ofis başarıyla eklendi!")
 
-        window.location.reload()
+        // window.location.href = "/arayuz/ofis-yonetimi/ofisler"
       } catch (error) {
         toast.error(
           "Bir hata oluştu! Lütfen bilgileri kontrol edin veya daha sonra tekrar deneyin."

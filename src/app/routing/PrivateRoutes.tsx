@@ -8,7 +8,6 @@ import { DisableSidebar } from "../../_metronic/layout/core"
 import { WithChildren } from "../../_metronic/helpers"
 
 const PrivateRoutes = () => {
-  const ProfilePage = lazy(() => import("../modules/profile/ProfilePage"))
   const WizardsPage = lazy(() => import("../modules/wizards/WizardsPage"))
   const AccountPage = lazy(() => import("../modules/accounts/AccountPage"))
   const WidgetsPage = lazy(() => import("../modules/widgets/WidgetsPage"))
@@ -21,6 +20,15 @@ const PrivateRoutes = () => {
   const OfficesPage = lazy(
     () => import("../modules/apps/office-management/OfficesPage")
   )
+  const UserProfilePage = lazy(
+    () => import("../admin/user-profile/ProfilePage")
+  )
+  const OfficeProfilePage = lazy(
+    () => import("../admin/office-profile/ProfilePage")
+  )
+  const PropertyProfilePage = lazy(
+    () => import("../admin/property-profile/ProfilePage")
+  )
 
   return (
     <Routes>
@@ -28,14 +36,14 @@ const PrivateRoutes = () => {
         <Route index element={<DashboardWrapper />} />
 
         {/* Lazy Modules */}
-        <Route
+        {/* <Route
           path="crafted/pages/profile/*"
           element={
             <SuspensedView>
               <ProfilePage />
             </SuspensedView>
           }
-        />
+        /> */}
         <Route
           path="crafted/pages/wizards/*"
           element={
@@ -60,6 +68,8 @@ const PrivateRoutes = () => {
             </SuspensedView>
           }
         />
+
+        {/* Management */}
         <Route
           path="kullanici-yonetimi/*"
           element={
@@ -81,6 +91,32 @@ const PrivateRoutes = () => {
           element={
             <SuspensedView>
               <OfficesPage />
+            </SuspensedView>
+          }
+        />
+
+        {/* Detail Pages */}
+        <Route
+          path="kullanici-detayi/:id/*"
+          element={
+            <SuspensedView>
+              <UserProfilePage />
+            </SuspensedView>
+          }
+        />
+        <Route
+          path="ofis-detayi/:id/*"
+          element={
+            <SuspensedView>
+              <OfficeProfilePage />
+            </SuspensedView>
+          }
+        />
+        <Route
+          path="ilan-detayi/:id/*"
+          element={
+            <SuspensedView>
+              <PropertyProfilePage />
             </SuspensedView>
           }
         />

@@ -1,4 +1,5 @@
-import { FC, useState, useEffect, ChangeEvent } from "react"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { FC, useState, useEffect, ChangeEvent, DragEvent } from "react"
 import { ErrorMessage, useFormikContext } from "formik"
 
 import {
@@ -31,46 +32,64 @@ interface Step3Props {
 }
 
 const Step3: FC<Step3Props> = ({ values }) => {
-  const [lightboxOpen, setLightboxOpen] = useState(false)
-
+  const [isDragging, setIsDragging] = useState(false)
   const [uploadedImageUrls, setUploadedImageUrls] = useState<string[]>([])
+  const [lightboxOpen, setLightboxOpen] = useState(false)
 
   const { setFieldValue } = useFormikContext()
 
   const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const files = Array.from(e.target.files)
-      const uploadPromises: Promise<void>[] = []
-
-      files.forEach((file) => {
-        const fileSizeInMB = file.size / (1024 * 1024)
-        if (fileSizeInMB > 2) {
-          toast.error(
-            `${file.name} adlı dosya yüklenemedi. Dosya boyutu 2 MB'den küçük olmalıdır!`
-          )
-          return
-        }
-
-        const randomName = generateRandomName()
-        const storageRef = ref(
-          storage,
-          `images/offices/${slugify(values.name)}-${randomName}`
-        )
-        const uploadPromise = uploadBytes(storageRef, file)
-          .then(() => getDownloadURL(storageRef))
-          .then((downloadURL) => {
-            setUploadedImageUrls((prevUrls) => [...prevUrls, downloadURL])
-          })
-          .catch((error) => console.error("Error uploading image:", error))
-
-        uploadPromises.push(uploadPromise)
-      })
-
-      await Promise.all(uploadPromises)
+    const files = e.target.files
+    if (files && files.length > 0) {
+      await handleFiles(Array.from(files))
     }
   }
 
-  const handleImageDelete = async (url: string) => {
+  const handleFiles = async (files: File[]) => {
+    const uploadPromises: Promise<void>[] = []
+    const currentCount = uploadedImageUrls.length
+    const remainingSlots = 50 - currentCount
+
+    if (currentCount >= 50) {
+      toast.error("En fazla 50 görsel ekleyebilirsiniz.")
+      return
+    }
+
+    const filesToUpload = files.slice(0, remainingSlots)
+    const excessFiles = files.slice(remainingSlots)
+
+    filesToUpload.forEach((file) => {
+      const fileSizeInMB = file.size / (1024 * 1024)
+      if (fileSizeInMB > 2) {
+        toast.error(
+          `${file.name} adlı dosya yüklenemedi. Dosya boyutu 2 MB'den küçük olmalıdır!`
+        )
+        return
+      }
+
+      const randomName = generateRandomName()
+      const storageRef = ref(
+        storage,
+        `images/offices/${slugify(values.name)}/${randomName}`
+      )
+      const uploadPromise = uploadBytes(storageRef, file)
+        .then(() => getDownloadURL(storageRef))
+        .then((downloadURL) => {
+          setUploadedImageUrls((prevUrls) => [...prevUrls, downloadURL])
+        })
+        .catch((error) => console.error("Error uploading image:", error))
+
+      uploadPromises.push(uploadPromise)
+    })
+
+    await Promise.all(uploadPromises)
+
+    if (excessFiles.length > 0) {
+      toast.error("En fazla 50 görsel ekleyebilirsiniz.")
+    }
+  }
+
+  const handleImageDelete = async (url: string, setFieldValue: any) => {
     try {
       const storageRef = ref(storage, url)
 
@@ -79,11 +98,9 @@ const Step3: FC<Step3Props> = ({ values }) => {
       setUploadedImageUrls((prevUrls) =>
         prevUrls.filter((prevUrl) => prevUrl !== url)
       )
-
-      toast.success("Görsel başarıyla silindi.")
+      setFieldValue("photoURLs", uploadedImageUrls)
     } catch (error) {
       console.error("Error deleting image:", error)
-      toast.error("Görsel silinirken bir hata oluştu.")
     }
   }
 
@@ -101,17 +118,54 @@ const Step3: FC<Step3Props> = ({ values }) => {
         </div>
       </div>
 
-      <div className="fv-row mb-10">
+      <div className="fv-row mb-7">
         <label className="form-label mb-5 w-100 required">
           Bilgisayarınızdan seçin
         </label>
 
-        <input
-          type="file"
-          accept=".png, .jpg, .jpeg"
-          onChange={handleImageChange}
-          multiple
-        />
+        <div
+          className={`ky-image-input${isDragging ? " dragging" : ""}`}
+          onDragEnter={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            setIsDragging(true)
+          }}
+          onDragLeave={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            setIsDragging(false)
+          }}
+          onDragOver={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            setIsDragging(true)
+          }}
+          onDrop={async (e: DragEvent<HTMLDivElement>) => {
+            e.preventDefault()
+            e.stopPropagation()
+            setIsDragging(false)
+
+            if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+              await handleFiles(Array.from(e.dataTransfer.files))
+              e.dataTransfer.clearData()
+            }
+          }}
+        >
+          <input
+            id="ky-office-image-input"
+            type="file"
+            accept=".png, .jpg, .jpeg"
+            onChange={(e) => {
+              handleImageChange(e)
+            }}
+            multiple
+          />
+          <label htmlFor="ky-office-image-input">Görsel Seç veya Sürükle</label>
+        </div>
+
+        <div className="form-text mt-4">
+          İzin verilen dosya türleri: png, jpg, jpeg.
+        </div>
 
         <div
           className="image-input image-input-outline d-flex flex-wrap mt-6"
@@ -143,7 +197,7 @@ const Step3: FC<Step3Props> = ({ values }) => {
                 }}
                 onClick={(e) => {
                   e.stopPropagation()
-                  handleImageDelete(url)
+                  handleImageDelete(url, setFieldValue)
                 }}
               >
                 <i className="bi bi-x fs-7"></i>
@@ -153,9 +207,13 @@ const Step3: FC<Step3Props> = ({ values }) => {
           ))}
         </div>
 
-        <div className="form-text mt-6">
-          İzin verilen dosya türleri: png, jpg, jpeg.
-        </div>
+        {uploadedImageUrls.length ? (
+          <div className="form-text mt-2">
+            {uploadedImageUrls.length} görsel yüklendi.
+          </div>
+        ) : (
+          ""
+        )}
 
         <Lightbox
           open={lightboxOpen}

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FC, useState, useEffect, ChangeEvent, DragEvent } from "react"
 
-import clsx from "clsx"
 import toast from "react-hot-toast"
 
 import { Formik, Form, Field, ErrorMessage } from "formik"
@@ -174,8 +173,8 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
     setFieldValue: any
   ) => {
     setCurrentCountry(e.target.value)
-    setFieldValue("country", e.target.value)
-    setFieldValue("state", "")
+    setFieldValue("address.country", e.target.value)
+    setFieldValue("address.state", "")
 
     if (e.target.value) {
       const selectedOption = e.target.selectedOptions[0]
@@ -186,8 +185,8 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
     } else {
       setStates([])
       setCities([])
-      setFieldValue("state", "")
-      setFieldValue("city", "")
+      setFieldValue("address.state", "")
+      setFieldValue("address.city", "")
       setCountrySelected(false)
     }
   }
@@ -197,8 +196,8 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
     setFieldValue: any
   ) => {
     setCurrentState(e.target.value)
-    setFieldValue("state", e.target.value)
-    setFieldValue("city", "")
+    setFieldValue("address.state", e.target.value)
+    setFieldValue("address.city", "")
 
     if (e.target.value) {
       const selectedOption = e.target.selectedOptions[0]
@@ -208,7 +207,7 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
       setStateSelected(true)
     } else {
       setCities([])
-      setFieldValue("city", "")
+      setFieldValue("address.city", "")
       setStateSelected(false)
     }
   }
@@ -218,7 +217,7 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
     setFieldValue: any
   ) => {
     setCurrentCity(e.target.value)
-    setFieldValue("city", e.target.value)
+    setFieldValue("address.city", e.target.value)
   }
 
   const handlePhoneNumberChange = (
@@ -301,22 +300,22 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
     const data = getCountries()
     setCountries(data)
 
-    if (office.country) {
-      const statesArr = getStatesByCountry(parseInt(office.country))
+    if (office.address.country) {
+      const statesArr = getStatesByCountry(parseInt(office.address.country))
       setStates(statesArr || [])
-      setCurrentCountry(office.country)
+      setCurrentCountry(office.address.country)
       setCountrySelected(true)
     }
 
-    if (office.state) {
-      const citiesArr = getCitiesByState(parseInt(office.state))
+    if (office.address.state) {
+      const citiesArr = getCitiesByState(parseInt(office.address.state))
       setCities(citiesArr || [])
-      setCurrentState(office.state)
+      setCurrentState(office.address.state)
       setStateSelected(true)
     }
 
-    if (office.city) {
-      setCurrentCity(office.city)
+    if (office.address.city) {
+      setCurrentCity(office.address.city)
     }
   }, [office])
 
@@ -338,7 +337,6 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
       >
         {({ values, setFieldValue }) => (
           <Form noValidate id="office_edit_modal_form" placeholder={undefined}>
-            {/* begin::Scroll */}
             <div
               className="d-flex flex-column me-n7 pe-7 pt-5"
               id="kt_modal_add_office_scroll"
@@ -464,24 +462,13 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
               </div>
 
               <div className="fv-row mb-7">
-                {/* begin::Label */}
                 <label className="required fw-bold fs-6 mb-2">Ofis Adı</label>
-                {/* end::Label */}
 
-                {/* begin::Input */}
                 <Field
                   placeholder="Ofis Adı"
                   type="text"
                   name="name"
-                  className={clsx(
-                    "form-control form-control-solid mb-3 mb-lg-0",
-                    {
-                      "is-invalid": submittingForm && values.name === "",
-                    },
-                    {
-                      "is-valid": !submittingForm && values.name !== "",
-                    }
-                  )}
+                  className="form-control form-control-solid mb-3 mb-lg-0"
                   autoComplete="off"
                   disabled={submittingForm || isOfficeLoading}
                 />
@@ -489,93 +476,69 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                 <div className="text-danger mt-2">
                   <ErrorMessage name="name" />
                 </div>
-                {/* end::Input */}
               </div>
 
               <div className="fv-row mb-7">
-                {/* begin::Label */}
                 <label className="required fw-bold fs-6 mb-2">
-                  Ofis Hakkında
+                  Ofis Hakkında Başlığı
                 </label>
-                {/* end::Label */}
-
-                {/* begin::Textarea */}
                 <Field
-                  placeholder="Ofis Hakkında"
-                  name="about"
-                  as="textarea"
-                  rows={3}
-                  className={clsx(
-                    "form-control form-control-solid mb-3 mb-lg-0",
-                    {
-                      "is-invalid": submittingForm && values.about === "",
-                    },
-                    {
-                      "is-valid": !submittingForm && values.about !== "",
-                    }
-                  )}
+                  placeholder="Başlık"
+                  name="about.title"
+                  className="form-control form-control-solid mb-3 mb-lg-0"
                   autoComplete="off"
                   disabled={submittingForm || isOfficeLoading}
                 />
                 <div className="text-danger mt-2">
-                  <ErrorMessage name="about" />
+                  <ErrorMessage name="about.title" />
                 </div>
-                {/* end::Textarea */}
+
+                <label className="required fw-bold fs-6 mb-2 mt-7">
+                  Ofis Hakkında Açıklaması
+                </label>
+                <Field
+                  placeholder="Açıklama"
+                  name="about.description"
+                  as="textarea"
+                  rows={3}
+                  className="form-control form-control-solid mb-3 mb-lg-0"
+                  autoComplete="off"
+                  disabled={submittingForm || isOfficeLoading}
+                />
+                <div className="text-danger mt-2">
+                  <ErrorMessage name="about.description" />
+                </div>
               </div>
 
               <div className="fv-row mb-7">
-                {/* begin::Label */}
                 <label className="required fw-bold fs-6 mb-2">
                   Broker/Brokerlar
                 </label>
-                {/* end::Label */}
 
-                {/* begin::Input */}
                 <MultiSelect
                   options={brokers}
                   defaultValue={chosenBrokers}
                   id="owners"
                   name="owners"
                   notFoundText="Aramanızla eşleşen bir Broker bulunamadı."
-                  className={clsx(
-                    "form-control form-control-solid mb-3 mb-lg-0",
-                    {
-                      "is-invalid":
-                        submittingForm && values.owners.length === 0,
-                    },
-                    {
-                      "is-valid": !submittingForm && values.owners.length > 0,
-                    }
-                  )}
+                  className="form-control form-control-solid mb-3 mb-lg-0"
                   disabled={submittingForm || isOfficeLoading}
                   placeholder="Broker/Brokerlar"
                 />
 
-                {/* end::Input */}
                 <div className="text-danger mt-2">
                   <ErrorMessage name="owners" />
                 </div>
               </div>
 
               <div className="fv-row mb-7">
-                {/* begin::Label */}
                 <label className="required fw-bold fs-6 mb-2">E-posta</label>
-                {/* end::Label */}
 
-                {/* begin::Input */}
                 <Field
                   placeholder="Email"
                   type="email"
                   name="email"
-                  className={clsx(
-                    "form-control form-control-solid mb-3 mb-lg-0",
-                    {
-                      "is-invalid": submittingForm && values.email === "",
-                    },
-                    {
-                      "is-valid": !submittingForm && values.email !== "",
-                    }
-                  )}
+                  className="form-control form-control-solid mb-3 mb-lg-0"
                   autoComplete="off"
                   value={values.email}
                   disabled={submittingForm || isOfficeLoading}
@@ -583,7 +546,6 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                 <div className="text-danger mt-2">
                   <ErrorMessage name="email" />
                 </div>
-                {/* end::Input */}
               </div>
 
               <div className="fv-row mb-10">
@@ -624,7 +586,7 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                   as="select"
                   className="form-select form-select-lg form-select-solid"
                   onChange={(e: any) => handleCountryChange(e, setFieldValue)}
-                  name="country"
+                  name="address.country"
                   value={currentCountry}
                 >
                   <option></option>
@@ -640,7 +602,7 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                     ))}
                 </Field>
                 <div className="text-danger mt-2">
-                  <ErrorMessage name="country" />
+                  <ErrorMessage name="address.country" />
                 </div>
               </div>
 
@@ -651,7 +613,7 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                   as="select"
                   className="form-select form-select-lg form-select-solid"
                   onChange={(e: any) => handleStateChange(e, setFieldValue)}
-                  name="state"
+                  name="address.state"
                   disabled={!countrySelected}
                   value={currentState}
                 >
@@ -669,7 +631,7 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                     : ""}
                 </Field>
                 <div className="text-danger mt-2">
-                  <ErrorMessage name="state" />
+                  <ErrorMessage name="address.state" />
                 </div>
               </div>
 
@@ -680,7 +642,7 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                   as="select"
                   className="form-select form-select-lg form-select-solid"
                   onChange={(e: any) => handleCityChange(e, setFieldValue)}
-                  name="city"
+                  name="address.city"
                   disabled={!stateSelected && !countrySelected}
                   value={currentCity}
                 >
@@ -694,7 +656,7 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                     : ""}
                 </Field>
                 <div className="text-danger mt-2">
-                  <ErrorMessage name="city" />
+                  <ErrorMessage name="address.city" />
                 </div>
               </div>
 
@@ -705,10 +667,10 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
 
                 <Field
                   className="form-control form-control-lg form-control-solid"
-                  name="addressLine"
+                  name="address.addressLine"
                 />
                 <div className="text-danger mt-2">
-                  <ErrorMessage name="addressLine" />
+                  <ErrorMessage name="address.addressLine" />
                 </div>
 
                 <div className="form-text">Detaylı adres bilgisi</div>
@@ -792,9 +754,7 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                 </div>
               </div>
             </div>
-            {/* end::Scroll */}
 
-            {/* begin::Actions */}
             <div className="text-center pt-15">
               <button
                 type="button"
@@ -815,13 +775,12 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                 <span className="indicator-label">Kaydet</span>
                 {submittingForm && (
                   <span className="indicator-progress">
-                    Lütfen Bekleyin...{" "}
+                    Kaydediliyor...
                     <span className="spinner-border spinner-border-sm align-middle ms-2"></span>
                   </span>
                 )}
               </button>
             </div>
-            {/* end::Actions */}
           </Form>
         )}
       </Formik>

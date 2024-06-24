@@ -13,6 +13,7 @@ const CustomRow: FC<Props> = ({ row }) => (
       return (
         <td
           {...cell.getCellProps()}
+          key={cell.column.id}
           className={clsx({
             "text-end min-w-100px": cell.column.id === "actions",
           })}

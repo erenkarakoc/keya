@@ -1,12 +1,5 @@
 import { Response } from "../../../../../_metronic/helpers"
 
-export interface UserAddressModel {
-  country?: number
-  state?: number
-  city?: number
-  addressLine: string
-}
-
 export type User = {
   id: string
   uid: string
@@ -17,11 +10,20 @@ export type User = {
   phoneNumber?: string
   role: string
   officeId: string
-  address?: UserAddressModel
-  createdAt: string
-  lastLoginAt: string
   searchIndexEmail: string
   searchIndexName: string
+  about?: {
+    title?: string
+    description?: string
+  }
+  address?: {
+    country?: string
+    state?: string
+    city?: string
+    addressLine?: string
+  }
+  createdAt: string
+  lastLoginAt: string
 }
 
 export type UsersQueryResponse = Response<Array<User>>

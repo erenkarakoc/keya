@@ -42,7 +42,9 @@ const KYOfficeImage: React.FC<KYOfficeImageProps> = ({
       className="ky-office-image"
       style={{ height, width }}
     >
-      KEYA{" "}
+      <span style={{ fontSize: `${height ? height / 5 : 12}px` }}>
+        {import.meta.env.VITE_APP_NAME}{" "}
+      </span>
       <span ref={kyOfficeImageSpanRef} style={{ fontSize: `${fontSize}px` }}>
         {officeName ? officeName : officeId}
       </span>

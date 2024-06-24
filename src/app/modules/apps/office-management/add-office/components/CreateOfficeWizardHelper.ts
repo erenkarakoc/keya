@@ -7,14 +7,19 @@ const urlRegex =
 
 export type ICreateAccount = {
   name: string
-  about: string
+  about: {
+    title: string
+    description: string
+  }
   owners: []
   email?: string
   phoneNumber: string
-  country?: string
-  state?: string
-  city?: string
-  addressLine?: string
+  address: {
+    country?: string
+    state?: string
+    city?: string
+    addressLine?: string
+  }
   instagram?: string
   twitter?: string
   facebook?: string
@@ -30,21 +35,14 @@ const step0Schema = Yup.object({
   accountType: Yup.string(),
 })
 
-// const offices = await getAllOffices()
-// const officeNames = offices.map((office) => slugify(office.name))
-
 const step1Schema = Yup.object({
   name: Yup.string()
     .max(50, "Ofis adı en fazla 50 karakterden oluşmalı.")
-    // .test(
-    //   "unique-office-name",
-    //   "Bu ofis adı zaten mevcut, lütfen başka bir ad seçin.",
-    //   (value) => {
-    //     return !officeNames.includes(slugify(value as string))
-    //   }
-    // )
     .required("Ofis adı alanı zorunludur."),
-  about: Yup.string().required("Hakkında alanı zorunludur."),
+  about: Yup.object({
+    title: Yup.string().required("Başlık alanı zorunludur."),
+    description: Yup.string().required("Açıklama alanı zorunludur."),
+  }),
   owners: Yup.array()
     .min(1, "En az bir Broker seçmek zorunludur.")
     .required("En az bir Broker seçmek zorunludur."),
@@ -59,10 +57,12 @@ const step2Schema = Yup.object({
   phoneNumber: Yup.string()
     .matches(/^\+/, "Telefon numarası + işareti ile başlamalıdır.")
     .required("Telefon numarası zorunludur."),
-  country: Yup.string(),
-  state: Yup.string(),
-  city: Yup.string(),
-  addressLine: Yup.string(),
+  address: Yup.object({
+    country: Yup.string().required("Ülke alanı zorunludur"),
+    state: Yup.string().required("İl alanı zorunludur"),
+    city: Yup.string().required("İlçe alanı zorunludur"),
+    addressLine: Yup.string(),
+  }),
   instagram: Yup.string().matches(urlRegex, "Lütfen geçerli bir link girin."),
   twitter: Yup.string().matches(urlRegex, "Lütfen geçerli bir link girin."),
   facebook: Yup.string().matches(urlRegex, "Lütfen geçerli bir link girin."),
@@ -88,14 +88,19 @@ const step5Schema = Yup.object({
 
 const inits: ICreateAccount = {
   name: "",
-  about: "",
+  about: {
+    title: "",
+    description: "",
+  },
   owners: [],
   email: "",
   phoneNumber: "",
-  country: undefined,
-  state: undefined,
-  city: undefined,
-  addressLine: "",
+  address: {
+    country: undefined,
+    state: undefined,
+    city: undefined,
+    addressLine: "",
+  },
   instagram: "",
   twitter: "",
   facebook: "",
