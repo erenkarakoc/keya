@@ -1,4 +1,5 @@
-import { FC, useState, useRef } from "react"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { FC, useRef } from "react"
 
 import { ErrorMessage, Field } from "formik"
 
@@ -8,6 +9,10 @@ import ReactQuill from "react-quill"
 import "react-quill/dist/quill.snow.css"
 
 interface Step1Props {
+  currentPrice: any
+  setCurrentPrice: any
+  description: any,
+  setDescription: any,
   setFieldValue: (
     field: string,
     value: string,
@@ -15,11 +20,8 @@ interface Step1Props {
   ) => void
 }
 
-const Step1: FC<Step1Props> = ({ setFieldValue }) => {
-  const [description, setDescription] = useState<string>(
-    `<p class="ql-align-center"><br></p><p class="ql-align-center">_______________</p><p class="ql-align-center"><br></p><p class="ql-align-center"><span style="color: rgb(255, 255, 255);">Detaylı bilgi için iletişime geçiniz:</span></p><p class="ql-align-center"><strong style="color: rgb(255, 255, 255);">Keya Real Estate: +90 (312) 439 45 45</strong></p><p class="ql-align-center"><br></p><p class="ql-align-center"><strong style="color: rgb(255, 255, 255);">T.C ANKARA VALİLİĞİ TİCARET İL MÜDÜRLÜĞÜ</strong></p><p class="ql-align-center"><strong style="color: rgb(255, 255, 255);">TAŞINMAZ TİCARETİ YETKİ BELGESİ&nbsp;</strong><a href="https://ttbs.gtb.gov.tr/Home/BelgeSorgula?BelgeNo=0600556" rel="noopener noreferrer" target="_blank" style="color: rgb(0, 102, 204);"><strong><u>0600556</u></strong></a><strong style="color: rgb(255, 255, 255);">&nbsp;NUMARASI İLE YETKİLİ EMLAK FİRMASIDIR.</strong></p><p class="ql-align-center"><br></p><p class="ql-align-center"><em style="color: rgb(255, 255, 255);">Ofisimizde Web Tapu sistemi ile işlemleriniz yapılabilmektedir.</em></p>`
-  )
-
+const Step1: FC<Step1Props> = ({ currentPrice, setCurrentPrice, description, setDescription, setFieldValue }) => {
+ 
   const ReactQuillRef = useRef(null)
   const ReactQuillModules = {
     toolbar: [
@@ -70,8 +72,10 @@ const Step1: FC<Step1Props> = ({ setFieldValue }) => {
             name="propertyDetails.price"
             className="form-control form-control-lg form-control-solid"
             allowDecimals={false}
+            value={currentPrice}
             onValueChange={(value) => {
               const price = value ? value?.toString() : ""
+              setCurrentPrice(price)
               setFieldValue("propertyDetails.price", price)
             }}
             intlConfig={{ locale: "tr-TR", currency: "TRY" }}
@@ -143,11 +147,10 @@ const Step1: FC<Step1Props> = ({ setFieldValue }) => {
             name="propertyDetails.type"
           >
             <option></option>
-            <option value="flat">Daire</option>
+            <option value="residence">Konut</option>
             <option value="land">Arsa</option>
             <option value="office">İş Yeri</option>
             <option value="project">Proje</option>
-            <option value="other">Diğer</option>
           </Field>
 
           <div className="text-danger mt-2">
@@ -167,7 +170,6 @@ const Step1: FC<Step1Props> = ({ setFieldValue }) => {
             <option value="rent">Kiralık</option>
             <option value="lease-sale">Devren Satılık</option>
             <option value="lease-rent">Devren Kiralık</option>
-            <option value="other">Diğer</option>
           </Field>
 
           <div className="text-danger mt-2">

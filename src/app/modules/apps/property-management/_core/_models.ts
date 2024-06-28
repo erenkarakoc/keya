@@ -102,7 +102,7 @@ export type Property = {
     buildingFloors?: number
     buildingAtFloor?: number
     dues?: string
-    facade?: "north" | "east" | "south" | "west" | ""
+    facade?: string[]
     exchange?: boolean
 
     featuresInner?: string[]

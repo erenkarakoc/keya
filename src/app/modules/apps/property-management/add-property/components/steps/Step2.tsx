@@ -315,7 +315,7 @@ const Step2: FC<Step2Props> = ({ values }) => {
       </div>
 
       <div className="fv-row mb-10 row">
-        <div className="col-md-4">
+        <div className="col-md-6">
           <label className="form-label mb-3">
             Brüt M<sup>2</sup>
           </label>
@@ -330,7 +330,7 @@ const Step2: FC<Step2Props> = ({ values }) => {
           </div>
         </div>
 
-        <div className="col-md-4">
+        <div className="col-md-6">
           <label className="form-label mb-3">
             Net M<sup>2</sup>
           </label>
@@ -342,19 +342,6 @@ const Step2: FC<Step2Props> = ({ values }) => {
 
           <div className="text-danger mt-2">
             <ErrorMessage name="propertyDetails.squareNet" />
-          </div>
-        </div>
-
-        <div className="col-md-4">
-          <label className="form-label mb-3">Banyo Sayısı</label>
-          <Field
-            type="number"
-            className="form-control form-control-lg form-control-solid"
-            name="propertyDetails.bathroom"
-          />
-
-          <div className="text-danger mt-2">
-            <ErrorMessage name="propertyDetails.bathroom" />
           </div>
         </div>
       </div>
@@ -430,22 +417,105 @@ const Step2: FC<Step2Props> = ({ values }) => {
         </div>
 
         <div className="col-md-6">
-          <label className="form-label mb-3">Cephe</label>
+          <label className="form-label mb-3">Banyo Sayısı</label>
           <Field
-            as="select"
-            className="form-select form-select-lg form-select-solid"
-            name="propertyDetails.facade"
-          >
-            <option></option>
-            <option value="north">Kuzey</option>
-            <option value="south">Güney</option>
-            <option value="east">Doğu</option>
-            <option value="west">Batı</option>
-          </Field>
+            type="number"
+            className="form-control form-control-lg form-control-solid"
+            name="propertyDetails.bathroom"
+          />
 
           <div className="text-danger mt-2">
-            <ErrorMessage name="propertyDetails.facade" />
+            <ErrorMessage name="propertyDetails.bathroom" />
           </div>
+        </div>
+      </div>
+
+      <div className="fv-row mb-10 row">
+        <label className="form-label mb-3">Cephe</label>
+        <div className="d-flex flex-wrap justify-content-between gap-2">
+          <label className="d-flex cursor-pointer">
+            <span className="form-check form-check-custom form-check-solid">
+              <Field
+                className="form-check-input"
+                type="checkbox"
+                name="propertyDetails.facade"
+                id="facadeWest"
+                value="west"
+              />
+            </span>
+            <span
+              className="d-flex align-items-center me-2 ms-2"
+              style={{ width: "fitContent" }}
+            >
+              <span className="d-flex flex-column">
+                <span className="fw-bolder text-gray-800 fs-5">Batı</span>
+              </span>
+            </span>
+          </label>
+
+          <label className="d-flex cursor-pointer">
+            <span className="form-check form-check-custom form-check-solid">
+              <Field
+                className="form-check-input"
+                type="checkbox"
+                name="propertyDetails.facade"
+                id="facadeEast"
+                value="east"
+              />
+            </span>
+            <span
+              className="d-flex align-items-center me-2 ms-2"
+              style={{ width: "fitContent" }}
+            >
+              <span className="d-flex flex-column">
+                <span className="fw-bolder text-gray-800 fs-5">Doğu</span>
+              </span>
+            </span>
+          </label>
+
+          <label className="d-flex cursor-pointer">
+            <span className="form-check form-check-custom form-check-solid">
+              <Field
+                className="form-check-input"
+                type="checkbox"
+                name="propertyDetails.facade"
+                id="facadeSouth"
+                value="south"
+              />
+            </span>
+            <span
+              className="d-flex align-items-center me-2 ms-2"
+              style={{ width: "fitContent" }}
+            >
+              <span className="d-flex flex-column">
+                <span className="fw-bolder text-gray-800 fs-5">Güney</span>
+              </span>
+            </span>
+          </label>
+
+          <label className="d-flex cursor-pointer">
+            <span className="form-check form-check-custom form-check-solid">
+              <Field
+                className="form-check-input"
+                type="checkbox"
+                name="propertyDetails.facade"
+                id="facadeNorth"
+                value="north"
+              />
+            </span>
+            <span
+              className="d-flex align-items-center me-2 ms-2"
+              style={{ width: "fitContent" }}
+            >
+              <span className="d-flex flex-column">
+                <span className="fw-bolder text-gray-800 fs-5">Kuzey</span>
+              </span>
+            </span>
+          </label>
+        </div>
+
+        <div className="text-danger mt-2">
+          <ErrorMessage name="propertyDetails.facade" />
         </div>
       </div>
 

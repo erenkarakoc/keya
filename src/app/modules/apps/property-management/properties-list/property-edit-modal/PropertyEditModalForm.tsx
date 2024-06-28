@@ -828,11 +828,10 @@ const PropertyEditModalForm: FC<Props> = ({ property, isPropertyLoading }) => {
                     name="propertyDetails.type"
                   >
                     <option></option>
-                    <option value="flat">Daire</option>
+                    <option value="residence">Konut</option>
                     <option value="land">Arsa</option>
                     <option value="office">İş Yeri</option>
                     <option value="project">Proje</option>
-                    <option value="other">Diğer</option>
                   </Field>
 
                   <div className="text-danger mt-2">
@@ -852,7 +851,6 @@ const PropertyEditModalForm: FC<Props> = ({ property, isPropertyLoading }) => {
                     <option value="rent">Kiralık</option>
                     <option value="lease-sale">Devren Satılık</option>
                     <option value="lease-rent">Devren Kiralık</option>
-                    <option value="other">Diğer</option>
                   </Field>
 
                   <div className="text-danger mt-2">

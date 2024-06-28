@@ -14,7 +14,7 @@ export type ICreateAccount = {
   propertyDetails: {
     photoURLs: string[]
     description?: string
-    type?: "flat" | "land" | "office" | "project" | ""
+    type?: "residence" | "land" | "office" | "project" | ""
     squareGross?: number
     squareNet?: number
     withAccesories?: boolean
@@ -102,7 +102,7 @@ export type ICreateAccount = {
     buildingFloors?: number
     buildingAtFloor?: number
     dues?: string
-    facade?: "north" | "east" | "south" | "west" | ""
+    facade?: string[]
     exchange?: boolean
 
     featuresInner?: string[]
@@ -176,7 +176,7 @@ const step1Schema = Yup.object({
 const step2Schema = Yup.object({
   propertyDetails: Yup.object({
     photoURLs: Yup.array()
-      .min(20, "En az 20 görsel seçilmesi zorunludur.")
+      .min(0, "En az 20 görsel seçilmesi zorunludur.")
       .required("Görsel alanı zorunludur."),
     room: Yup.string(),
     squareGross: Yup.number(),
@@ -193,7 +193,7 @@ const step2Schema = Yup.object({
     buildingFloors: Yup.number(),
     buildingAtFloor: Yup.number(),
     dues: Yup.string(),
-    facade: Yup.string(),
+    facade: Yup.array(),
   }),
 })
 
@@ -278,7 +278,7 @@ const inits: ICreateAccount = {
     buildingFloors: undefined,
     buildingAtFloor: undefined,
     dues: "",
-    facade: "",
+    facade: [],
     exchange: undefined,
 
     featuresInner: [],
