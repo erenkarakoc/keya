@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FC, useState, useEffect, ChangeEvent, DragEvent } from "react"
 import { Field, ErrorMessage, useFormikContext } from "formik"
 
@@ -35,9 +36,11 @@ interface Step2Props {
     value: string,
     shouldValidate?: boolean
   ) => void
+  currentDues: string
+  setCurrentDues: any
 }
 
-const Step2: FC<Step2Props> = ({ values }) => {
+const Step2: FC<Step2Props> = ({ values, currentDues, setCurrentDues }) => {
   const [lightboxOpen, setLightboxOpen] = useState(false)
 
   const [isDragging, setIsDragging] = useState(false)
@@ -404,9 +407,11 @@ const Step2: FC<Step2Props> = ({ values }) => {
             name="propertyDetails.dues"
             className="form-control form-control-lg form-control-solid"
             allowDecimals={false}
+            value={currentDues}
             onValueChange={(value) => {
               const due = value ? value?.toString() : ""
               setFieldValue("propertyDetails.dues", due)
+              setCurrentDues(due)
             }}
             intlConfig={{ locale: "tr-TR", currency: "TRY" }}
           />
@@ -523,10 +528,23 @@ const Step2: FC<Step2Props> = ({ values }) => {
         <div className="col-md-4">
           <label className="form-label mb-3">Bina Yaşı</label>
           <Field
-            type="number"
-            className="form-control form-control-lg form-control-solid"
+            as="select"
+            className="form-select form-select-lg form-select-solid"
             name="propertyDetails.buildingAge"
-          />
+          >
+            <option></option>
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5-10 arası">5-10 arası</option>
+            <option value="11-15 arası">11-15 arası</option>
+            <option value="16-20 arası">16-20 arası</option>
+            <option value="21-25 arası">21-25 arası</option>
+            <option value="26-30 arası">26-30 arası</option>
+            <option value="31 ve üzeri">31 ve üzeri</option>
+          </Field>
 
           <div className="text-danger mt-2">
             <ErrorMessage name="propertyDetails.buildingAge" />
@@ -536,10 +554,42 @@ const Step2: FC<Step2Props> = ({ values }) => {
         <div className="col-md-4">
           <label className="form-label mb-3">Bina Kat Sayısı</label>
           <Field
-            type="number"
-            className="form-control form-control-lg form-control-solid"
+            as="select"
+            className="form-select form-select-lg form-select-solid"
             name="propertyDetails.buildingFloors"
-          />
+          >
+            <option></option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            <option value="17">17</option>
+            <option value="18">18</option>
+            <option value="19">19</option>
+            <option value="20">20</option>
+            <option value="21">21</option>
+            <option value="22">22</option>
+            <option value="23">23</option>
+            <option value="24">24</option>
+            <option value="25">25</option>
+            <option value="26">26</option>
+            <option value="27">27</option>
+            <option value="28">28</option>
+            <option value="29">29</option>
+            <option value="30 ve üzeri">30 ve üzeri</option>
+          </Field>
 
           <div className="text-danger mt-2">
             <ErrorMessage name="propertyDetails.buildingFloors" />
@@ -549,10 +599,55 @@ const Step2: FC<Step2Props> = ({ values }) => {
         <div className="col-md-4">
           <label className="form-label mb-3">Bulunduğu Kat</label>
           <Field
-            type="number"
-            className="form-control form-control-lg form-control-solid"
+            as="select"
+            className="form-select form-select-lg form-select-solid"
             name="propertyDetails.buildingAtFloor"
-          />
+          >
+            <option></option>
+
+            <option value="Giriş Altı Kot 4">Giriş Altı Kot 4</option>
+            <option value="Giriş Altı Kot 3">Giriş Altı Kot 3</option>
+            <option value="Giriş Altı Kot 2">Giriş Altı Kot 2</option>
+            <option value="Giriş Altı Kot 1">Giriş Altı Kot 1</option>
+            <option value="Bodrum Kat">Bodrum Kat</option>
+            <option value="Zemin Kat">Zemin Kat</option>
+            <option value="Bahçe Katı">Bahçe Katı</option>
+            <option value="Giriş Katı">Giriş Katı</option>
+            <option value="Yüksek Giriş">Yüksek Giriş</option>
+            <option value="Müstakil">Müstakil</option>
+            <option value="Villa Tipi">Villa Tipi</option>
+            <option value="Çatı Katı">Çatı Katı</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            <option value="17">17</option>
+            <option value="18">18</option>
+            <option value="19">19</option>
+            <option value="20">20</option>
+            <option value="21">21</option>
+            <option value="22">22</option>
+            <option value="23">23</option>
+            <option value="24">24</option>
+            <option value="25">25</option>
+            <option value="26">26</option>
+            <option value="27">27</option>
+            <option value="28">28</option>
+            <option value="29">29</option>
+            <option value="30 ve üzeri">30 ve üzeri</option>
+          </Field>
 
           <div className="text-danger mt-2">
             <ErrorMessage name="propertyDetails.buildingAtFloor" />

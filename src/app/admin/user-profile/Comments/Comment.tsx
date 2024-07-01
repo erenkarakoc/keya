@@ -56,7 +56,7 @@ const Comment: React.FC<Props> = ({
           </Modal.Header>
           <Modal.Body>Bu yorumu silmek istediğinize emin misiniz?</Modal.Body>
           <Modal.Footer>
-            <button type="button" className="btn" onClick={() => handleHide}>
+            <button type="button" className="btn" onClick={() => handleHide()}>
               İptal
             </button>
             <button

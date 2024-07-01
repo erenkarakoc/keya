@@ -98,9 +98,9 @@ export type ICreateAccount = {
       | "heatPump"
       | ""
     inComplex?: boolean
-    buildingAge?: number
-    buildingFloors?: number
-    buildingAtFloor?: number
+    buildingAge?: string
+    buildingFloors?: string
+    buildingAtFloor?: string
     dues?: string
     facade?: string[]
     exchange?: boolean
@@ -189,9 +189,9 @@ const step2Schema = Yup.object({
     deedStatus: Yup.string(),
     heating: Yup.string(),
     inComplex: Yup.boolean(),
-    buildingAge: Yup.number(),
-    buildingFloors: Yup.number(),
-    buildingAtFloor: Yup.number(),
+    buildingAge: Yup.string(),
+    buildingFloors: Yup.string(),
+    buildingAtFloor: Yup.string(),
     dues: Yup.string(),
     facade: Yup.array(),
   }),
@@ -212,11 +212,7 @@ const step3Schema = Yup.object({
 const step4Schema = Yup.object({
   propertyDetails: Yup.object({
     address: Yup.object({
-      lng: Yup.number().test(
-        "is-nonzero",
-        "Konum bilgisi zorunludur.",
-        (value) => value !== 0
-      ),
+      lng: Yup.number().required("Konum bilgisi zorunludur."),
     }),
   }),
 })
@@ -274,9 +270,9 @@ const inits: ICreateAccount = {
     deedStatus: "",
     heating: "",
     inComplex: undefined,
-    buildingAge: undefined,
-    buildingFloors: undefined,
-    buildingAtFloor: undefined,
+    buildingAge: "",
+    buildingFloors: "",
+    buildingAtFloor: "",
     dues: "",
     facade: [],
     exchange: undefined,

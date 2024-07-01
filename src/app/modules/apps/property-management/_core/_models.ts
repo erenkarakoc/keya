@@ -98,9 +98,9 @@ export type Property = {
       | "heatPump"
       | ""
     inComplex?: boolean
-    buildingAge?: number
-    buildingFloors?: number
-    buildingAtFloor?: number
+    buildingAge?: string
+    buildingFloors?: string
+    buildingAtFloor?: string
     dues?: string
     facade?: string[]
     exchange?: boolean

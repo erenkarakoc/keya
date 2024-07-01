@@ -3,7 +3,7 @@ import { FC, useEffect, useState, useRef } from "react"
 
 import { Field, ErrorMessage } from "formik"
 
-import { Map, AdvancedMarker, useMap } from "@vis.gl/react-google-maps"
+import { Map, AdvancedMarker } from "@vis.gl/react-google-maps"
 
 interface GoogleMapStepProps {
   height?: number
@@ -25,12 +25,21 @@ interface GoogleMapStepProps {
     },
     shouldValidate?: boolean
   ) => void
+  markerPosition: {
+    lat: number
+    lng: number
+  }
+  setMarkerPosition: any
+  map: any
 }
 
 const GoogleMapStep: FC<GoogleMapStepProps> = ({
   height,
   values,
   setFieldValue,
+  markerPosition,
+  setMarkerPosition,
+  map,
 }) => {
   const searchWrapperRef = useRef<HTMLDivElement>(null)
   const [searchedAddress, setSearchedAddress] = useState("")
@@ -38,16 +47,9 @@ const GoogleMapStep: FC<GoogleMapStepProps> = ({
     google.maps.places.AutocompletePrediction[]
   >([])
 
-  const [markerPosition, setMarkerPosition] = useState({
-    lat: 0,
-    lng: 0,
-  })
-
   const [geocoder, setGeocoder] = useState<google.maps.Geocoder | undefined>(
     undefined
   )
-
-  const map = useMap()
 
   const getAddressFromLatLng = async (
     lat: number,
@@ -155,6 +157,11 @@ const GoogleMapStep: FC<GoogleMapStepProps> = ({
       }
     })
   }
+
+  useEffect(() => {
+    setAddressFieldValue(markerPosition.lat, markerPosition.lng)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [markerPosition])
 
   useEffect(() => {
     if (map) {
@@ -265,7 +272,15 @@ const GoogleMapStep: FC<GoogleMapStepProps> = ({
           )}
 
           <div className="ky-map-search-address-label mt-2">
-            {values.propertyDetails.address.label}
+            {values.propertyDetails.address.label ? (
+              <>
+                <span className="text-gray-800">
+                  {values.propertyDetails.address.label}
+                </span>
+              </>
+            ) : (
+              "Konum seçilmedi"
+            )}
           </div>
         </div>
       </div>

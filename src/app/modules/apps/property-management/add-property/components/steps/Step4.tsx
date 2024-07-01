@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FC } from "react"
 import { GoogleMapStep } from "./GoogleMapStep"
 
@@ -20,9 +21,21 @@ interface Step4Props {
     },
     shouldValidate?: boolean
   ) => void
+  markerPosition: {
+    lat: number
+    lng: number
+  }
+  setMarkerPosition: any
+  map: any
 }
 
-const Step4: FC<Step4Props> = ({ values, setFieldValue }) => {
+const Step4: FC<Step4Props> = ({
+  values,
+  setFieldValue,
+  markerPosition,
+  setMarkerPosition,
+  map
+}) => {
   return (
     <div className="w-100">
       <div className="pb-10">
@@ -33,7 +46,13 @@ const Step4: FC<Step4Props> = ({ values, setFieldValue }) => {
       </div>
 
       <div className="mb-0">
-        <GoogleMapStep values={values} setFieldValue={setFieldValue} />
+        <GoogleMapStep
+          values={values}
+          setFieldValue={setFieldValue}
+          markerPosition={markerPosition}
+          setMarkerPosition={setMarkerPosition}
+          map={map}
+        />
       </div>
     </div>
   )

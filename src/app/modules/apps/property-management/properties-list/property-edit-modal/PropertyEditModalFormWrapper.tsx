@@ -3,6 +3,7 @@ import { PropertyEditModalForm } from "./PropertyEditModalForm"
 import { isNotEmpty, QUERIES } from "../../../../../../_metronic/helpers"
 import { useListView } from "../../_core/ListViewProvider"
 import { getPropertyById } from "../../_core/_requests"
+import { APIProvider } from "@vis.gl/react-google-maps"
 
 const PropertyEditModalFormWrapper = () => {
   const { itemIdForUpdate, setItemIdForUpdate } = useListView()
@@ -27,7 +28,14 @@ const PropertyEditModalFormWrapper = () => {
   )
 
   if (!isLoading && !error && property) {
-    return <PropertyEditModalForm isPropertyLoading={isLoading} property={property} />
+    return (
+      <APIProvider apiKey={import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY}>
+        <PropertyEditModalForm
+          isPropertyLoading={isLoading}
+          property={property}
+        />
+      </APIProvider>
+    )
   }
 
   return null

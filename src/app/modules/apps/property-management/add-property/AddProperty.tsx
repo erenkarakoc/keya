@@ -9,7 +9,7 @@ import { Step4 } from "./components/steps/Step4"
 import { Step5 } from "./components/steps/Step5"
 import { StepperComponent } from "../../../../../_metronic/assets/ts/components"
 
-import { APIProvider } from "@vis.gl/react-google-maps"
+import { useMap } from "@vis.gl/react-google-maps"
 
 import { Form, Formik, FormikValues } from "formik"
 import {
@@ -37,12 +37,26 @@ import {
 import toast from "react-hot-toast"
 import { getOfficeIdByUserId } from "../../user-management/_core/_requests"
 import { Modal } from "react-bootstrap"
+import { getPropertyFromSahibinden } from "../_core/_requests"
 
 initializeApp(firebaseConfig)
 const db = getFirestore(firebaseApp)
 
 const AddProperty = () => {
   const [quickAddModalShow, setQuickAddModalShow] = useState(false)
+  const [pastedData, setPastedData] = useState("")
+
+  const [currentPrice, setCurrentPrice] = useState("")
+  const [currentDues, setCurrentDues] = useState("")
+  const [description, setDescription] = useState<string>(
+    `<p class="ql-align-center"><br></p><p class="ql-align-center">_______________</p><p class="ql-align-center"><br></p><p class="ql-align-center"><span style="color: rgb(255, 255, 255);">Detaylı bilgi için iletişime geçiniz:</span></p><p class="ql-align-center"><strong style="color: rgb(255, 255, 255);">Keya Real Estate: +90 (312) 439 45 45</strong></p><p class="ql-align-center"><br></p><p class="ql-align-center"><strong style="color: rgb(255, 255, 255);">T.C ANKARA VALİLİĞİ TİCARET İL MÜDÜRLÜĞÜ</strong></p><p class="ql-align-center"><strong style="color: rgb(255, 255, 255);">TAŞINMAZ TİCARETİ YETKİ BELGESİ&nbsp;</strong><a href="https://ttbs.gtb.gov.tr/Home/BelgeSorgula?BelgeNo=0600556" rel="noopener noreferrer" target="_blank" style="color: rgb(0, 102, 204);"><strong><u>0600556</u></strong></a><strong style="color: rgb(255, 255, 255);">&nbsp;NUMARASI İLE YETKİLİ EMLAK FİRMASIDIR.</strong></p><p class="ql-align-center"><br></p><p class="ql-align-center"><em style="color: rgb(255, 255, 255);">Ofisimizde Web Tapu sistemi ile işlemleriniz yapılabilmektedir.</em></p>`
+  )
+
+  const map = useMap()
+  const [markerPosition, setMarkerPosition] = useState({
+    lat: 0,
+    lng: 0,
+  })
 
   const stepperRef = useRef<HTMLDivElement | null>(null)
   const [stepper, setStepper] = useState<StepperComponent | null>(null)
@@ -125,87 +139,6 @@ const AddProperty = () => {
     }
   }
 
-  const [currentPrice, setCurrentPrice] = useState("")
-  const [description, setDescription] = useState<string>(
-    `<p class="ql-align-center"><br></p><p class="ql-align-center">_______________</p><p class="ql-align-center"><br></p><p class="ql-align-center"><span style="color: rgb(255, 255, 255);">Detaylı bilgi için iletişime geçiniz:</span></p><p class="ql-align-center"><strong style="color: rgb(255, 255, 255);">Keya Real Estate: +90 (312) 439 45 45</strong></p><p class="ql-align-center"><br></p><p class="ql-align-center"><strong style="color: rgb(255, 255, 255);">T.C ANKARA VALİLİĞİ TİCARET İL MÜDÜRLÜĞÜ</strong></p><p class="ql-align-center"><strong style="color: rgb(255, 255, 255);">TAŞINMAZ TİCARETİ YETKİ BELGESİ&nbsp;</strong><a href="https://ttbs.gtb.gov.tr/Home/BelgeSorgula?BelgeNo=0600556" rel="noopener noreferrer" target="_blank" style="color: rgb(0, 102, 204);"><strong><u>0600556</u></strong></a><strong style="color: rgb(255, 255, 255);">&nbsp;NUMARASI İLE YETKİLİ EMLAK FİRMASIDIR.</strong></p><p class="ql-align-center"><br></p><p class="ql-align-center"><em style="color: rgb(255, 255, 255);">Ofisimizde Web Tapu sistemi ile işlemleriniz yapılabilmektedir.</em></p>`
-  )
-
-
-  const setDataFromContent = (pasted: string, setFieldValue: any) => {
-    const parser = new DOMParser()
-    const content = parser.parseFromString(pasted, "text/html")
-
-    const titleContent = content.querySelector(".classifiedDetailTitle")?.querySelector("h1")?.innerHTML
-    setFieldValue("title", titleContent)
-
-    const priceContent: HTMLInputElement | null = content.querySelector("#favoriteClassifiedPrice")
-    setCurrentPrice(priceContent?.value.replace(/\D/g, '') ?? "")
-    setFieldValue("propertyDetails.price", priceContent?.value.replace(/\D/g, '') ?? "")
-
-    const descriptionContent = content.querySelector("#classifiedDescription")?.innerHTML
-    setDescription(descriptionContent ?? "")
-    setFieldValue("propertyDetails.description", descriptionContent)
-
-    const exchangeContent = content.querySelector(".classifiedInfoList")?.querySelector("li:nth-of-type(23)")?.querySelector("span")?.innerHTML
-    setFieldValue("propertyDetails.exchange", exchangeContent?.includes("Evet") ? "true" : "false")
-
-    const typeContent = content.querySelector(".classifiedInfoList")?.querySelector("li:nth-of-type(3)")?.querySelector("span")?.innerHTML
-    setFieldValue("propertyDetails.type", typeContent?.includes("Arsa") ? "land" : typeContent?.includes("İş Yeri") ? "office" : "residence")
-
-    const forContent = content.querySelector(".search-result-bc")?.querySelector("li:nth-of-type(3)")?.querySelector("span")?.innerHTML
-    setFieldValue("propertyDetails.for", forContent === "Satılık" ? "sale" : forContent === "Kiralık" ? "rent" : forContent === "Devren Satılık" ? "lease-sale" : forContent === "Devren Kiralık" ? "lease-rent" : "")
-    
-    const roomContent = content.querySelector(".classifiedInfoList")?.querySelector("li:nth-of-type(7)")?.querySelector("span")?.innerHTML
-    setFieldValue("propertyDetails.room", roomContent)
-    console.log(roomContent)
-
-    const facade: string[] = []
-    const facadeContent = content.querySelector("#classifiedProperties")?.querySelector("ul:nth-of-type(1)")?.querySelectorAll(".selected")
-    facadeContent?.forEach((selected) => {
-      
-      if (selected.innerHTML.trim() === "Doğu") facade.push("east")
-      if (selected.innerHTML.trim() === "Batı") facade.push("west")
-      if (selected.innerHTML.trim() === "Kuzey") facade.push("north")
-      if (selected.innerHTML.trim() === "Güney") facade.push("south")
-    })
-    setFieldValue("propertyDetails.facade", facade)
-
-    const featuresInner: string[] = []
-    const featuresInnerContent = content.querySelector("#classifiedProperties")?.querySelector("ul:nth-of-type(2)")?.querySelectorAll(".selected")
-    featuresInnerContent?.forEach((selected) => featuresInner.push(selected.innerHTML.trim()))
-    setFieldValue("propertyDetails.featuresInner", featuresInner)
-
-    const featuresOuter: string[] = []
-    const featuresOuterContent = content.querySelector("#classifiedProperties")?.querySelector("ul:nth-of-type(3)")?.querySelectorAll(".selected")
-    featuresOuterContent?.forEach((selected) => featuresOuter.push(selected.innerHTML.trim()))
-    setFieldValue("propertyDetails.featuresOuter", featuresOuter)
-
-    const featuresNeighbourhood: string[] = []
-    const featuresNeighbourhoodContent = content.querySelector("#classifiedProperties")?.querySelector("ul:nth-of-type(4)")?.querySelectorAll(".selected")
-    featuresNeighbourhoodContent?.forEach((selected) => featuresNeighbourhood.push(selected.innerHTML.trim()))
-    setFieldValue("propertyDetails.featuresNeighbourhood", featuresNeighbourhood)
-    
-    const featuresTransportation: string[] = []
-    const featuresTransportationContent = content.querySelector("#classifiedProperties")?.querySelector("ul:nth-of-type(5)")?.querySelectorAll(".selected")
-    featuresTransportationContent?.forEach((selected) => featuresTransportation.push(selected.innerHTML.trim()))
-    setFieldValue("propertyDetails.featuresTransportation", featuresTransportation)
-    
-    const featuresView: string[] = []
-    const featuresViewContent = content.querySelector("#classifiedProperties")?.querySelector("ul:nth-of-type(6)")?.querySelectorAll(".selected")
-    featuresViewContent?.forEach((selected) => featuresView.push(selected.innerHTML.trim()))
-    setFieldValue("propertyDetails.featuresView", featuresView)
-
-    const featuresRealEstateType: string[] = []
-    const featuresRealEstateTypeContent = content.querySelector("#classifiedProperties")?.querySelector("ul:nth-of-type(7)")?.querySelectorAll(".selected")
-    featuresRealEstateTypeContent?.forEach((selected) => featuresRealEstateType.push(selected.innerHTML.trim()))
-    setFieldValue("propertyDetails.featuresRealEstateType", featuresRealEstateType)
-    
-    const featuresForDisabled: string[] = []
-    const featuresForDisabledContent = content.querySelector("#classifiedProperties")?.querySelector("ul:nth-of-type(8)")?.querySelectorAll(".selected")
-    featuresForDisabledContent?.forEach((selected) => featuresForDisabled.push(selected.innerHTML.trim()))
-    setFieldValue("propertyDetails.featuresForDisabled", featuresForDisabled)
-  }
-
   useEffect(() => {
     if (!stepperRef.current) {
       return
@@ -276,11 +209,22 @@ const AddProperty = () => {
                       </div>
 
                       <div data-kt-stepper-element="content">
-                        <Step1 currentPrice={currentPrice} setCurrentPrice={setCurrentPrice} description={description} setDescription={setDescription} setFieldValue={setFieldValue} />
+                        <Step1
+                          currentPrice={currentPrice}
+                          setCurrentPrice={setCurrentPrice}
+                          description={description}
+                          setDescription={setDescription}
+                          setFieldValue={setFieldValue}
+                        />
                       </div>
 
                       <div data-kt-stepper-element="content">
-                        <Step2 values={values} setFieldValue={setFieldValue} />
+                        <Step2
+                          values={values}
+                          setFieldValue={setFieldValue}
+                          setCurrentDues={setCurrentDues}
+                          currentDues={currentDues}
+                        />
                       </div>
 
                       <div data-kt-stepper-element="content">
@@ -288,14 +232,13 @@ const AddProperty = () => {
                       </div>
 
                       <div data-kt-stepper-element="content">
-                        <APIProvider
-                          apiKey={import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY}
-                        >
-                          <Step4
-                            values={values}
-                            setFieldValue={setFieldValue}
-                          />
-                        </APIProvider>
+                        <Step4
+                          values={values}
+                          setFieldValue={setFieldValue}
+                          markerPosition={markerPosition}
+                          setMarkerPosition={setMarkerPosition}
+                          map={map}
+                        />
                       </div>
 
                       <div data-kt-stepper-element="content">
@@ -371,21 +314,37 @@ const AddProperty = () => {
                         </Modal.Header>
                         <Modal.Body>
                           <div className="fv-row">
-                            <p className="form-label"><span className="text-white fs-2 fw-bolder font-monospace">1.</span>&nbsp;İlanın Sahibinden sayfasına gidin.</p>
-                            <p className="form-label"><span className="text-white fs-2 fw-bolder font-monospace">2.</span>&nbsp;Sağ tıklayıp "Sayfa Kaynağını Görüntüle" seçeneğine tıklayın.</p>
-                            <p className="form-label"><span className="text-white fs-2 fw-bolder font-monospace">3.</span>&nbsp;Açılan yeni sekmedeki tüm metni kopyalayın.</p>
-                            <p className="form-label"><span className="text-white fs-2 fw-bolder font-monospace">4.</span>&nbsp;Kopyaladığınız içeriği aşağıya yapıştırın:</p>
+                            <p className="form-label">
+                              <span className="text-white fs-2 fw-bolder font-monospace">
+                                1.
+                              </span>
+                              &nbsp;İlanın Sahibinden sayfasına gidin.
+                            </p>
+                            <p className="form-label">
+                              <span className="text-white fs-2 fw-bolder font-monospace">
+                                2.
+                              </span>
+                              &nbsp;Sağ tıklayıp "Sayfa Kaynağını Görüntüle"
+                              seçeneğine tıklayın.
+                            </p>
+                            <p className="form-label">
+                              <span className="text-white fs-2 fw-bolder font-monospace">
+                                3.
+                              </span>
+                              &nbsp;Açılan yeni sekmedeki tüm metni kopyalayın.
+                            </p>
+                            <p className="form-label">
+                              <span className="text-white fs-2 fw-bolder font-monospace">
+                                4.
+                              </span>
+                              &nbsp;Kopyaladığınız içeriği aşağıya yapıştırın:
+                            </p>
 
                             <textarea
                               className="form-control form-control-solid mt-6"
                               rows={3}
                               placeholder="<!doctype html>..."
-                              onChange={(e) =>
-                                setDataFromContent(
-                                  e.target.value,
-                                  setFieldValue
-                                )
-                              }
+                              onChange={(e) => setPastedData(e.target.value)}
                             />
                           </div>
                         </Modal.Body>
@@ -400,7 +359,24 @@ const AddProperty = () => {
                           <button
                             type="button"
                             className="btn btn-primary"
-                            onClick={() => setQuickAddModalShow(false)}
+                            onClick={() => {
+                              if (pastedData) {
+                                getPropertyFromSahibinden(
+                                  pastedData,
+                                  setFieldValue,
+                                  setCurrentPrice,
+                                  setCurrentDues,
+                                  setDescription,
+                                  setMarkerPosition,
+                                  map
+                                )
+                                setQuickAddModalShow(false)
+                              } else {
+                                toast.error(
+                                  "Lütfen geçerli bir Sahibinden ilanı verisi sağlayın."
+                                )
+                              }
+                            }}
                           >
                             Bilgileri Değiştir
                           </button>

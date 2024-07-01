@@ -2,6 +2,7 @@ import { Route, Routes, Outlet, Navigate } from "react-router-dom"
 import { PageLink, PageTitle } from "../../../../_metronic/layout/core"
 import { PropertiesListWrapper } from "./properties-list/PropertiesList"
 import { AddProperty } from "./add-property/AddProperty"
+import { APIProvider } from "@vis.gl/react-google-maps"
 
 const propertiesBreadcrumbs: Array<PageLink> = [
   {
@@ -39,8 +40,12 @@ const PropertiesPage = () => {
         path="ilan-ekle"
         element={
           <>
-            <PageTitle breadcrumbs={addPropertyBreadcrumbs}>İlan Ekle</PageTitle>
-            <AddProperty />
+            <PageTitle breadcrumbs={addPropertyBreadcrumbs}>
+              İlan Ekle
+            </PageTitle>
+            <APIProvider apiKey={import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY}>
+              <AddProperty />
+            </APIProvider>
           </>
         }
       />
