@@ -3,8 +3,8 @@ import { Link, useLocation } from "react-router-dom"
 
 import { Property } from "../../modules/apps/property-management/_core/_models"
 import {
-  convertToTurkishDate,
   formatPrice,
+  timestampToTurkishDate,
 } from "../../../_metronic/helpers/kyHelpers"
 
 import { Swiper, SwiperSlide } from "swiper/react"
@@ -63,40 +63,62 @@ const ProfileHeader: React.FC<Props> = ({ property }) => {
       <div className="card-body pt-9 pb-0">
         <div className="row">
           <div className="col-md-6 col-lg-4 mb-6 mb-md-0">
-            <Swiper
-              style={
-                {
-                  "--swiper-navigation-color": "#fff",
-                  "--swiper-pagination-color": "#fff",
-                } as React.CSSProperties
-              }
-              spaceBetween={10}
-              navigation={true}
-              thumbs={{ swiper: thumbsSwiper }}
-              modules={[FreeMode, Navigation, Thumbs]}
-              className="mainImages"
-            >
-              {property.propertyDetails.photoURLs.map((url, i) => (
-                <SwiperSlide key={i}>
-                  <img src={url} />
-                </SwiperSlide>
-              ))}
-            </Swiper>
-            <Swiper
-              onSwiper={setThumbsSwiper}
-              spaceBetween={10}
-              slidesPerView={4}
-              freeMode={true}
-              watchSlidesProgress={true}
-              modules={[FreeMode, Navigation, Thumbs]}
-              className="thumbnailSwiper"
-            >
-              {property.propertyDetails.photoURLs.map((url, i) => (
-                <SwiperSlide key={i}>
-                  <img src={url} />
-                </SwiperSlide>
-              ))}
-            </Swiper>
+            {property.propertyDetails.photoURLs.length > 1 ? (
+              <>
+                <Swiper
+                  style={
+                    {
+                      "--swiper-navigation-color": "#fff",
+                      "--swiper-pagination-color": "#fff",
+                    } as React.CSSProperties
+                  }
+                  spaceBetween={10}
+                  navigation={true}
+                  thumbs={{ swiper: thumbsSwiper }}
+                  modules={[FreeMode, Navigation, Thumbs]}
+                  className="mainImages"
+                >
+                  {property.propertyDetails.photoURLs.map((url, i) => (
+                    <SwiperSlide key={i}>
+                      <img src={url} />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+                <Swiper
+                  onSwiper={setThumbsSwiper}
+                  spaceBetween={10}
+                  slidesPerView={4}
+                  freeMode={true}
+                  watchSlidesProgress={true}
+                  modules={[FreeMode, Navigation, Thumbs]}
+                  className="thumbnailSwiper"
+                >
+                  {property.propertyDetails.photoURLs.map((url, i) => (
+                    <SwiperSlide key={i}>
+                      <img src={url} />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              </>
+            ) : (
+              <div className="d-flex flex-column justify-content-center align-items-center text-center text-gray-500 h-100 w-100 p-20">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="32"
+                  height="32"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    fill="currentColor"
+                    d="m20.475 23.3l-2.3-2.3H5q-.825 0-1.413-.588T3 19V5.825L.7 3.5l1.4-1.4l19.8 19.8l-1.425 1.4ZM5 19h11.175l-2-2H6l3-4l2 2.725l.85-1.05L5 7.825V19Zm16-.825l-2-2V5H7.825l-2-2H19q.825 0 1.413.588T21 5v13.175Zm-7.525-7.525ZM10.6 13.425Z"
+                  />
+                </svg>
+                <span className="mt-3">
+                  Lütfen daha iyi bir kullanıcı deneyimi için ilana ait
+                  görselleri ekleyin.
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="col-md-6 col-lg-8">
@@ -157,9 +179,12 @@ const ProfileHeader: React.FC<Props> = ({ property }) => {
                     <div className="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
                       <div className="d-flex align-items-center">
                         <div className="fs-2 fw-bolder">
-                          {convertToTurkishDate(
-                            property.ownerDetails?.permitUntilDate ?? ""
-                          )}
+                          {property.ownerDetails?.permitUntilDate ===
+                          "limitless"
+                            ? "Süresiz"
+                            : timestampToTurkishDate(
+                                property.ownerDetails?.permitUntilDate ?? ""
+                              )}
                         </div>
                       </div>
 

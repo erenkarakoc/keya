@@ -301,16 +301,16 @@ const inits: ICreateAccount = {
     permit: "",
     permitDate: "",
     permitUntilDate: "",
-    permitPrice: undefined,
+    permitPrice: "",
   },
 
   saleDetails: {
     agentFee: "",
     officeFee: "",
-    sold: undefined,
+    sold: false,
     soldPrice: "",
     soldDate: "",
-    active: false,
+    active: true,
   },
 
   createdAt: "",

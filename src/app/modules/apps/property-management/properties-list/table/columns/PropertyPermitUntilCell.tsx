@@ -1,17 +1,17 @@
 import { FC } from "react"
-import { convertToTurkishDate } from "../../../../../../../_metronic/helpers/kyHelpers"
+import { timestampToTurkishDate } from "../../../../../../../_metronic/helpers/kyHelpers"
 
 type Props = {
   date?: string
 }
 
 const PropertyPermitUntilCell: FC<Props> = ({ date }) => {
-  return (
-    date && (
-      <div className="badge badge-light fw-bolder">
-        {convertToTurkishDate(date)}
-      </div>
-    )
+  return date === "limitless" ? (
+    <div className="badge badge-light fw-bolder">Süresiz</div>
+  ) : (
+    <div className="badge badge-light fw-bolder">
+      {date && timestampToTurkishDate(date)}
+    </div>
   )
 }
 

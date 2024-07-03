@@ -106,18 +106,23 @@ const AddProperty = () => {
         const permitDate = new Date(values?.ownerDetails?.permitDate ?? "")
           .getTime()
           .toString()
-        const permitUntilDate = new Date(
-          values?.ownerDetails?.permitUntilDate ?? ""
-        )
-          .getTime()
-          .toString()
+        const permitUntilDate =
+          values?.ownerDetails?.permitUntilDate === "limitless"
+            ? "limitless"
+            : new Date(values?.ownerDetails?.permitUntilDate ?? "")
+                .getTime()
+                .toString()
 
         await updateDoc(newPropertyRef, {
           id: newPropertyRef.id,
           officeId,
           ownerDetails: {
+            ownerFullName: values.ownerDetails?.ownerFullName,
+            ownerPhoneNumber: values.ownerDetails?.ownerPhoneNumber,
+            permit: values.ownerDetails?.permit,
             permitDate,
             permitUntilDate,
+            permitPrice: values.ownerDetails?.permitPrice,
           },
           createdAt: new Date().getTime().toString(),
           updatedAt: new Date().getTime().toString(),
@@ -127,7 +132,7 @@ const AddProperty = () => {
         actions.setSubmitting(false)
 
         toast.success("İlan başarıyla eklendi!")
-        window.location.reload()
+        // window.location.href = "ilan-yonetimi/ilanlar"
       } catch (error) {
         toast.error(
           "Bir hata oluştu! Lütfen bilgileri kontrol edin veya daha sonra tekrar deneyin."

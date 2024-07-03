@@ -87,6 +87,7 @@ const AddOffice = () => {
           name: values.name,
           about: values.about,
           owners: ownersArr,
+          email: values.email,
           phoneNumber: values.phoneNumber,
           address: {
             country: values.address.country,
@@ -112,7 +113,7 @@ const AddOffice = () => {
 
         toast.success("Ofis başarıyla eklendi!")
 
-        // window.location.href = "/arayuz/ofis-yonetimi/ofisler"
+        window.location.href = "/arayuz/ofis-yonetimi/ofisler"
       } catch (error) {
         toast.error(
           "Bir hata oluştu! Lütfen bilgileri kontrol edin veya daha sonra tekrar deneyin."

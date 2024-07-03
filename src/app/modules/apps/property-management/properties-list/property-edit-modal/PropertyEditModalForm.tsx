@@ -8,8 +8,10 @@ import { Formik, Form, Field, ErrorMessage } from "formik"
 import { Property } from "../../_core/_models"
 
 import {
+  ISODateToTimestamp,
   generateRandomName,
   getUserRoleText,
+  timestampToISODate,
   urlify,
 } from "../../../../../../_metronic/helpers/kyHelpers"
 
@@ -46,7 +48,7 @@ import {
 import { GoogleMapStep } from "../../add-property/components/steps/GoogleMapStep"
 import MultiSelect from "../../../components/multiselect/MultiSelect"
 import { Link } from "react-router-dom"
-import { getUsersByRole } from "../../../user-management/_core/_requests"
+import { getAllUsers } from "../../../user-management/_core/_requests"
 import { AsYouType } from "libphonenumber-js"
 import { PropertySalesModal } from "./PropertySalesModal"
 import { useMap } from "@vis.gl/react-google-maps"
@@ -264,6 +266,9 @@ const PropertyEditModalForm: FC<Props> = ({ property, isPropertyLoading }) => {
   const [currentDues, setCurrentDues] = useState("")
   const [currentPermitPrice, setCurrentPermitPrice] = useState("")
   const [currentPrice, setCurrentPrice] = useState("")
+  const [currentPermitDate, setCurrentPermitDate] = useState("")
+  const [currentPermitUntilDate, setCurrentPermitUntilDate] = useState("")
+  const [isPermitUntilHidden, setIsPermitUntilHidden] = useState(false)
 
   const [description, setDescription] = useState<string>(
     `<p class="ql-align-center"><br></p><p class="ql-align-center">_______________</p><p class="ql-align-center"><br></p><p class="ql-align-center"><span style="color: rgb(255, 255, 255);">Detaylı bilgi için iletişime geçiniz:</span></p><p class="ql-align-center"><strong style="color: rgb(255, 255, 255);">Keya Real Estate: +90 (312) 439 45 45</strong></p><p class="ql-align-center"><br></p><p class="ql-align-center"><strong style="color: rgb(255, 255, 255);">T.C ANKARA VALİLİĞİ TİCARET İL MÜDÜRLÜĞÜ</strong></p><p class="ql-align-center"><strong style="color: rgb(255, 255, 255);">TAŞINMAZ TİCARETİ YETKİ BELGESİ&nbsp;</strong><a href="https://ttbs.gtb.gov.tr/Home/BelgeSorgula?BelgeNo=0600556" rel="noopener noreferrer" target="_blank" style="color: rgb(0, 102, 204);"><strong><u>0600556</u></strong></a><strong style="color: rgb(255, 255, 255);">&nbsp;NUMARASI İLE YETKİLİ EMLAK FİRMASIDIR.</strong></p><p class="ql-align-center"><br></p><p class="ql-align-center"><em style="color: rgb(255, 255, 255);">Ofisimizde Web Tapu sistemi ile işlemleriniz yapılabilmektedir.</em></p>`
@@ -457,72 +462,32 @@ const PropertyEditModalForm: FC<Props> = ({ property, isPropertyLoading }) => {
         lng: property.propertyDetails.address.lng,
       })
     }
+
+    if (property.ownerDetails?.permitDate) {
+      setCurrentPermitDate(timestampToISODate(property.ownerDetails.permitDate))
+    }
+    if (property.ownerDetails?.permitUntilDate) {
+      if (property.ownerDetails?.permitUntilDate === "limitless") {
+        setCurrentPermitUntilDate("")
+        setIsPermitUntilHidden(true)
+      } else {
+        setCurrentPermitUntilDate(
+          timestampToISODate(property.ownerDetails.permitUntilDate)
+        )
+      }
+    }
   }, [property])
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const brokersPromise = getUsersByRole("broker")
-        const agentsPromise = getUsersByRole("agent")
-        const assistantsPromise = getUsersByRole("assistant")
-        const humanResourcesPromise = getUsersByRole("human-resources")
-
-        const [brokers, agents, assistants, humanResources] = await Promise.all(
-          [
-            brokersPromise,
-            agentsPromise,
-            assistantsPromise,
-            humanResourcesPromise,
-          ]
-        )
+        const allUsers = await getAllUsers()
 
         const usersArr = []
 
-        if (agents) {
+        if (allUsers) {
           usersArr.push(
-            ...agents.map((user) => ({
-              id: user.id,
-              label:
-                user.firstName +
-                " " +
-                user.lastName +
-                " | " +
-                getUserRoleText(user.role as string),
-            }))
-          )
-        }
-
-        if (brokers) {
-          usersArr.push(
-            ...brokers.map((user) => ({
-              id: user.id,
-              label:
-                user.firstName +
-                " " +
-                user.lastName +
-                " | " +
-                getUserRoleText(user.role as string),
-            }))
-          )
-        }
-
-        if (assistants) {
-          usersArr.push(
-            ...assistants.map((user) => ({
-              id: user.id,
-              label:
-                user.firstName +
-                " " +
-                user.lastName +
-                " | " +
-                getUserRoleText(user.role as string),
-            }))
-          )
-        }
-
-        if (humanResources) {
-          usersArr.push(
-            ...humanResources.map((user) => ({
+            ...allUsers.map((user) => ({
               id: user.id,
               label:
                 user.firstName +
@@ -2064,6 +2029,14 @@ const PropertyEditModalForm: FC<Props> = ({ property, isPropertyLoading }) => {
                         type="date"
                         className="form-control form-control-lg form-control-solid"
                         name="ownerDetails.permitDate"
+                        value={currentPermitDate}
+                        onChange={(e: any) => {
+                          setCurrentPermitDate(e.target.value)
+                          setFieldValue(
+                            "ownerDetails.permitDate",
+                            ISODateToTimestamp(e.target.value)
+                          )
+                        }}
                       />
 
                       <div className="text-danger mt-2">
@@ -2077,9 +2050,50 @@ const PropertyEditModalForm: FC<Props> = ({ property, isPropertyLoading }) => {
                       </label>
                       <Field
                         type="date"
-                        className="form-control form-control-lg form-control-solid"
+                        className={`form-control form-control-lg form-control-solid${
+                          isPermitUntilHidden ? " d-none" : ""
+                        }`}
                         name="ownerDetails.permitUntilDate"
+                        value={currentPermitUntilDate}
+                        onChange={(e: any) => {
+                          setCurrentPermitUntilDate(e.target.value)
+                          setFieldValue(
+                            "ownerDetails.permitUntilDate",
+                            ISODateToTimestamp(e.target.value)
+                          )
+                        }}
                       />
+
+                      <div
+                        className={`form-control form-control-lg form-control-solid${
+                          !isPermitUntilHidden ? " d-none" : ""
+                        }`}
+                      >
+                        Süresiz
+                      </div>
+
+                      <span
+                        className="cursor-pointer text-gray-600"
+                        onClick={() => {
+                          if (isPermitUntilHidden) {
+                            setFieldValue(
+                              "ownerDetails.permitUntilDate",
+                              currentPermitUntilDate
+                            )
+                            setIsPermitUntilHidden(false)
+                          } else {
+                            setFieldValue(
+                              "ownerDetails.permitUntilDate",
+                              "limitless"
+                            )
+                            setIsPermitUntilHidden(true)
+                          }
+                        }}
+                      >
+                        <u>
+                          {isPermitUntilHidden ? "Süresiz Değil" : "Süresiz"}
+                        </u>
+                      </span>
 
                       <div className="text-danger mt-2">
                         <ErrorMessage name="ownerDetails.permitUntilDate" />

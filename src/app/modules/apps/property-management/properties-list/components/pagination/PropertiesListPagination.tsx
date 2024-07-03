@@ -114,19 +114,6 @@ const PropertiesListPagination = () => {
       <div className="col-sm-12 col-md-7 d-flex align-items-center justify-content-center justify-content-md-end">
         <div id="kt_table_properties_paginate">
           <ul className="pagination">
-            <li
-              className={clsx("page-item", {
-                disabled: isLoading || pagination.page === 1,
-              })}
-            >
-              <a
-                onClick={() => updatePage(1)}
-                style={{ cursor: "pointer" }}
-                className="page-link"
-              >
-                İlk Sayfa
-              </a>
-            </li>
             {paginationLinks
               ?.map((link) => {
                 return { ...link, label: mappedLabel(link.label) }
@@ -154,21 +141,6 @@ const PropertiesListPagination = () => {
                   </a>
                 </li>
               ))}
-            <li
-              className={clsx("page-item", {
-                disabled:
-                  isLoading ||
-                  pagination.page === (pagination.links?.length || 3) - 2,
-              })}
-            >
-              <a
-                onClick={() => updatePage((pagination.links?.length || 3) - 2)}
-                style={{ cursor: "pointer" }}
-                className="page-link"
-              >
-                Son Sayfa
-              </a>
-            </li>
           </ul>
         </div>
       </div>

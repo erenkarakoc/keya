@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FC, useState, useEffect, ChangeEvent } from "react"
 import { Link } from "react-router-dom"
 
@@ -6,7 +7,7 @@ import { AsYouType } from "libphonenumber-js"
 
 import MultiSelect from "../../../../components/multiselect/MultiSelect"
 import { getUserRoleText } from "../../../../../../../_metronic/helpers/kyHelpers"
-import { getUsersByRole } from "../../../../user-management/_core/_requests"
+import { getAllUsers } from "../../../../user-management/_core/_requests"
 
 import CurrencyInput from "react-currency-input-field"
 
@@ -24,6 +25,8 @@ const Step5: FC<Step5Props> = ({ setFieldValue }) => {
     "+90"
   )
   const [countryCode, setCountryCode] = useState<string | null>("TR")
+  const [currentPermitUntilDate, setCurrentPermitUntilDate] = useState("")
+  const [isPermitUntilHidden, setIsPermitUntilHidden] = useState(false)
 
   const handlePhoneNumberChange = (e: ChangeEvent<HTMLInputElement>) => {
     const asYouType = new AsYouType()
@@ -37,65 +40,12 @@ const Step5: FC<Step5Props> = ({ setFieldValue }) => {
 
   const fetchUsers = async () => {
     try {
-      const brokersPromise = getUsersByRole("broker")
-      const agentsPromise = getUsersByRole("agent")
-      const assistantsPromise = getUsersByRole("assistant")
-      const humanResourcesPromise = getUsersByRole("human-resources")
-
-      const [brokers, agents, assistants, humanResources] = await Promise.all([
-        brokersPromise,
-        agentsPromise,
-        assistantsPromise,
-        humanResourcesPromise,
-      ])
-
+      const allUsers = await getAllUsers()
       const usersArr = []
 
-      if (agents) {
+      if (allUsers) {
         usersArr.push(
-          ...agents.map((user) => ({
-            id: user.id,
-            label:
-              user.firstName +
-              " " +
-              user.lastName +
-              " | " +
-              getUserRoleText(user.role as string),
-          }))
-        )
-      }
-
-      if (brokers) {
-        usersArr.push(
-          ...brokers.map((user) => ({
-            id: user.id,
-            label:
-              user.firstName +
-              " " +
-              user.lastName +
-              " | " +
-              getUserRoleText(user.role as string),
-          }))
-        )
-      }
-
-      if (assistants) {
-        usersArr.push(
-          ...assistants.map((user) => ({
-            id: user.id,
-            label:
-              user.firstName +
-              " " +
-              user.lastName +
-              " | " +
-              getUserRoleText(user.role as string),
-          }))
-        )
-      }
-
-      if (humanResources) {
-        usersArr.push(
-          ...humanResources.map((user) => ({
+          ...allUsers.map((user) => ({
             id: user.id,
             label:
               user.firstName +
@@ -263,9 +213,42 @@ const Step5: FC<Step5Props> = ({ setFieldValue }) => {
             </label>
             <Field
               type="date"
-              className="form-control form-control-lg form-control-solid"
+              className={`form-control form-control-lg form-control-solid${
+                isPermitUntilHidden ? " d-none" : ""
+              }`}
+              value={currentPermitUntilDate}
+              onChange={(e: any) => {
+                setFieldValue("ownerDetails.permitUntilDate", e.target.value)
+                setCurrentPermitUntilDate(e.target.value)
+              }}
               name="ownerDetails.permitUntilDate"
             />
+
+            <div
+              className={`form-control form-control-lg form-control-solid${
+                !isPermitUntilHidden ? " d-none" : ""
+              }`}
+            >
+              Süresiz
+            </div>
+
+            <span
+              className="cursor-pointer text-gray-600"
+              onClick={() => {
+                if (isPermitUntilHidden) {
+                  setFieldValue(
+                    "ownerDetails.permitUntilDate",
+                    currentPermitUntilDate
+                  )
+                  setIsPermitUntilHidden(false)
+                } else {
+                  setFieldValue("ownerDetails.permitUntilDate", "limitless")
+                  setIsPermitUntilHidden(true)
+                }
+              }}
+            >
+              <u>{isPermitUntilHidden ? "Süresiz Değil" : "Süresiz"}</u>
+            </span>
 
             <div className="text-danger mt-2">
               <ErrorMessage name="ownerDetails.permitUntilDate" />

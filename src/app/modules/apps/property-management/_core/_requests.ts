@@ -375,6 +375,7 @@ const getPropertyFromSahibinden = (pasted: string, setFieldValue: any, setCurren
 
   const exchangeContent = Array.from(infoList).find((li) => li.textContent?.includes("Takas"))?.querySelector("span")?.innerHTML.trim()
   if (exchangeContent) setFieldValue("propertyDetails.exchange", exchangeContent?.includes("Evet") ? "true" : "false")
+  else setFieldValue("propertyDetails.exchange", "false")
 
   const typeContent = Array.from(infoList).find((li) => li.textContent?.includes("Emlak Tipi"))?.querySelector("span")?.innerHTML.trim()
   setFieldValue("propertyDetails.type", typeContent?.includes("Arsa") ? "land" : typeContent?.includes("İş Yeri") ? "office" : "residence")
