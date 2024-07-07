@@ -227,111 +227,106 @@
     url(./sf-pro/SFProText-HeavyItalic.ttf) format("truetype");
 }
 
-/* Klavika Normal */
+/* Klavika*/
+
 @font-face {
-  font-family: "Klavika Display";
-  src: url("./klavika/KlavikaDisplay-Black.eot");
-  src: local("Klavika Display Black"), local("./klavika/KlavikaDisplay-Black"),
-    url("./klavika/KlavikaDisplay-Black.eot?#iefix") format("embedded-opentype"),
-    url("./klavika/KlavikaDisplay-Black.woff2") format("woff2"),
-    url("./klavika/KlavikaDisplay-Black.woff") format("woff"),
-    url("./klavika/KlavikaDisplay-Black.ttf") format("truetype");
-  font-weight: 900;
+  font-family: "Klavika";
+  src: url("./klavika/Klavika-Light.eot");
+  src: url("./klavika/Klavika-Light.eot?#iefix") format("embedded-opentype"),
+    url("./klavika/Klavika-Light.woff2") format("woff2"),
+    url("./klavika/Klavika-Light.woff") format("woff"),
+    url("./klavika/Klavika-Light.svg#Klavika-Light") format("svg");
+  font-weight: 300;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-  font-family: "Klavika Display UltraBlack";
-  src: url("./klavika/KlavikaDisplay-UltraBlack.eot");
-  src: local("Klavika Display UltraBlack"),
-    local("./klavika/KlavikaDisplay-UltraBlack"),
-    url("./klavika/KlavikaDisplay-UltraBlack.eot?#iefix")
+  font-family: "Klavika";
+  src: url("./klavika/Klavika-LightItalic.eot");
+  src: url("./klavika/Klavika-LightItalic.eot?#iefix")
       format("embedded-opentype"),
-    url("./klavika/KlavikaDisplay-UltraBlack.woff2") format("woff2"),
-    url("./klavika/KlavikaDisplay-UltraBlack.woff") format("woff"),
-    url("./klavika/KlavikaDisplay-UltraBlack.ttf") format("truetype");
-  font-weight: 900;
-  font-style: normal;
+    url("./klavika/Klavika-LightItalic.woff2") format("woff2"),
+    url("./klavika/Klavika-LightItalic.woff") format("woff"),
+    url("./klavika/Klavika-LightItalic.svg#Klavika-LightItalic") format("svg");
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
 }
 
 @font-face {
-  font-family: "Klavika Display";
-  src: url("./klavika/KlavikaDisplay-Thin.eot");
-  src: local("Klavika Display Thin"), local("./klavika/KlavikaDisplay-Thin"),
-    url("./klavika/KlavikaDisplay-Thin.eot?#iefix") format("embedded-opentype"),
-    url("./klavika/KlavikaDisplay-Thin.woff2") format("woff2"),
-    url("./klavika/KlavikaDisplay-Thin.woff") format("woff"),
-    url("./klavika/KlavikaDisplay-Thin.ttf") format("truetype");
-  font-weight: 100;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Klavika Display ExtraLight Cond";
-  src: url("./klavika/KlavikaDisplay-ExtraLightCondensed.eot");
-  src: local("Klavika Display ExtraLight Condensed"),
-    local("./klavika/KlavikaDisplay-ExtraLightCondensed"),
-    url("./klavika/KlavikaDisplay-ExtraLightCondensed.eot?#iefix")
+  font-family: "Klavika";
+  src: url("./klavika/KlavikaRegular-OSTF.eot");
+  src: url("./klavika/KlavikaRegular-OSTF.eot?#iefix")
       format("embedded-opentype"),
-    url("./klavika/KlavikaDisplay-ExtraLightCondensed.woff2") format("woff2"),
-    url("./klavika/KlavikaDisplay-ExtraLightCondensed.woff") format("woff"),
-    url("./klavika/KlavikaDisplay-ExtraLightCondensed.ttf") format("truetype");
-  font-weight: 200;
+    url("./klavika/KlavikaRegular-OSTF.woff2") format("woff2"),
+    url("./klavika/KlavikaRegular-OSTF.woff") format("woff"),
+    url("./klavika/KlavikaRegular-OSTF.svg#KlavikaRegular-OSTF") format("svg");
+  font-weight: 400;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-  font-family: "Klavika Display UltraBlack Cond";
-  src: url("./klavika/KlavikaDisplay-UltraBlackCondensed.eot");
-  src: local("Klavika Display UltraBlack Condensed"),
-    local("./klavika/KlavikaDisplay-UltraBlackCondensed"),
-    url("./klavika/KlavikaDisplay-UltraBlackCondensed.eot?#iefix")
+  font-family: "Klavika";
+  src: url("./klavika/Klavika-RegularItalic.eot");
+  src: url("./klavika/Klavika-RegularItalic.eot?#iefix")
       format("embedded-opentype"),
-    url("./klavika/KlavikaDisplay-UltraBlackCondensed.woff2") format("woff2"),
-    url("./klavika/KlavikaDisplay-UltraBlackCondensed.woff") format("woff"),
-    url("./klavika/KlavikaDisplay-UltraBlackCondensed.ttf") format("truetype");
-  font-weight: 900;
-  font-style: normal;
+    url("./klavika/Klavika-RegularItalic.woff2") format("woff2"),
+    url("./klavika/Klavika-RegularItalic.woff") format("woff"),
+    url("./klavika/Klavika-RegularItalic.svg#Klavika-RegularItalic")
+      format("svg");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
 }
 
 @font-face {
-  font-family: "Klavika Display";
-  src: url("./klavika/KlavikaDisplay-ExtraLight.eot");
-  src: local("Klavika Display ExtraLight"),
-    local("./klavika/KlavikaDisplay-ExtraLight"),
-    url("./klavika/KlavikaDisplay-ExtraLight.eot?#iefix")
+  font-family: "Klavika";
+  src: url("./klavika/Klavika-MediumItalic.eot");
+  src: url("./klavika/Klavika-MediumItalic.eot?#iefix")
       format("embedded-opentype"),
-    url("./klavika/KlavikaDisplay-ExtraLight.woff2") format("woff2"),
-    url("./klavika/KlavikaDisplay-ExtraLight.woff") format("woff"),
-    url("./klavika/KlavikaDisplay-ExtraLight.ttf") format("truetype");
-  font-weight: 200;
-  font-style: normal;
+    url("./klavika/Klavika-MediumItalic.woff2") format("woff2"),
+    url("./klavika/Klavika-MediumItalic.woff") format("woff"),
+    url("./klavika/Klavika-MediumItalic.svg#Klavika-MediumItalic") format("svg");
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
 }
 
 @font-face {
-  font-family: "Klavika Display Thin Condensed";
-  src: url("./klavika/KlavikaDisplay-ThinCondensed.eot");
-  src: local("Klavika Display Thin Condensed"),
-    local("./klavika/KlavikaDisplay-ThinCondensed"),
-    url("./klavika/KlavikaDisplay-ThinCondensed.eot?#iefix")
-      format("embedded-opentype"),
-    url("./klavika/KlavikaDisplay-ThinCondensed.woff2") format("woff2"),
-    url("./klavika/KlavikaDisplay-ThinCondensed.woff") format("woff"),
-    url("./klavika/KlavikaDisplay-ThinCondensed.ttf") format("truetype");
-  font-weight: 100;
+  font-family: "Klavika";
+  src: url("./klavika/Klavika-Medium.eot");
+  src: url("./klavika/Klavika-Medium.eot?#iefix") format("embedded-opentype"),
+    url("./klavika/Klavika-Medium.woff2") format("woff2"),
+    url("./klavika/Klavika-Medium.woff") format("woff"),
+    url("./klavika/Klavika-Medium.svg#Klavika-Medium") format("svg");
+  font-weight: 500;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-  font-family: "Klavika Display Black Condensed";
-  src: url("./klavika/KlavikaDisplay-BlackCondensed.eot");
-  src: local("Klavika Display Black Condensed"),
-    local("./klavika/KlavikaDisplay-BlackCondensed"),
-    url("./klavika/KlavikaDisplay-BlackCondensed.eot?#iefix")
-      format("embedded-opentype"),
-    url("./klavika/KlavikaDisplay-BlackCondensed.woff2") format("woff2"),
-    url("./klavika/KlavikaDisplay-BlackCondensed.woff") format("woff"),
-    url("./klavika/KlavikaDisplay-BlackCondensed.ttf") format("truetype");
-  font-weight: 900;
+  font-family: "Klavika";
+  src: url("./klavika/Klavika-Bold.eot");
+  src: url("./klavika/Klavika-Bold.eot?#iefix") format("embedded-opentype"),
+    url("./klavika/Klavika-Bold.woff2") format("woff2"),
+    url("./klavika/Klavika-Bold.woff") format("woff"),
+    url("./klavika/Klavika-Bold.svg#Klavika-Bold") format("svg");
+  font-weight: 700;
   font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Klavika";
+  src: url("./klavika/Klavika-BoldItalic.eot");
+  src: url("./klavika/Klavika-BoldItalic.eot?#iefix")
+      format("embedded-opentype"),
+    url("./klavika/Klavika-BoldItalic.woff2") format("woff2"),
+    url("./klavika/Klavika-BoldItalic.woff") format("woff"),
+    url("./klavika/Klavika-BoldItalic.svg#Klavika-BoldItalic") format("svg");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
 }

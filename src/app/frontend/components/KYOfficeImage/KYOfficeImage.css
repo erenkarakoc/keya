@@ -12,7 +12,6 @@
   color: var(--ky-red);
   font-family: var(--klavika);
   font-size: 12px;
-  font-weight: 500;
   line-height: 1;
   text-transform: uppercase;
   overflow: hidden;
@@ -21,9 +20,10 @@
 .ky-office-image span {
   margin-top: 2px;
   font-family: var(--klavika);
-  font-weight: 900;
+  font-weight: 700;
 }
 
 .ky-office-image span:first-of-type {
+  font-weight: 400;
   margin-top: 0;
 }

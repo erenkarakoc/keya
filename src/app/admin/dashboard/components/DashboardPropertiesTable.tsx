@@ -81,8 +81,15 @@ const DashboardPropertiesTable: React.FC<Props> = ({
                         </div>
                         <div className="d-flex justify-content-start flex-column">
                           <a
-                            href="#"
+                            href={`/arayuz/ilan-detayi/${property.id}/genel`}
                             className="text-gray-900 fw-bold text-hover-primary text-uppercase mb-1 fs-6"
+                            style={{
+                              maxWidth: 300,
+                              textOverflow: "ellipsis",
+                              overflow: "hidden",
+                              textWrap: "nowrap",
+                            }}
+                            title={property.title}
                           >
                             {property.title}
                           </a>
