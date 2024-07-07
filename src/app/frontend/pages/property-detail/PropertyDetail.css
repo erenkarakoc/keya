@@ -1,4 +1,4 @@
-.ky-page-agent-detail {
+.ky-page-property-detail {
   margin-top: 20px;
 }
 
@@ -41,16 +41,15 @@ a.ky-property-row:hover .ky-property-row-label {
 }
 
 .ky-property-detail-image {
-  aspect-ratio: 1 / 1;
-  width: 100%;
+  margin-left: 100px;
+  width: 100vw;
   overflow: hidden;
 }
 
 .ky-property-detail-image img {
-  height: 100%;
   width: 100%;
   object-fit: cover;
-  border-radius: 5px;
+  border-radius: 10px;
 }
 
 .mainImages {
@@ -59,15 +58,6 @@ a.ky-property-row:hover .ky-property-row-label {
 .mainImages .swiper-button-next::after,
 .mainImages .swiper-button-prev::after {
   font-size: 14px;
-}
-
-.thumbnailSwiper {
-  margin-top: 10px;
-}
-.thumbnailSwiper .swiper-slide {
-  cursor: pointer;
-  border-radius: 10px;
-  overflow: hidden;
 }
 
 .ky-property-name {
