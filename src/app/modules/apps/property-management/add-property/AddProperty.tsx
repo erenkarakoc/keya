@@ -116,6 +116,7 @@ const AddProperty = () => {
         await updateDoc(newPropertyRef, {
           id: newPropertyRef.id,
           officeId,
+          title: values.title.toUpperCase(),
           ownerDetails: {
             ownerFullName: values.ownerDetails?.ownerFullName,
             ownerPhoneNumber: values.ownerDetails?.ownerPhoneNumber,
@@ -132,7 +133,7 @@ const AddProperty = () => {
         actions.setSubmitting(false)
 
         toast.success("İlan başarıyla eklendi!")
-        // window.location.href = "ilan-yonetimi/ilanlar"
+        window.location.href = "ilan-yonetimi/ilanlar"
       } catch (error) {
         toast.error(
           "Bir hata oluştu! Lütfen bilgileri kontrol edin veya daha sonra tekrar deneyin."

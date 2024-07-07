@@ -1,16 +1,23 @@
 import "./KYHeroSearchInput.css"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
+
+import { Property } from "../../../../../modules/apps/property-management/_core/_models"
+import { getPropertiesBySearchTerm } from "../../../../../modules/apps/property-management/_core/_requests"
 
 const KYHeroSearchInput = () => {
   const [isHovered, setIsHovered] = useState(false)
   const [isFocused, setIsFocused] = useState(false)
   const [hasValue, setHasValue] = useState(false)
 
+  const [searchLoading, setSearchLoading] = useState(true)
+  const [searchResult, setSearchResult] = useState<Property[]>([])
+  const [searchTerm, setSearchTerm] = useState("")
+
   const onHeroSearchKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     e.preventDefault()
 
     const inputElement = e.target as HTMLInputElement
-    console.log("onKeyUp: " + inputElement.value)
+    setSearchTerm(inputElement.value)
 
     if (inputElement.value) setHasValue(true)
     else setHasValue(false)
@@ -18,12 +25,21 @@ const KYHeroSearchInput = () => {
 
   const onHeroSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
-    const inputValue = (
-      e.target as HTMLFormElement
-    ).querySelector<HTMLInputElement>("#KYHeroSearchInput")?.value
-    console.log("onSubmit: " + inputValue)
   }
+
+  useEffect(() => {
+    setSearchLoading(true)
+
+    const fetchProperties = async () => {
+      if (searchTerm) {
+        setSearchResult(await getPropertiesBySearchTerm(searchTerm))
+      }
+
+      setSearchLoading(false)
+    }
+
+    fetchProperties()
+  }, [searchTerm])
 
   return (
     <form
@@ -83,6 +99,43 @@ const KYHeroSearchInput = () => {
       <button type="submit" id="KYHeroSearchButton">
         <span>Ara</span>
       </button>
+
+      <ul
+        className={`ky-hero-search-list${
+          isFocused && hasValue ? " active" : ""
+        }`}
+      >
+        {searchLoading ? (
+          <div className="d-flex align-items-center justify-content-center text-gray-600 fw-semibold fs-7 py-10 w-100">
+            <span className="spinner-border spinner-border-lg"></span>
+          </div>
+        ) : searchResult.length ? (
+          searchResult.map((property) => (
+            <li className="ky-hero-search-item" key={property.id}>
+              <a href={`/ilan-detayi/${property.id}/`}>
+                <img
+                  className="ky-hero-search-item-image"
+                  src={property.propertyDetails.photoURLs[0]}
+                />
+                <div className="ky-hero-search-item-content">
+                  <div className="ky-hero-search-item-title">
+                    {property.title}
+                  </div>
+                  {property.propertyDetails.address.label && (
+                    <span className="ky-hero-search-item-desc">
+                      {property.propertyDetails.address.label}
+                    </span>
+                  )}
+                </div>
+              </a>
+            </li>
+          ))
+        ) : (
+          <div className="ky-hero-search-not-found">
+            Aramanızla eşleşen bir ilan bulunamadı.
+          </div>
+        )}
+      </ul>
     </form>
   )
 }

@@ -419,6 +419,7 @@ const PropertyEditModalForm: FC<Props> = ({ property, isPropertyLoading }) => {
       }
 
       values.propertyDetails.photoURLs = uploadedImageUrls
+      values.title = values.title.toUpperCase()
 
       await updateProperty(values)
 

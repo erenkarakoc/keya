@@ -35,42 +35,6 @@ const KYHero = () => {
         ))}
       </Swiper>
 
-      <section className="ky-hero-section">
-        <motion.div
-          initial={{ opacity: 0, y: 25 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-        >
-          <Link to="/franchise" className="ky-hero-heading-top">
-            FRANCHISE OL
-          </Link>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 25 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-        >
-          <KYText className="ky-hero-heading" variant="heading">
-            Hayalindeki <span className="ky-text-highlight">mülkü bulmak</span>{" "}
-            hiç bu kadar kolay olmamıştı!
-          </KYText>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 25 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
-        >
-          <KYHeroSearchInput />
-        </motion.div>
-
-        <KYServices />
-      </section>
-
       <motion.div
         initial={{ opacity: 0, y: 25 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -137,6 +101,42 @@ const KYHero = () => {
           </g>
         </svg>
       </motion.div>
+
+      <section className="ky-hero-section">
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2 }}
+        >
+          <Link to="/franchise" className="ky-hero-heading-top">
+            FRANCHISE OL
+          </Link>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2 }}
+        >
+          <KYText className="ky-hero-heading" variant="heading">
+            Hayalindeki <span className="ky-text-highlight">mülkü bulmak</span>{" "}
+            hiç bu kadar kolay olmamıştı!
+          </KYText>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.4 }}
+        >
+          <KYHeroSearchInput />
+        </motion.div>
+
+        <KYServices />
+      </section>
     </div>
   )
 }

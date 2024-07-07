@@ -125,3 +125,87 @@
 .ky-hero-search-input-has-value #KYHeroSearchButton::before {
   opacity: 1;
 }
+
+/* Search List */
+.ky-hero-search-list {
+  opacity: 0;
+  user-select: none;
+  pointer-events: none;
+  position: absolute;
+
+  top: 80px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 10px;
+  width: 100%;
+  max-height: 400px;
+  border-radius: 15px;
+  background-color: var(--ky-light);
+  box-shadow: 0px 30px 40px -30px rgba(0, 0, 0, 0.5);
+  transition: all 0.15s ease-out;
+  overflow-y: auto;
+  z-index: 90;
+}
+
+.ky-hero-search-list.active {
+  opacity: 1;
+  user-select: all;
+  pointer-events: all;
+  top: 90px;
+}
+
+.ky-hero-search-item a {
+  user-select: none;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 10px;
+  transition: all 0.1s ease-out;
+  overflow: hidden;
+}
+
+.ky-hero-search-item a:hover {
+  background-color: #ddd;
+}
+
+.ky-hero-search-item-content {
+  display: block;
+  width: calc(100% - 80px);
+}
+
+.ky-hero-search-item-image {
+  height: 60px;
+  width: 60px;
+  object-fit: cover;
+  margin-right: 10px;
+  border-radius: 5px;
+}
+
+.ky-hero-search-item-title {
+  display: block;
+  color: #404040;
+  font-size: 17px;
+  font-weight: 700;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.ky-hero-search-item-desc {
+  margin-top: 5px;
+  color: var(--ky-midnight);
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.ky-hero-search-not-found {
+  padding: 20px 0;
+  color: var(--ky-midnight);
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}
