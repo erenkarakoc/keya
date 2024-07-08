@@ -19,11 +19,16 @@ import { OfficePropertiesList } from "./components/OfficePropertiesList"
 import { OfficeCommentsList } from "./components/OfficeCommentsList"
 
 import { KYText } from "../../components/KYText/KYText"
+import { Swiper, SwiperSlide } from "swiper/react"
+import { FreeMode, Navigation, Thumbs } from "swiper/modules"
+import { Swiper as SwiperModel } from "swiper/types"
 
 const OfficeDetail = () => {
   const { id } = useParams()
   const [office, setOffice] = useState<Office>()
   const [officeAddress, setOfficeAddress] = useState("")
+
+  const [thumbsSwiper, setThumbsSwiper] = useState<SwiperModel | null>(null)
 
   const [activeTab, setActiveTab] = useState("about")
 
@@ -71,14 +76,47 @@ const OfficeDetail = () => {
   }, [office])
 
   return (
-    <div className="ky-page-agent-detail">
+    <div className="ky-page-office-detail">
       <div className="ky-page-content">
         <div className="ky-card">
           {office ? (
             <div className="row">
               <div className="col-lg-2">
                 <div className="ky-office-detail-image">
-                  <img src={office.photoURLs[0] ?? ""} alt={office.name} />
+                  <Swiper
+                    style={
+                      {
+                        "--swiper-navigation-color": "#fff",
+                        "--swiper-pagination-color": "#fff",
+                      } as React.CSSProperties
+                    }
+                    spaceBetween={10}
+                    navigation={true}
+                    thumbs={{ swiper: thumbsSwiper }}
+                    modules={[FreeMode, Navigation, Thumbs]}
+                    className="mainImages"
+                  >
+                    {office.photoURLs.map((url, i) => (
+                      <SwiperSlide key={i}>
+                        <img src={url} />
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                  <Swiper
+                    onSwiper={setThumbsSwiper}
+                    spaceBetween={10}
+                    slidesPerView={3}
+                    freeMode={true}
+                    watchSlidesProgress={true}
+                    modules={[FreeMode, Navigation, Thumbs]}
+                    className="thumbnailSwiper"
+                  >
+                    {office.photoURLs.map((url, i) => (
+                      <SwiperSlide key={i}>
+                        <img src={url} />
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
                 </div>
 
                 <div className="ky-office-name">{office.name}</div>

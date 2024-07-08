@@ -1,4 +1,4 @@
-.ky-page-agent-detail {
+.ky-page-office-detail {
   margin-top: 20px;
 }
 
@@ -40,18 +40,36 @@ a.ky-office-row:hover .ky-office-row-label {
   color: var(--ky-light-red);
 }
 
-.ky-office-detail-image {
+/* Swiper Start */
+.ky-page-office-detail .mainImages {
   aspect-ratio: 1 / 1;
   width: 100%;
-  border-radius: 10px;
+  border-radius: 6px;
   overflow: hidden;
 }
-
+.ky-page-office-detail .mainImages .swiper-slide {
+  border-radius: 6px;
+  overflow: hidden;
+}
 .ky-office-detail-image img {
   height: 100%;
   width: 100%;
   object-fit: cover;
 }
+
+.ky-page-office-detail .thumbnailSwiper {
+  margin-top: 10px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.ky-page-office-detail .thumbnailSwiper .swiper-slide {
+  cursor: pointer;
+  aspect-ratio: 1 / 1;
+  height: 100%;
+  border-radius: 6px;
+  overflow: hidden;
+}
+/* Swiper End */
 
 .ky-office-name {
   margin-top: 15px;
