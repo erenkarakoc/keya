@@ -19,7 +19,7 @@ interface Option {
   text: string
 }
 
-const PAGE_SIZE = 8
+const PAGE_SIZE = 12
 
 const Properties = () => {
   const [properties, setProperties] = useState<Property[]>([])

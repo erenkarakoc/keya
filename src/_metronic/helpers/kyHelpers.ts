@@ -265,6 +265,27 @@ const timestampToTurkishDate = (timestamp: string) => {
   return `${day} ${monthName} ${year}`
 }
 
+const getCurrentMonthNameTurkish = (currentDate: Date) => {
+  const months = [
+    "Ocak",
+    "Şubat",
+    "Mart",
+    "Nisan",
+    "Mayıs",
+    "Haziran",
+    "Temmuz",
+    "Ağustos",
+    "Eylül",
+    "Ekim",
+    "Kasım",
+    "Aralık",
+  ]
+
+  const currentMonth = currentDate.getMonth()
+
+  return months[currentMonth]
+}
+
 const timestampToISODate = (timestamp: string) => {
   const date = new Date(parseInt(timestamp))
   const year = date.getFullYear()
@@ -277,6 +298,59 @@ const timestampToISODate = (timestamp: string) => {
 const ISODateToTimestamp = (isoDate: string) => {
   const date = new Date(isoDate)
   return date.getTime()
+}
+
+const convertPropertyForText = (forString: string) => {
+  if (forString === "sale") return "Satılık"
+  else if (forString === "rent") return "Kiralık"
+  else if (forString === "lease-sale") return "Devren Satılık"
+  else if (forString === "lease-rent") return "Devren Kiralık"
+  else return ""
+}
+
+const convertPropertyTypeText = (typeString: string) => {
+  if (typeString === "residence") return "Daire"
+  else if (typeString === "land") return "Arsa"
+  else if (typeString === "office") return "İş Yeri"
+  else if (typeString === "project") return "Proje"
+  else return ""
+}
+
+const convertPropertyHeatingText = (heatingString: string) => {
+  if (heatingString === "stove") return "Soba"
+  else if (heatingString === "naturalGasStove") return "Doğalgaz Sobası"
+  else if (heatingString === "floorRadiator") return "Kat Kaloriferi"
+  else if (heatingString === "central") return "Merkezi"
+  else if (heatingString === "centerShareMeter") return "Merkezi (Pay Ölçer)"
+  else if (heatingString === "combiBoilerNaturalGas") return "Kombi (Doğalgaz)"
+  else if (heatingString === "combiBoilerElectricity") return "Kombi (Elektrik)"
+  else if (heatingString === "floorHeating") return "Yerden Isıtma"
+  else if (heatingString === "airConditioning") return "Klima"
+  else if (heatingString === "fancoilUnit") return "Fancoil Ünitesi"
+  else if (heatingString === "solarEnergy") return "Güneş Enerjisi"
+  else if (heatingString === "electricRadiator") return "Elektrikli Radyatör"
+  else if (heatingString === "geothermal") return "Jeotermal"
+  else if (heatingString === "fireplace") return "Şömine"
+  else if (heatingString === "VRV") return "VRV"
+  else if (heatingString === "heatPump") return "Isı Pompası"
+  else return ""
+}
+
+const convertPropertyParkingLotText = (parkingLotString: string) => {
+  if (parkingLotString === "openNclosedParkingLot")
+    return "Açık & Kapalı Otopark"
+  else if (parkingLotString === "closedParkingLot") return "Kapalı Otopark"
+  else if (parkingLotString === "openParkingLot") return "Açık Otopark"
+  else return "Yok"
+}
+
+const convertPropertyDeedStatusText = (deedStatusText: string) => {
+  if (deedStatusText === "condominium") return "Kat Mülkiyetli"
+  else if (deedStatusText === "floorAltitude") return "Kat İrtifaklı"
+  else if (deedStatusText === "shareTitleDeed") return "Hisseli Tapulu"
+  else if (deedStatusText === "detachedTitleDeed") return "Müstakil Tapulu"
+  else if (deedStatusText === "landTitleDeed") return "Arsa Tapulu"
+  else return ""
 }
 
 export {
@@ -294,6 +368,12 @@ export {
   formatPrice,
   convertToTurkishDate,
   timestampToTurkishDate,
+  getCurrentMonthNameTurkish,
   timestampToISODate,
   ISODateToTimestamp,
+  convertPropertyForText,
+  convertPropertyTypeText,
+  convertPropertyHeatingText,
+  convertPropertyParkingLotText,
+  convertPropertyDeedStatusText,
 }

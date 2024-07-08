@@ -38,6 +38,7 @@ import "yet-another-react-lightbox/plugins/thumbnails.css"
 import CurrencyInput from "react-currency-input-field"
 import ReactQuill from "react-quill"
 import {
+  soldSchema,
   step1Schema,
   step2Schema,
   step3Schema,
@@ -66,6 +67,7 @@ const editPropertySchema = step1Schema
   .concat(step3Schema)
   .concat(step4Schema)
   .concat(step5Schema)
+  .concat(soldSchema)
 
 const PropertyEditModalForm: FC<Props> = ({ property, isPropertyLoading }) => {
   const featuresInner = [
@@ -254,7 +256,7 @@ const PropertyEditModalForm: FC<Props> = ({ property, isPropertyLoading }) => {
   const [propertySalesModalShow, setPropertySalesModalShow] =
     useState<boolean>(false)
 
-  const [currentActive, setCurrentActive] = useState(false)
+  const [currentActive, setCurrentActive] = useState("false")
 
   const [markerPosition, setMarkerPosition] = useState({ lat: 0, lng: 0 })
   const map = useMap()
@@ -556,10 +558,13 @@ const PropertyEditModalForm: FC<Props> = ({ property, isPropertyLoading }) => {
                         className="form-check-input"
                         type="checkbox"
                         name="saleDetails.active"
-                        checked={currentActive}
+                        checked={currentActive === "true" ? true : false}
                         onChange={(e: any) => {
-                          setFieldValue("saleDetails.active", e.target.checked)
-                          setCurrentActive(e.target.checked)
+                          setFieldValue(
+                            "saleDetails.active",
+                            e.target.checked ? "true" : "false"
+                          )
+                          setCurrentActive(e.target.checked ? "true" : "false")
                         }}
                       />
                     </label>

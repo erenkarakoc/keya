@@ -362,7 +362,7 @@
   padding: 0 10px;
   border-radius: 6px;
   background-color: var(--bs-gray-200);
-  color: #fff;
+  color: var(--bs-gray-800);
   font-size: 12px;
   font-weight: 400;
   white-space: nowrap;
@@ -379,4 +379,11 @@
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+}
+
+/* Seperator */
+.ky-seperator {
+  display: block;
+  width: 100%;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }

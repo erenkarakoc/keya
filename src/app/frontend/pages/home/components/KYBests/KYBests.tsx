@@ -1,4 +1,5 @@
 import "./KYBests.css"
+import { useEffect, useState } from "react"
 
 import { KYText } from "../../../../components/KYText/KYText"
 
@@ -6,10 +7,17 @@ import { motion } from "framer-motion"
 
 import { toAbsoluteUrl } from "../../../../../../_metronic/helpers"
 import { KYOfficeImage } from "../../../../components/KYOfficeImage/KYOfficeImage"
+import { getCurrentMonthNameTurkish } from "../../../../../../_metronic/helpers/kyHelpers"
 
 const KYBests = () => {
   const bestsHidden = { opacity: 0, y: 20 }
   const bestsVisible = { opacity: 1, y: 0 }
+
+  const [currentMonth, setCurrentMonth] = useState("")
+
+  useEffect(() => {
+    setCurrentMonth(getCurrentMonthNameTurkish(new Date()))
+  }, [])
 
   return (
     <section className="ky-bests-section">
@@ -23,8 +31,8 @@ const KYBests = () => {
         >
           <a href="/ofis-detayi/B3U0cyMyf0n4sOz4YpSw" className="ky-bests-item">
             <KYText className="ky-bests-title" variant="subtitle">
-              <span className="ky-text-highlight">Mayıs Ayının</span> En
-              Başarılı Ofisi
+              <span className="ky-text-highlight">{currentMonth} Ayının</span>{" "}
+              En Başarılı Ofisi
             </KYText>
             <div className="ky-bests-content">
               <KYOfficeImage height={57} width={57} officeId="Gold" />
@@ -48,8 +56,8 @@ const KYBests = () => {
             className="ky-bests-item"
           >
             <KYText className="ky-bests-title" variant="subtitle">
-              <span className="ky-text-highlight">Mayıs Ayının</span> En
-              Başarılı Danışmanı
+              <span className="ky-text-highlight">{currentMonth} Ayının</span>{" "}
+              En Başarılı Danışmanı
             </KYText>
             <div className="ky-bests-content">
               <div className="ky-bests-image">
@@ -81,7 +89,7 @@ const KYBests = () => {
               <span className="ky-text-highlight">Geçen Haftanın</span> En
               Başarılı Danışmanı
             </KYText>
-            <div className="ky-bests-content">  
+            <div className="ky-bests-content">
               <div className="ky-bests-image">
                 <img
                   src={toAbsoluteUrl("media/avatars/gulnur.jpg")}

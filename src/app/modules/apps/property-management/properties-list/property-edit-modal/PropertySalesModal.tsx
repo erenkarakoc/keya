@@ -6,6 +6,7 @@ import { ErrorMessage, Field } from "formik"
 
 import CurrencyInput from "react-currency-input-field"
 import toast from "react-hot-toast"
+import { newTransaction } from "../../../transactions-management/_core/_requests"
 
 interface PropertySalesModalProp {
   show: boolean
@@ -30,6 +31,9 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
   const [currentOfficeFee, setCurrentOfficeFee] = useState("")
   const [currentSoldPrice, setCurrentSoldPrice] = useState("")
   const [currentSoldDate, setCurrentSoldDate] = useState("")
+  const [currentOtherExpenses, setCurrentOtherExpenses] = useState("")
+
+  const [currentTeamLeaderProfit, setCurrentTeamLeaderProfit] = useState("")
 
   const handleSoldSubmit = () => {
     if (isSold) {
@@ -43,6 +47,28 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
       setFieldValue("saleDetails.soldDate", date.getTime())
 
       handleSubmit(values, true)
+
+      console.log({
+        userIds: values.userIds,
+        officeId: values.officeId,
+        propertyId: values.id,
+        customerName: values.soldStatus.customerName,
+        soldPrice: currentSoldPrice,
+        agentProfit: currentAgentFee,
+        officeProfit: currentOfficeFee,
+        totalProfit: (
+          parseInt(currentAgentFee) +
+          parseInt(currentOfficeFee) +
+          parseInt(currentTeamLeaderProfit)
+        ).toString(),
+        teamLeaderProfit: currentTeamLeaderProfit,
+        percentage: values.soldStatus.percentage,
+        agentGotPaid: values.soldStatus.agentGotPaid,
+        informationForm: values.soldStatus.informationForm,
+        otherExpenses: currentOtherExpenses,
+        createdAt: currentSoldDate,
+      })
+
       setShow(false)
       toast.success("İlan satıldı olarak işaretlendi.")
     } else {
@@ -57,6 +83,8 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
       setFieldValue("saleDetails.soldPrice", "")
       setFieldValue("saleDetails.soldDate", "")
 
+      setFieldValue("soldStatus", {})
+
       handleSubmit(values, true)
       setShow(false)
       toast.success("İlan satılmadı olarak işaretlendi.")
@@ -67,6 +95,8 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
     setCurrentAgentFee(property.saleDetails.agentFee ?? "")
     setCurrentOfficeFee(property.saleDetails.officeFee ?? "")
     setCurrentSoldPrice(property.saleDetails.soldPrice ?? "")
+    setCurrentOtherExpenses(property.soldStatus.otherExpenses ?? "")
+    setCurrentTeamLeaderProfit(property.soldStatus.teamLeaderProfit ?? "")
 
     const date = new Date(parseInt(property.saleDetails.soldDate))
     const year = date.getFullYear()
@@ -105,6 +135,7 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
                 onValueChange={(value) => {
                   const price = value ? value?.toString() : ""
                   setCurrentSoldPrice(price)
+                  setFieldValue("soldStatus.soldPrice", price)
                 }}
                 intlConfig={{ locale: "tr-TR", currency: "TRY" }}
               />
@@ -127,6 +158,7 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
                   onValueChange={(value) => {
                     const price = value ? value?.toString() : ""
                     setCurrentOfficeFee(price)
+                    setFieldValue("soldStatus.officeProfit", price)
                   }}
                   intlConfig={{ locale: "tr-TR", currency: "TRY" }}
                 />
@@ -148,6 +180,7 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
                   onValueChange={(value) => {
                     const price = value ? value?.toString() : ""
                     setCurrentAgentFee(price)
+                    setFieldValue("soldStatus.agentProfit", price)
                   }}
                   intlConfig={{ locale: "tr-TR", currency: "TRY" }}
                 />
@@ -155,6 +188,176 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
                 <div className="text-danger mt-2">
                   <ErrorMessage name="saleDetails.agentFee" />
                 </div>
+              </div>
+            </div>
+
+            <div className="fv-row mb-3">
+              <label className="form-label mb-3">Takım Lideri Payı</label>
+              <CurrencyInput
+                name="soldStatus.teamLeaderProfit"
+                className="form-control form-control-lg form-control-solid"
+                allowDecimals={false}
+                value={currentTeamLeaderProfit}
+                onValueChange={(value) => {
+                  const price = value ? value?.toString() : ""
+                  setCurrentTeamLeaderProfit(price)
+                  setFieldValue("soldStatus.teamLeaderProfit", price)
+                }}
+                intlConfig={{ locale: "tr-TR", currency: "TRY" }}
+              />
+
+              <div className="text-danger mt-2">
+                <ErrorMessage name="soldStatus.teamLeaderProfit" />
+              </div>
+            </div>
+
+            <div className="fv-row mb-3">
+              <label className="form-label mb-3">Alıcı Adı</label>
+              <Field
+                type="text"
+                className="form-control form-control-lg form-control-solid"
+                name="soldStatus.customerName"
+              />
+
+              <div className="text-danger mt-2">
+                <ErrorMessage name="soldStatus.customerName" />
+              </div>
+            </div>
+
+            <div className="fv-row mb-3">
+              <label className="form-label mb-3">Diğer Giderler</label>
+              <CurrencyInput
+                name="soldStatus.otherExpenses"
+                className="form-control form-control-lg form-control-solid"
+                allowDecimals={false}
+                value={currentOtherExpenses}
+                onValueChange={(value) => {
+                  const price = value ? value?.toString() : ""
+                  setCurrentOtherExpenses(price)
+                  setFieldValue("soldStatus.otherExpenses", price)
+                }}
+                intlConfig={{ locale: "tr-TR", currency: "TRY" }}
+              />
+
+              <div className="text-danger mt-2">
+                <ErrorMessage name="soldStatus.otherExpenses" />
+              </div>
+            </div>
+
+            <div className="fv-row mb-3">
+              <label className="form-label required">
+                Danışmana Ödeme Yapıldı
+              </label>
+
+              <div className="d-flex gap-2">
+                <label className="d-flex cursor-pointer">
+                  <span className="form-check form-check-custom form-check-solid">
+                    <Field
+                      className="form-check-input"
+                      type="radio"
+                      name="soldStatus.agentGotPaid"
+                      id="agentGotPaidTrue"
+                      value="true"
+                    />
+                  </span>
+                  <span
+                    className="d-flex align-items-center me-2 ms-2"
+                    style={{ width: "fitContent" }}
+                  >
+                    <span className="d-flex flex-column">
+                      <span className="fw-bolder text-gray-800 fs-5">Evet</span>
+                    </span>
+                  </span>
+                </label>
+
+                <label className="d-flex cursor-pointer">
+                  <span className="form-check form-check-custom form-check-solid">
+                    <Field
+                      className="form-check-input"
+                      type="radio"
+                      name="soldStatus.agentGotPaid"
+                      id="agentGotPaidFalse"
+                      value="false"
+                    />
+                  </span>
+                  <span
+                    className="d-flex align-items-center me-2 ms-2"
+                    style={{ width: "fitContent" }}
+                  >
+                    <span className="d-flex flex-column">
+                      <span className="fw-bolder text-gray-800 fs-5">
+                        Hayır
+                      </span>
+                    </span>
+                  </span>
+                </label>
+              </div>
+
+              <div className="text-danger mt-2">
+                <ErrorMessage name="soldStatus.agentGotPaid" />
+              </div>
+            </div>
+
+            <div className="fv-row mb-3">
+              <label className="form-label required">Bilgi Formu</label>
+
+              <div className="d-flex gap-2">
+                <label className="d-flex cursor-pointer">
+                  <span className="form-check form-check-custom form-check-solid">
+                    <Field
+                      className="form-check-input"
+                      type="radio"
+                      name="soldStatus.informationForm"
+                      id="informationFormTrue"
+                      value="true"
+                    />
+                  </span>
+                  <span
+                    className="d-flex align-items-center me-2 ms-2"
+                    style={{ width: "fitContent" }}
+                  >
+                    <span className="d-flex flex-column">
+                      <span className="fw-bolder text-gray-800 fs-5">Var</span>
+                    </span>
+                  </span>
+                </label>
+
+                <label className="d-flex cursor-pointer">
+                  <span className="form-check form-check-custom form-check-solid">
+                    <Field
+                      className="form-check-input"
+                      type="radio"
+                      name="soldStatus.informationForm"
+                      id="informationFormFalse"
+                      value="false"
+                    />
+                  </span>
+                  <span
+                    className="d-flex align-items-center me-2 ms-2"
+                    style={{ width: "fitContent" }}
+                  >
+                    <span className="d-flex flex-column">
+                      <span className="fw-bolder text-gray-800 fs-5">Yok</span>
+                    </span>
+                  </span>
+                </label>
+              </div>
+
+              <div className="text-danger mt-2">
+                <ErrorMessage name="soldStatus.informationForm" />
+              </div>
+            </div>
+
+            <div className="fv-row mb-3">
+              <label className="form-label mb-3 required">Yüzdelik Dilim</label>
+              <Field
+                type="text"
+                className="form-control form-control-lg form-control-solid"
+                name="soldStatus.percentage"
+              />
+
+              <div className="text-danger mt-2">
+                <ErrorMessage name="soldStatus.percentage" />
               </div>
             </div>
 

@@ -31,11 +31,11 @@ export function Properties() {
       let filtered = properties
       if (filterStr === "active") {
         filtered = properties.filter(
-          (property) => property.saleDetails?.active === true
+          (property) => property.saleDetails?.active === "true"
         )
       } else if (filterStr === "deactive") {
         filtered = properties.filter(
-          (property) => property.saleDetails?.active === false
+          (property) => property.saleDetails?.active === "false"
         )
       }
       setFilter(filterStr)

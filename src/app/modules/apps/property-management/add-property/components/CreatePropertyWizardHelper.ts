@@ -17,7 +17,7 @@ export type ICreateAccount = {
     type?: "residence" | "land" | "office" | "project" | ""
     squareGross?: number
     squareNet?: number
-    withAccesories?: boolean
+    withAccesories?: string
     room?:
       | "1+1"
       | "1.5+1"
@@ -65,8 +65,8 @@ export type ICreateAccount = {
       | "10++"
       | ""
     bathroom?: number
-    balcony?: boolean
-    elevator?: boolean
+    balcony?: string
+    elevator?: string
     parkingLot?:
       | "openNclosedParkingLot"
       | "closedParkingLot"
@@ -97,13 +97,13 @@ export type ICreateAccount = {
       | "VRV"
       | "heatPump"
       | ""
-    inComplex?: boolean
+    inComplex?: string
     buildingAge?: string
     buildingFloors?: string
     buildingAtFloor?: string
     dues?: string
     facade?: string[]
-    exchange?: boolean
+    exchange?: string
 
     featuresInner?: string[]
     featuresOuter?: string[]
@@ -135,14 +135,31 @@ export type ICreateAccount = {
   saleDetails?: {
     agentFee?: string
     officeFee?: string
-    sold?: boolean
+    sold?: string
     soldPrice?: string
     soldDate?: string
-    active: boolean
+    active: string
   }
 
   createdAt: string
   updatedAt: string
+
+  soldStatus: {
+    userIds: string[]
+    officeId: string
+    propertyId: string
+    customerName: string
+    soldPrice: string
+    agentProfit: string
+    officeProfit: string
+    totalProfit: string
+    teamLeaderProfit: string
+    percentage: string
+    agentGotPaid: string
+    informationForm: string
+    otherExpenses: string
+    createdAt: string
+  }
 }
 
 const step0Schema = Yup.object({
@@ -153,10 +170,10 @@ const step1Schema = Yup.object({
   saleDetails: Yup.object({
     agentFee: Yup.string(),
     officeFee: Yup.string(),
-    sold: Yup.boolean(),
+    sold: Yup.string(),
     soldPrice: Yup.string(),
     soldDate: Yup.string(),
-    active: Yup.boolean(),
+    active: Yup.string(),
   }),
   title: Yup.string().required("İlan Başlığı alanı zorunludur."),
   propertyDetails: Yup.object({
@@ -169,7 +186,7 @@ const step1Schema = Yup.object({
     price: Yup.string().required("Fiyat alanı zorunludur."),
     type: Yup.string().required("Gayrimenkul Türü alanı zorunludur."),
     for: Yup.string().required("İlan Türü alanı zorunludur."),
-    exchange: Yup.boolean().required("Takasa Açık alanı zorunludur."),
+    exchange: Yup.string().required("Takasa Açık alanı zorunludur."),
   }),
 })
 
@@ -181,14 +198,14 @@ const step2Schema = Yup.object({
     room: Yup.string(),
     squareGross: Yup.number(),
     squareNet: Yup.number(),
-    withAccesories: Yup.boolean(),
+    withAccesories: Yup.string(),
     bathroom: Yup.number(),
-    balcony: Yup.boolean(),
-    elevator: Yup.boolean(),
+    balcony: Yup.string(),
+    elevator: Yup.string(),
     parkingLot: Yup.string(),
     deedStatus: Yup.string(),
     heating: Yup.string(),
-    inComplex: Yup.boolean(),
+    inComplex: Yup.string(),
     buildingAge: Yup.string(),
     buildingFloors: Yup.string(),
     buildingAtFloor: Yup.string(),
@@ -246,6 +263,25 @@ const step5Schema = Yup.object({
   personalDescription: Yup.string(),
 })
 
+const soldSchema = Yup.object({
+  soldStatus: Yup.object({
+    userIds: Yup.array(),
+    officeId: Yup.string(),
+    propertyId: Yup.string(),
+    customerName: Yup.string(),
+    transacrionPrice: Yup.string(),
+    agentProfit: Yup.string(),
+    officeProfit: Yup.string(),
+    totalProfit: Yup.string(),
+    teamLeaderProfit: Yup.string(),
+    percentage: Yup.string(),
+    agentGotPaid: Yup.string(),
+    informationForm: Yup.string(),
+    otherExpenses: Yup.string(),
+    createdAt: Yup.string(),
+  }),
+})
+
 const inits: ICreateAccount = {
   id: "",
   title: "",
@@ -261,11 +297,11 @@ const inits: ICreateAccount = {
     type: "",
     squareGross: undefined,
     squareNet: undefined,
-    withAccesories: false,
+    withAccesories: "false",
     room: "",
     bathroom: undefined,
-    balcony: false,
-    elevator: false,
+    balcony: "false",
+    elevator: "false",
     parkingLot: "",
     deedStatus: "",
     heating: "",
@@ -307,14 +343,31 @@ const inits: ICreateAccount = {
   saleDetails: {
     agentFee: "",
     officeFee: "",
-    sold: false,
+    sold: "false",
     soldPrice: "",
     soldDate: "",
-    active: true,
+    active: "true",
   },
 
   createdAt: "",
   updatedAt: "",
+
+  soldStatus: {
+    userIds: [],
+    officeId: "",
+    propertyId: "",
+    customerName: "",
+    soldPrice: "",
+    agentProfit: "",
+    officeProfit: "",
+    totalProfit: "",
+    teamLeaderProfit: "",
+    percentage: "",
+    agentGotPaid: "",
+    informationForm: "",
+    otherExpenses: "",
+    createdAt: "",
+  },
 }
 
 export {
@@ -324,5 +377,6 @@ export {
   step3Schema,
   step4Schema,
   step5Schema,
+  soldSchema,
   inits,
 }

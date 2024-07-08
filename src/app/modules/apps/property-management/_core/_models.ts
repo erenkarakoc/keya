@@ -14,10 +14,10 @@ export type Property = {
   propertyDetails: {
     photoURLs: string[]
     description?: string
-    type?: "flat" | "land" | "office" | "project" | "other"
+    type?: "residence" | "land" | "office" | "project" | "other"
     squareGross?: number
     squareNet?: number
-    withAccesories?: boolean
+    withAccesories?: string
     room?:
       | "1+1"
       | "1.5+1"
@@ -65,8 +65,8 @@ export type Property = {
       | "10++"
       | ""
     bathroom?: number
-    balcony?: boolean
-    elevator?: boolean
+    balcony?: string
+    elevator?: string
     parkingLot?:
       | "openNclosedParkingLot"
       | "closedParkingLot"
@@ -97,13 +97,13 @@ export type Property = {
       | "VRV"
       | "heatPump"
       | ""
-    inComplex?: boolean
+    inComplex?: string
     buildingAge?: string
     buildingFloors?: string
     buildingAtFloor?: string
     dues?: string
     facade?: string[]
-    exchange?: boolean
+    exchange?: string
 
     featuresInner?: string[]
     featuresOuter?: string[]
@@ -135,10 +135,10 @@ export type Property = {
   saleDetails?: {
     agentFee?: string
     officeFee?: string
-    sold?: boolean
+    sold?: string
     soldPrice?: string
     soldDate?: string
-    active: boolean
+    active: string
   }
 
   createdAt: string

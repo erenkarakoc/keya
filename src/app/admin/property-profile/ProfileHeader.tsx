@@ -236,6 +236,21 @@ const ProfileHeader: React.FC<Props> = ({ property }) => {
               </div>
 
               <div className="d-flex flex-wrap mb-2">
+                <a
+                  href={`/ilan-detayi/${property.id}/`}
+                  target="_blank"
+                  className="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3"
+                >
+                  <span className="d-flex align-items-center justify-content-between fs-7 fw-bolder">
+                    İlan Sayfası
+                    <KTIcon
+                      iconName="exit-right-corner"
+                      iconType="outline"
+                      className="text-primary ms-3"
+                    />
+                  </span>
+                </a>
+
                 {property.sahibindenNo && (
                   <a
                     href={`https://shbd.io/${property.sahibindenNo}`}

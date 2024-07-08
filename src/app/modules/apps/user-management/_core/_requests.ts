@@ -22,7 +22,6 @@ import {
   // deleteDoc,
 } from "firebase/firestore"
 import { getFunctions, httpsCallable } from "firebase/functions"
-import { UserModel } from "../../../auth"
 
 initializeApp(firebaseConfig)
 const db = getFirestore()
@@ -179,20 +178,20 @@ const getUserById = async (id: ID): Promise<User | undefined> => {
   }
 }
 
-const getUsersById = async (ids: string[]): Promise<UserModel[]> => {
+const getUsersById = async (ids: string[]): Promise<User[]> => {
   try {
     if (!ids || ids.length === 0) {
       return []
     }
 
-    const users: UserModel[] = []
+    const users: User[] = []
 
     for (const id of ids) {
       const userDocRef = doc(db, "users", id)
       const userDocSnapshot = await getDoc(userDocRef)
 
       if (userDocSnapshot.exists()) {
-        const userData = userDocSnapshot.data() as UserModel
+        const userData = userDocSnapshot.data() as User
         users.push(userData)
       }
     }
