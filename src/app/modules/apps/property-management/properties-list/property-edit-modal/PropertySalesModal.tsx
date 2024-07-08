@@ -6,7 +6,11 @@ import { ErrorMessage, Field } from "formik"
 
 import CurrencyInput from "react-currency-input-field"
 import toast from "react-hot-toast"
-import { newTransaction } from "../../../transactions-management/_core/_requests"
+import {
+  deleteTransaction,
+  getTransactionsByPropertyId,
+  newTransaction,
+} from "../../../transactions-management/_core/_requests"
 
 interface PropertySalesModalProp {
   show: boolean
@@ -25,85 +29,112 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
   setFieldValue,
   handleSubmit,
 }) => {
-  const [isSold, setIsSold] = useState(false)
-
   const [currentAgentFee, setCurrentAgentFee] = useState("")
   const [currentOfficeFee, setCurrentOfficeFee] = useState("")
   const [currentSoldPrice, setCurrentSoldPrice] = useState("")
   const [currentSoldDate, setCurrentSoldDate] = useState("")
+  const [currentTeamLeaderProfit, setCurrentTeamLeaderProfit] = useState("")
   const [currentOtherExpenses, setCurrentOtherExpenses] = useState("")
 
-  const [currentTeamLeaderProfit, setCurrentTeamLeaderProfit] = useState("")
+  const handleSoldSubmit = async () => {
+    setFieldValue("saleDetails.active", false)
+    setFieldValue("saleDetails.agentFee", currentAgentFee)
+    setFieldValue("saleDetails.officeFee", currentOfficeFee)
+    setFieldValue("saleDetails.soldPrice", currentSoldPrice)
 
-  const handleSoldSubmit = () => {
-    if (isSold) {
-      setFieldValue("saleDetails.active", false)
-      setFieldValue("saleDetails.agentFee", currentAgentFee)
-      setFieldValue("saleDetails.officeFee", currentOfficeFee)
-      setFieldValue("saleDetails.soldPrice", currentSoldPrice)
+    const date = new Date(currentSoldDate)
+    setFieldValue("saleDetails.soldDate", date.getTime())
 
-      const date = new Date(currentSoldDate)
+    setFieldValue("soldStatus.soldPrice", currentSoldPrice)
+    setFieldValue("soldStatus.officeProfit", currentOfficeFee)
+    setFieldValue("soldStatus.agentProfit", currentAgentFee)
+    setFieldValue("soldStatus.teamLeaderProfit", currentTeamLeaderProfit)
+    setFieldValue("soldStatus.otherExpenses", currentOtherExpenses)
 
-      setFieldValue("saleDetails.soldDate", date.getTime())
+    const calculatedTotalProfit =
+      parseInt(currentAgentFee) +
+      parseInt(currentOfficeFee) +
+      parseInt(currentTeamLeaderProfit)
 
-      handleSubmit(values, true)
-
-      console.log({
-        userIds: values.userIds,
-        officeId: values.officeId,
-        propertyId: values.id,
-        customerName: values.soldStatus.customerName,
-        soldPrice: currentSoldPrice,
-        agentProfit: currentAgentFee,
-        officeProfit: currentOfficeFee,
-        totalProfit: (
-          parseInt(currentAgentFee) +
-          parseInt(currentOfficeFee) +
-          parseInt(currentTeamLeaderProfit)
-        ).toString(),
-        teamLeaderProfit: currentTeamLeaderProfit,
-        percentage: values.soldStatus.percentage,
-        agentGotPaid: values.soldStatus.agentGotPaid,
-        informationForm: values.soldStatus.informationForm,
-        otherExpenses: currentOtherExpenses,
-        createdAt: currentSoldDate,
-      })
-
-      setShow(false)
-      toast.success("İlan satıldı olarak işaretlendi.")
-    } else {
-      setCurrentAgentFee("")
-      setCurrentOfficeFee("")
-      setCurrentSoldPrice("")
-      setCurrentSoldDate("")
-
-      setFieldValue("saleDetails.active", true)
-      setFieldValue("saleDetails.agentFee", "")
-      setFieldValue("saleDetails.officeFee", "")
-      setFieldValue("saleDetails.soldPrice", "")
-      setFieldValue("saleDetails.soldDate", "")
-
-      setFieldValue("soldStatus", {})
-
-      handleSubmit(values, true)
-      setShow(false)
-      toast.success("İlan satılmadı olarak işaretlendi.")
+    const transaction = {
+      userIds: values.userIds,
+      officeId: values.officeId,
+      propertyId: values.id,
+      customerName: values.soldStatus.customerName,
+      soldPrice: values.saleDetails.soldPrice,
+      agentProfit: values.saleDetails.agentFee,
+      officeProfit: values.saleDetails.officeFee,
+      totalProfit: calculatedTotalProfit.toString(),
+      teamLeaderProfit: values.soldStatus.teamLeaderProfit,
+      percentage: values.soldStatus.percentage,
+      agentGotPaid: values.soldStatus.agentGotPaid,
+      informationForm: values.soldStatus.informationForm,
+      otherExpenses: values.soldStatus.otherExpenses,
+      createdAt: new Date().getTime().toString(),
     }
+
+    values.soldStatus = transaction
+
+    await newTransaction(transaction)
+    await handleSubmit(values, true)
+
+    setShow(false)
+    toast.success("İlan satıldı olarak işaretlendi.")
+  }
+
+  const handleNotSoldSubmit = async () => {
+    setCurrentAgentFee("")
+    setCurrentOfficeFee("")
+    setCurrentSoldPrice("")
+    setCurrentSoldDate("")
+    setCurrentOtherExpenses("")
+    setCurrentTeamLeaderProfit("")
+
+    setFieldValue("saleDetails.active", true)
+    setFieldValue("saleDetails.agentFee", "")
+    setFieldValue("saleDetails.officeFee", "")
+    setFieldValue("saleDetails.soldPrice", "")
+    setFieldValue("saleDetails.soldDate", "")
+
+    setFieldValue("soldStatus.customerName", "")
+    setFieldValue("soldStatus.percentage", "")
+
+    const transactionToRemove = await getTransactionsByPropertyId(property.id)
+    transactionToRemove.forEach(async (transaction) => {
+      if (transaction.id) await deleteTransaction(transaction.id)
+    })
+
+    console.log(transactionToRemove)
+
+    handleSubmit(values, true)
+    setShow(false)
+    toast.success("İlan satılmadı olarak işaretlendi.")
   }
 
   useEffect(() => {
-    setCurrentAgentFee(property.saleDetails.agentFee ?? "")
-    setCurrentOfficeFee(property.saleDetails.officeFee ?? "")
-    setCurrentSoldPrice(property.saleDetails.soldPrice ?? "")
-    setCurrentOtherExpenses(property.soldStatus.otherExpenses ?? "")
-    setCurrentTeamLeaderProfit(property.soldStatus.teamLeaderProfit ?? "")
+    if (property.saleDetails?.agentFee) {
+      setCurrentAgentFee(property.saleDetails.agentFee)
+    }
+    if (property.saleDetails?.officeFee) {
+      setCurrentOfficeFee(property.saleDetails.officeFee)
+    }
+    if (property.saleDetails?.soldPrice) {
+      setCurrentSoldPrice(property.saleDetails.soldPrice)
+    }
+    if (property.soldStatus?.otherExpenses) {
+      setCurrentOtherExpenses(property.soldStatus.otherExpenses)
+    }
+    if (property.soldStatus?.teamLeaderProfit) {
+      setCurrentTeamLeaderProfit(property.soldStatus.teamLeaderProfit)
+    }
 
-    const date = new Date(parseInt(property.saleDetails.soldDate))
-    const year = date.getFullYear()
-    const month = String(date.getMonth() + 1).padStart(2, "0")
-    const day = String(date.getDate()).padStart(2, "0")
-
-    setCurrentSoldDate(`${year}-${month}-${day}` ?? "")
+    if (property.saleDetails?.soldDate) {
+      const date = new Date(parseInt(property.saleDetails.soldDate))
+      const year = date.getFullYear()
+      const month = String(date.getMonth() + 1).padStart(2, "0")
+      const day = String(date.getDate()).padStart(2, "0")
+      setCurrentSoldDate(`${year}-${month}-${day}` ?? "")
+    }
   }, [property])
 
   return (
@@ -135,7 +166,6 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
                 onValueChange={(value) => {
                   const price = value ? value?.toString() : ""
                   setCurrentSoldPrice(price)
-                  setFieldValue("soldStatus.soldPrice", price)
                 }}
                 intlConfig={{ locale: "tr-TR", currency: "TRY" }}
               />
@@ -158,7 +188,6 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
                   onValueChange={(value) => {
                     const price = value ? value?.toString() : ""
                     setCurrentOfficeFee(price)
-                    setFieldValue("soldStatus.officeProfit", price)
                   }}
                   intlConfig={{ locale: "tr-TR", currency: "TRY" }}
                 />
@@ -180,7 +209,6 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
                   onValueChange={(value) => {
                     const price = value ? value?.toString() : ""
                     setCurrentAgentFee(price)
-                    setFieldValue("soldStatus.agentProfit", price)
                   }}
                   intlConfig={{ locale: "tr-TR", currency: "TRY" }}
                 />
@@ -201,13 +229,31 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
                 onValueChange={(value) => {
                   const price = value ? value?.toString() : ""
                   setCurrentTeamLeaderProfit(price)
-                  setFieldValue("soldStatus.teamLeaderProfit", price)
                 }}
                 intlConfig={{ locale: "tr-TR", currency: "TRY" }}
               />
 
               <div className="text-danger mt-2">
                 <ErrorMessage name="soldStatus.teamLeaderProfit" />
+              </div>
+            </div>
+
+            <div className="fv-row mb-3">
+              <label className="form-label mb-3">Diğer Giderler</label>
+              <CurrencyInput
+                name="soldStatus.otherExpenses"
+                className="form-control form-control-lg form-control-solid"
+                allowDecimals={false}
+                value={currentOtherExpenses}
+                onValueChange={(value) => {
+                  const price = value ? value?.toString() : ""
+                  setCurrentOtherExpenses(price)
+                }}
+                intlConfig={{ locale: "tr-TR", currency: "TRY" }}
+              />
+
+              <div className="text-danger mt-2">
+                <ErrorMessage name="soldStatus.otherExpenses" />
               </div>
             </div>
 
@@ -225,29 +271,7 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
             </div>
 
             <div className="fv-row mb-3">
-              <label className="form-label mb-3">Diğer Giderler</label>
-              <CurrencyInput
-                name="soldStatus.otherExpenses"
-                className="form-control form-control-lg form-control-solid"
-                allowDecimals={false}
-                value={currentOtherExpenses}
-                onValueChange={(value) => {
-                  const price = value ? value?.toString() : ""
-                  setCurrentOtherExpenses(price)
-                  setFieldValue("soldStatus.otherExpenses", price)
-                }}
-                intlConfig={{ locale: "tr-TR", currency: "TRY" }}
-              />
-
-              <div className="text-danger mt-2">
-                <ErrorMessage name="soldStatus.otherExpenses" />
-              </div>
-            </div>
-
-            <div className="fv-row mb-3">
-              <label className="form-label required">
-                Danışmana Ödeme Yapıldı
-              </label>
+              <label className="form-label">Danışmana Ödeme Yapıldı</label>
 
               <div className="d-flex gap-2">
                 <label className="d-flex cursor-pointer">
@@ -299,7 +323,7 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
             </div>
 
             <div className="fv-row mb-3">
-              <label className="form-label required">Bilgi Formu</label>
+              <label className="form-label">Bilgi Formu</label>
 
               <div className="d-flex gap-2">
                 <label className="d-flex cursor-pointer">
@@ -349,7 +373,7 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
             </div>
 
             <div className="fv-row mb-3">
-              <label className="form-label mb-3 required">Yüzdelik Dilim</label>
+              <label className="form-label mb-3">Yüzdelik Dilim</label>
               <Field
                 type="text"
                 className="form-control form-control-lg form-control-solid"
@@ -382,10 +406,7 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
               <button
                 type="button"
                 className="btn btn-danger me-3"
-                onClick={() => {
-                  setIsSold(false)
-                  setTimeout(() => handleSoldSubmit(), 1000)
-                }}
+                onClick={handleNotSoldSubmit}
               >
                 <span className="indicator-label">Satılmadı</span>
               </button>
@@ -393,19 +414,15 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
               <button
                 type="button"
                 className="btn btn-success"
-                onClick={() => {
-                  if (
-                    currentAgentFee &&
-                    currentOfficeFee &&
-                    currentSoldPrice &&
-                    currentSoldDate
-                  ) {
-                    setIsSold(true)
-                    setTimeout(() => handleSoldSubmit(), 1000)
-                  } else {
-                    toast.error("Lütfen tüm alanları doldurun.")
-                  }
-                }}
+                disabled={
+                  currentAgentFee &&
+                  currentOfficeFee &&
+                  currentSoldPrice &&
+                  currentSoldDate
+                    ? false
+                    : true
+                }
+                onClick={handleSoldSubmit}
               >
                 <span className="indicator-label">Satıldı</span>
               </button>

@@ -15,6 +15,7 @@ interface KYButtonProps {
   className?: string
   type?: "button" | "submit" | "reset" | undefined
   props?: ReactPropTypes
+  disabled?: boolean
 }
 
 const KYButton: React.FC<KYButtonProps> = ({
@@ -25,6 +26,7 @@ const KYButton: React.FC<KYButtonProps> = ({
   width,
   className,
   type,
+  disabled,
   ...props
 }) => {
   const { pathname } = useLocation()
@@ -33,7 +35,7 @@ const KYButton: React.FC<KYButtonProps> = ({
     <div
       className={`ky-button${secondary ? " ky-button-secondary" : ""}${
         className ? " " + className : ""
-      }`}
+      }${disabled ? " disabled" : ""}`}
       style={{ width: width ? width : "fit-content" }}
       {...props}
     >
@@ -47,7 +49,7 @@ const KYButton: React.FC<KYButtonProps> = ({
           {text}
         </Link>
       ) : (
-        <button onClick={action} type={type}>
+        <button onClick={action} type={type} disabled={disabled}>
           {text}
         </button>
       )}

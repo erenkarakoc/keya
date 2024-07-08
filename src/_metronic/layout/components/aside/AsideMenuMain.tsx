@@ -115,7 +115,7 @@ export function AsideMenuMain() {
             icon="black-right"
           >
             <AsideMenuItem
-              to=""
+              to="franchise-yonetimi"
               icon="black-right"
               title="Başvurular"
               fontIcon="bi-layers"

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import "./KYCheckbox.css"
 import { ReactPropTypes } from "react"
 
@@ -5,7 +6,7 @@ interface KYCheckboxProps {
   id: string
   name?: string
   value?: string
-  setValue?: () => void
+  setValue?: (e: any) => void
   label: React.ReactNode
   required?: boolean
   success?: boolean

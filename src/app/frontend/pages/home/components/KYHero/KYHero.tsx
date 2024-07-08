@@ -28,8 +28,8 @@ const KYHero = () => {
         autoplay={{ delay: 5000 }}
         loop={true}
       >
-        {bgUrls.map((url) => (
-          <SwiperSlide>
+        {bgUrls.map((url, i) => (
+          <SwiperSlide key={i}>
             <img className="ky-hero-section-bg" src={url} draggable="false" />
           </SwiperSlide>
         ))}

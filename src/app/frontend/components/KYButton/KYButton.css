@@ -79,3 +79,8 @@
 .ky-button-secondary button:focus {
   border-color: var(--ky-light-red);
 }
+
+.ky-button.disabled {
+  pointer-events: none;
+  opacity: 0.8;
+}

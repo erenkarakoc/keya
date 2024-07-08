@@ -57,7 +57,10 @@ const KYInput: React.FC<KYInputProps> = ({
         type={type}
         placeholder={`${placeholder}${required ? " *" : ""}`}
         value={phoneInput ? currentPhoneNumber : value}
-        onChange={phoneInput ? handlePhoneNumberChange : onChange}
+        onChange={(e) => {
+          if (onChange) onChange(e)
+          if (phoneInput) handlePhoneNumberChange(e)
+        }}
         required={required}
         {...props}
       />

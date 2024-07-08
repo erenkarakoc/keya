@@ -22,9 +22,17 @@ const db = getFirestore()
 
 const newTransaction = async (transaction: Transaction) => {
   try {
-    const docRef = await addDoc(collection(db, "transactions"), transaction)
+    const transactionDocRef = await addDoc(
+      collection(db, "transactions"),
+      transaction
+    )
 
-    return { id: docRef.id, ...transaction }
+    await updateDoc(transactionDocRef, {
+      id: transactionDocRef.id,
+      ...transaction,
+    })
+
+    return { id: transactionDocRef.id, ...transaction }
   } catch (error) {
     console.error("Error adding transaction: ", error)
     throw error
