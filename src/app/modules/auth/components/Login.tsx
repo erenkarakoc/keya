@@ -84,7 +84,7 @@ export function Login() {
           E-posta
         </label>
         <input
-          placeholder="Email"
+          placeholder="ornek@keya.com.tr"
           {...formik.getFieldProps("email")}
           className={clsx(
             "form-control bg-transparent",
@@ -114,6 +114,7 @@ export function Login() {
           type="password"
           autoComplete="off"
           {...formik.getFieldProps("password")}
+          placeholder=""
           className={clsx(
             "form-control bg-transparent",
             {
