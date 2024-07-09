@@ -640,6 +640,23 @@
 }
 
 @media (max-width: 576px) {
+  .ky-page-content {
+    padding: 0 30px;
+  }
+
+  .ky-page-header .ky-title,
+  .ky-page-header .ky-subtitle {
+    padding: 0 20px !important;
+  }
+
+  .ky-layout .ky-title {
+    font-size: 24px !important;
+  }
+
+  .ky-layout .ky-subtitle {
+    font-size: 16px !important;
+  }
+
   .ky-paragraph {
     font-size: 14px !important;
   }

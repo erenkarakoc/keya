@@ -139,7 +139,7 @@ const Agents = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ delay: 0.2 + idx * 0.1 }}
-        className="col-lg-3"
+        className="col-lg-3 mt-6 mt-lg-0"
         key={user.id}
       >
         <KYAgentCard user={user} />
