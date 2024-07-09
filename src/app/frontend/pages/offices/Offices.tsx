@@ -1,26 +1,19 @@
 import "./Offices.css"
 import React, { useState, useEffect } from "react"
+
 import { KYPageHeader } from "../../components/KYPageHeader/KYPageHeader"
 import { KYInput } from "../../components/KYForm/KTInput/KYInput"
 import { KYSelect } from "../../components/KYForm/KYSelect/KYSelect"
-import {
-  getCountries,
-  getStatesByCountry,
-  getCitiesByState,
-} from "../../../../_metronic/helpers/kyHelpers"
 import { KYButton } from "../../components/KYButton/KYButton"
 import { KYOfficeCard } from "./components/KYOfficeCard/KYOfficeCard"
-import { Office } from "../../../modules/apps/office-management/_core/_models"
-import { motion } from "framer-motion"
 import { KYPagination } from "../../components/KYPagination/KYPagination"
+
+import { Office } from "../../../modules/apps/office-management/_core/_models"
 import { getAllOffices } from "../../../modules/apps/office-management/_core/_requests"
 
-import {
-  Country,
-  State,
-  City,
-} from "../../../../_metronic/helpers/address-helper/_models"
+import { motion } from "framer-motion"
 
+import { City, Country, State } from "country-state-city"
 interface Option {
   value: string
   text: string
@@ -40,83 +33,50 @@ const Offices = () => {
   const [citiesDisabled, setCitiesDisabled] = useState(true)
 
   const [selectedCountry, setSelectedCountry] = useState("TR")
-  const [selectedState, setSelectedState] = useState("")
 
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(0)
 
-  const fetchCountries = async () => {
-    try {
-      const countriesArr: Option[] = []
-      const restCountries: Country[] | undefined = await getCountries("TR")
+  const fetchCountries = () => {
+    setCountries([])
+    const countriesArr: { value: string; text: string }[] = []
+    const restCountries = Country.getAllCountries()
 
-      if (restCountries) {
-        restCountries.forEach((country: Country) => {
-          countriesArr.push({ value: country.id, text: country.name })
-        })
-
-        setCountries(countriesArr)
-      }
-    } catch (error) {
-      console.error("Error fetching countries:", error)
+    if (restCountries) {
+      restCountries.forEach((country) => {
+        countriesArr.push({ value: country.isoCode, text: country.name })
+      })
+      setCountries(countriesArr)
+      setStates([])
     }
   }
 
-  const fetchStates = async (countryCode: string) => {
-    try {
-      setStatesDisabled(true)
-      setCitiesDisabled(true)
-      setStates([])
-      setCities([])
+  const fetchStates = (countryCode: string) => {
+    setStatesDisabled(true)
 
-      if (countryCode) {
-        const statesArr: Option[] = []
-        const restStates: State[] | undefined = await getStatesByCountry(
-          countryCode
-        )
+    const statesArr: { value: string; text: string }[] = []
+    const restStates = State.getStatesOfCountry(countryCode)
 
-        if (restStates) {
-          restStates.forEach((state: State) => {
-            statesArr.push({ value: state.id.toString(), text: state.name })
-          })
-
-          setStates(statesArr)
-          setStatesDisabled(false)
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching states:", error)
-      setStates([])
-
-      setCitiesDisabled(true)
+    if (restStates) {
+      restStates.forEach((state) => {
+        statesArr.push({ value: state.isoCode, text: state.name })
+      })
+      setStates(statesArr)
+      setStatesDisabled(false)
       setCities([])
     }
   }
 
-  const fetchCities = async (stateName: string, countryCode: string) => {
-    try {
-      setCitiesDisabled(true)
-      setCities([])
+  const fetchCities = async (countryCode: string, stateCode: string) => {
+    const citiesArr: { value: string; text: string }[] = []
+    const restCities = City.getCitiesOfState(countryCode, stateCode)
 
-      if (stateName && countryCode) {
-        const citiesArr: Option[] = []
-        const restCities: City[] | undefined = await getCitiesByState(
-          stateName,
-          countryCode
-        )
-
-        if (restCities) {
-          restCities.forEach((city: City) => {
-            citiesArr.push({ value: city.id, text: city.name })
-          })
-
-          setCities(citiesArr)
-          setCitiesDisabled(false)
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching cities:", error)
-      setCities([])
+    if (restCities) {
+      restCities.forEach((city) => {
+        citiesArr.push({ value: city.name, text: city.name })
+      })
+      setCities(citiesArr)
+      setCitiesDisabled(false)
     }
   }
 
@@ -144,7 +104,7 @@ const Offices = () => {
   useEffect(() => {
     fetchCountries()
     fetchStates("TR")
-    // fetchOffices()
+    fetchOffices()
   }, [])
 
   const renderOffices = () => {
@@ -173,7 +133,7 @@ const Offices = () => {
 
       <div className="ky-page-content">
         <div className="row">
-          {countries && countries.length ? (
+          {countries && countries?.length ? (
             <motion.div
               initial={{ opacity: 0, y: 25 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -201,13 +161,12 @@ const Offices = () => {
                       }}
                       placeholder="Ülke"
                     />
-                    {!statesDisabled ? (
+                    {!statesDisabled && states?.length ? (
                       <KYSelect
                         id="sell_rent_state"
                         options={states}
                         onChange={(e) => {
                           fetchCities(selectedCountry, e.target.value)
-                          setSelectedState(e.target.value)
                         }}
                         placeholder="Şehir"
                         disabled={statesDisabled}

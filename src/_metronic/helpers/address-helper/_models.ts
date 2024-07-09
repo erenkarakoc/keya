@@ -1,4 +1,4 @@
-interface Timezone {
+export interface Timezone {
   zoneName: string
   gmtOffset: number
   gmtOffsetName: string

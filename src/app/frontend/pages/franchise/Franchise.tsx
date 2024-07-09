@@ -103,8 +103,8 @@ const Franchise = () => {
   }
 
   useEffect(() => {
-    fetchCountries()
-    fetchStates(225)
+    // fetchCountries()
+    // fetchStates(225)
   }, [])
 
   return (

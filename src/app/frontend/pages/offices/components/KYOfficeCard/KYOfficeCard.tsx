@@ -4,18 +4,11 @@ import { Link } from "react-router-dom"
 
 import "./KYOfficeCard.css"
 
-import {
-  getCountryById,
-  getStatesByCountry,
-  getUserNameInitials,
-  getCitiesByState,
-  getStateById,
-  getCityById,
-} from "../../../../../../_metronic/helpers/kyHelpers"
-
 import { Office } from "../../../../../modules/apps/office-management/_core/_models"
 import { User } from "../../../../../modules/apps/user-management/_core/_models"
 import { getUserById } from "../../../../../modules/apps/user-management/_core/_requests"
+
+import { getUserNameInitials } from "../../../../../../_metronic/helpers/kyHelpers"
 
 interface KYOfficeCardProps {
   office: Office
@@ -29,10 +22,6 @@ const KYOfficeCard: React.FC<KYOfficeCardProps> = ({ office }) => {
   const [countryName, setCountryName] = useState("")
   const [stateName, setStateName] = useState("")
   const [cityName, setCityName] = useState("")
-
-  const [countries, setCountries] = useState<any>([])
-  const [states, setStates] = useState<any>([])
-  const [cities, setCities] = useState<any>([])
 
   const handleImageLoad = () => {
     setImagesLoaded(true)
@@ -73,37 +62,6 @@ const KYOfficeCard: React.FC<KYOfficeCardProps> = ({ office }) => {
 
     fetchOfficeUsers()
   }, [office])
-
-  useEffect(() => {
-    const countriesArr = getCountryById(parseInt(office.address.country ?? ""))
-    const statesArr = getStatesByCountry(parseInt(office.address.country ?? ""))
-    const citiesArr = getCitiesByState(parseInt(office.address.state ?? ""))
-
-    setCountries(countriesArr)
-    setStates(statesArr)
-    setCities(citiesArr)
-  }, [office])
-
-  useEffect(() => {
-    if (office.address.country && countries) {
-      const country: any = getCountryById(
-        parseInt(office.address.country ?? "")
-      )
-      if (country.translations.tr) {
-        setCountryName(country.translations.tr)
-      } else {
-        setCountryName(country.name)
-      }
-    }
-    if (office.address.state && states) {
-      const state: any = getStateById(parseInt(office.address.state ?? ""))
-      setStateName(state.name)
-    }
-    if (office.address.city && cities) {
-      const city: any = getCityById(parseInt(office.address.city ?? ""))
-      setCityName(city.name)
-    }
-  }, [office, countries, states, cities])
 
   return (
     <div className="ky-office-card">

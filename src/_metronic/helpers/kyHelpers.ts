@@ -1,133 +1,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { City, Country, State } from "./address-helper/_models"
-
-import countries from "./address-helper/countries.json"
-import states from "./address-helper/states.json"
-import citiesData from "./address-helper/cities.json"
-
 import { formatValue } from "react-currency-input-field"
 
-const cities: City[] = citiesData as City[]
-
-const getCountries = async (languageCode: string) => {
-  try {
-    const response = await fetch("https://overpass-api.de/api/interpreter", {
-      method: "POST",
-      body: `
-      [out:json];
-      relation
-        ["boundary"="administrative"]
-        ["admin_level"="2"];
-      out body;
-      `,
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    })
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`)
-    }
-
-    const data = await response.json()
-
-    const countries: Country[] = []
-
-    data.elements.forEach((element: any) => {
-      if (element.tags["ISO3166-1"] != undefined) {
-        if (element.tags[`name:tr`] === "Tunus") console.log(element)
-        countries.push({
-          id: element.tags["ISO3166-1"],
-          name: element.tags[`name:${languageCode}`] || element.tags.name,
-        })
-      }
-    })
-
-    return countries
-  } catch (error) {
-    console.error("Error fetching country data:", error)
-  }
-}
-
-const getCountryById = (countryId: number) => {
-  return countries.find((country) => country.id === countryId)
-}
-
-const getStateById = (stateId: number) => {
-  return states.find((state) => state.id === stateId)
+const getCountries = async () => {
+  return ""
 }
 
 const getStatesByCountry = async (countryCode: string) => {
-  try {
-    const response = await fetch("https://overpass-api.de/api/interpreter", {
-      method: "POST",
-      body: `
-      [out:json];
-        area["ISO3166-1"=${countryCode}][boundary=administrative]->.country;
-        node(area.country)[place=city];
-      out;
-      `,
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    })
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`)
-    }
-
-    const data = await response.json()
-
-    const states = data.elements.map((element: any) => {
-      return {
-        id: element.tags.name,
-        name: element.tags.name,
-      }
-    })
-
-    return states
-  } catch (error) {
-    console.error("Error fetching city data:", error)
-  }
+  return countryCode
 }
 
-const getCityById = (cityId: number) => {
-  return cities.find((city) => city.id === cityId)
+const getCitiesByState = async (stateId: string) => {
+  return stateId
 }
 
-const getCitiesByState = async (countryCode: string, stateName: string) => {
-  try {
-    const response = await fetch("https://overpass-api.de/api/interpreter", {
-      method: "POST",
-      body: `
-          [out:json];
-            area["ISO3166-1"=${countryCode}][boundary=administrative]->.country;
-            area["name"=${stateName}](area.country)->.state;
-            node(area.state)[place=town];
-          out;
-          `,
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    })
+const getCountryById = (countryId: number) => {
+  return countryId
+}
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`)
-    }
+const getStateById = (stateId: number) => {
+  return stateId
+}
 
-    const data = await response.json()
-
-    const cities = data.elements.map((element: any) => {
-      return {
-        id: element.id,
-        name: element.tags.name,
-      }
-    })
-
-    return cities
-  } catch (error) {
-    console.error("Error fetching city data:", error)
-  }
+const getCityById = async (cityName: string) => {
+  return cityName
 }
 
 const getUserRoleText = (text: string) => {
