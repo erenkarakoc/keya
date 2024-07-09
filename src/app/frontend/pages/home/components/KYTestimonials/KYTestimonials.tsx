@@ -94,7 +94,10 @@ const KYTestimonials = () => {
         <Swiper
           modules={[Autoplay, Navigation, Pagination]}
           spaceBetween={30}
-          slidesPerView={2}
+          breakpoints={{
+            768: { slidesPerView: 2 },
+            0: { slidesPerView: 1 },
+          }}
           autoplay={{
             delay: 2000,
             stopOnLastSlide: false,

@@ -12,3 +12,7 @@
   justify-content: space-between;
   align-items: center;
 }
+
+.menu-link {
+  white-space: nowrap;
+}

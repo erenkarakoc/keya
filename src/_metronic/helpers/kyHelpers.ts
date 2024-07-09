@@ -1,4 +1,5 @@
-import { Country, City, State } from "./address-helper/_models"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { City, Country, State } from "./address-helper/_models"
 
 import countries from "./address-helper/countries.json"
 import states from "./address-helper/states.json"
@@ -8,34 +9,44 @@ import { formatValue } from "react-currency-input-field"
 
 const cities: City[] = citiesData as City[]
 
-const getCountries = (): Country[] => {
-  const countriesArr = countries.map((country) => ({
-    id: country.id,
-    name: country.name,
-    iso3: country.iso3,
-    iso2: country.iso2,
-    numeric_code: country.numeric_code,
-    phone_code: country.phone_code,
-    capital: country.capital,
-    currency: country.currency,
-    currency_name: country.currency_name,
-    currency_symbol: country.currency_symbol,
-    tld: country.tld,
-    native: country.native,
-    region: country.region,
-    region_id: country.region_id,
-    subregion: country.subregion,
-    subregion_id: country.subregion_id,
-    nationality: country.nationality,
-    timezones: country.timezones,
-    translations: country.translations,
-    latitude: country.latitude,
-    longitude: country.longitude,
-    emoji: country.emoji,
-    emojiU: country.emojiU,
-  }))
+const getCountries = async (languageCode: string) => {
+  try {
+    const response = await fetch("https://overpass-api.de/api/interpreter", {
+      method: "POST",
+      body: `
+      [out:json];
+      relation
+        ["boundary"="administrative"]
+        ["admin_level"="2"];
+      out body;
+      `,
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    })
 
-  return countriesArr
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    const countries: Country[] = []
+
+    data.elements.forEach((element: any) => {
+      if (element.tags["ISO3166-1"] != undefined) {
+        if (element.tags[`name:tr`] === "Tunus") console.log(element)
+        countries.push({
+          id: element.tags["ISO3166-1"],
+          name: element.tags[`name:${languageCode}`] || element.tags.name,
+        })
+      }
+    })
+
+    return countries
+  } catch (error) {
+    console.error("Error fetching country data:", error)
+  }
 }
 
 const getCountryById = (countryId: number) => {
@@ -46,18 +57,37 @@ const getStateById = (stateId: number) => {
   return states.find((state) => state.id === stateId)
 }
 
-const getStatesByCountry = (countryId: number): State[] | undefined => {
-  const countryStates = states.filter(
-    (state: State) =>
-      state.country_id === countryId &&
-      state.latitude !== null &&
-      state.longitude !== null
-  )
+const getStatesByCountry = async (countryCode: string) => {
+  try {
+    const response = await fetch("https://overpass-api.de/api/interpreter", {
+      method: "POST",
+      body: `
+      [out:json];
+        area["ISO3166-1"=${countryCode}][boundary=administrative]->.country;
+        node(area.country)[place=city];
+      out;
+      `,
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    })
 
-  if (countryStates.length > 0) {
-    return countryStates
-  } else {
-    return undefined
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    const states = data.elements.map((element: any) => {
+      return {
+        id: element.tags.name,
+        name: element.tags.name,
+      }
+    })
+
+    return states
+  } catch (error) {
+    console.error("Error fetching city data:", error)
   }
 }
 
@@ -65,13 +95,38 @@ const getCityById = (cityId: number) => {
   return cities.find((city) => city.id === cityId)
 }
 
-const getCitiesByState = (stateId: number): City[] | undefined => {
-  const stateCities = cities.filter((city: City) => city.state_id === stateId)
+const getCitiesByState = async (countryCode: string, stateName: string) => {
+  try {
+    const response = await fetch("https://overpass-api.de/api/interpreter", {
+      method: "POST",
+      body: `
+          [out:json];
+            area["ISO3166-1"=${countryCode}][boundary=administrative]->.country;
+            area["name"=${stateName}](area.country)->.state;
+            node(area.state)[place=town];
+          out;
+          `,
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    })
 
-  if (stateCities.length > 0) {
-    return stateCities
-  } else {
-    return undefined
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    const cities = data.elements.map((element: any) => {
+      return {
+        id: element.id,
+        name: element.tags.name,
+      }
+    })
+
+    return cities
+  } catch (error) {
+    console.error("Error fetching city data:", error)
   }
 }
 

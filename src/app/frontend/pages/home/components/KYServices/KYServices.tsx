@@ -15,6 +15,7 @@ const KYServices = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ delay: 0.4 }}
+        className="ky-services-wrapper"
       >
         <div className="ky-services">
           <motion.div
