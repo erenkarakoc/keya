@@ -23,6 +23,10 @@ import { motion } from "framer-motion"
 import { Formik, Form } from "formik"
 import { newFranchiseApplication } from "../../../modules/apps/franchise-management/_core/_requests"
 import toast from "react-hot-toast"
+import {
+  Country,
+  State,
+} from "../../../../_metronic/helpers/address-helper/_models"
 
 interface Option {
   value: string
@@ -52,6 +56,7 @@ const Franchise = () => {
 
   const [countries, setCountries] = useState<Option[]>([])
   const [states, setStates] = useState<Option[]>([])
+
   const [statesDisabled, setStatesDisabled] = useState(true)
 
   const handleSubmit = async (values: any) => {
@@ -65,46 +70,46 @@ const Franchise = () => {
   }
 
   const fetchCountries = async () => {
-    try {
-      const countriesData = getCountries()
-      const countriesArr = countriesData.map((country) => ({
-        value: country.id.toString(),
-        text: country.translations.tr || "",
-      }))
+    setCountries([])
+    setStates([])
+    setStatesDisabled(true)
+
+    const countriesArr: { value: string; text: string }[] = []
+    const restCountries: Country[] = await getCountries()
+
+    if (restCountries) {
+      restCountries.forEach((country: Country) => {
+        countriesArr.push({
+          value: country.id.toString(),
+          text: country.translations.tr || country.name,
+        })
+      })
       setCountries(countriesArr)
-    } catch (error) {
-      console.error("Error fetching countries:", error)
     }
   }
 
-  const fetchStates = (countryId: number) => {
-    if (countryId) {
-      try {
-        const statesData = getStatesByCountry(countryId)
+  const fetchStates = async (countryId: string) => {
+    setStates([])
+    setStatesDisabled(true)
 
-        if (statesData) {
-          const statesArr = statesData.map((state) => ({
-            value: state.id.toString(),
-            text: state.name || "",
-          }))
+    const statesArr: { value: string; text: string }[] = []
+    const restStates: State[] = await getStatesByCountry(countryId)
 
-          setStatesDisabled(false)
-          setStates(statesArr)
-        } else {
-          console.log("Şehir bulunamadı")
-        }
-      } catch (error) {
-        console.error("Error fetching states:", error)
-      }
-    } else {
-      setStates([])
-      setStatesDisabled(true)
+    if (restStates) {
+      restStates.forEach((state: State) => {
+        statesArr.push({
+          value: state.id.toString(),
+          text: state.name,
+        })
+      })
+      setStates(statesArr)
+      setStatesDisabled(false)
     }
   }
 
   useEffect(() => {
-    // fetchCountries()
-    // fetchStates(225)
+    fetchCountries()
+    fetchStates("225")
   }, [])
 
   return (
@@ -241,7 +246,7 @@ const Franchise = () => {
                       defaultValue="225"
                       options={countries}
                       onChange={(e) => {
-                        fetchStates(parseInt(e.target.value))
+                        fetchStates(e.target.value)
                         setFieldValue("address.country", e.target.value)
                       }}
                       placeholder="Ülke"

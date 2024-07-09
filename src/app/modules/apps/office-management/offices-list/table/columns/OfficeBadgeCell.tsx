@@ -11,7 +11,7 @@ const OfficeBadgeCell: FC<Props> = ({ stateId }) => {
   useEffect(() => {
     const fetchState = async () => {
       if (stateId) {
-        const state = await getStateById(parseInt(stateId))
+        const state = await getStateById(stateId)
         if (state) {
           setStateName(state.name ?? "")
         }

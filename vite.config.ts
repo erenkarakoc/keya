@@ -9,6 +9,6 @@ export default defineConfig({
     chunkSizeWarningLimit: 3000,
   },
   server: {
-    host: "172.20.10.2",
+    host: "192.168.1.22",
   },
 })

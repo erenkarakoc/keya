@@ -112,7 +112,7 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
     }
   }
 
-  const handleCountryChange = (
+  const handleCountryChange = async (
     e: ChangeEvent<HTMLSelectElement>,
     setFieldValue: any
   ) => {
@@ -123,7 +123,7 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
     if (e.target.value) {
       const selectedOption = e.target.selectedOptions[0]
       const countryId = selectedOption.getAttribute("country-id")
-      const statesArr = getStatesByCountry(parseInt(countryId ?? ""))
+      const statesArr = await getStatesByCountry(countryId ?? "")
       setStates(statesArr || [])
       setCountrySelected(true)
     } else {
@@ -146,7 +146,7 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
     if (e.target.value) {
       const selectedOption = e.target.selectedOptions[0]
       const stateId = selectedOption.getAttribute("state-id")
-      const citiesArr = getCitiesByState(parseInt(stateId as string))
+      const citiesArr = await getCitiesByState(stateId ?? "")
       setCities(citiesArr || [])
       setStateSelected(true)
     } else {
@@ -238,26 +238,30 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
   }, [])
 
   useEffect(() => {
-    const data = getCountries()
-    setCountries(data)
+    const fetchAddress = async () => {
+      const data = await getCountries()
+      setCountries(data)
 
-    if (user.address?.country) {
-      const statesArr = getStatesByCountry(parseInt(user.address.country))
-      setStates(statesArr || [])
-      setCurrentCountry(user.address.country)
-      setCountrySelected(true)
+      if (user.address?.country) {
+        const statesArr = await getStatesByCountry(user.address.country)
+        setStates(statesArr || [])
+        setCurrentCountry(user.address.country)
+        setCountrySelected(true)
+      }
+
+      if (user.address?.state) {
+        const citiesArr = await getCitiesByState(user.address.state)
+        setCities(citiesArr || [])
+        setCurrentState(user.address.state)
+        setStateSelected(true)
+      }
+
+      if (user.address?.city) {
+        setCurrentCity(user.address.city)
+      }
     }
 
-    if (user.address?.state) {
-      const citiesArr = getCitiesByState(parseInt(user.address.state))
-      setCities(citiesArr || [])
-      setCurrentState(user.address.state)
-      setStateSelected(true)
-    }
-
-    if (user.address?.city) {
-      setCurrentCity(user.address.city)
-    }
+    fetchAddress()
   }, [user])
 
   useEffect(() => {

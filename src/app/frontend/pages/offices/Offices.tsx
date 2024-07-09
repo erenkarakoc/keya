@@ -12,8 +12,18 @@ import { Office } from "../../../modules/apps/office-management/_core/_models"
 import { getAllOffices } from "../../../modules/apps/office-management/_core/_requests"
 
 import { motion } from "framer-motion"
+import {
+  getCitiesByState,
+  getCountries,
+  getStatesByCountry,
+} from "../../../../_metronic/helpers/kyHelpers"
 
-import { City, Country, State } from "country-state-city"
+import {
+  City,
+  Country,
+  State,
+} from "../../../../_metronic/helpers/address-helper/_models"
+
 interface Option {
   value: string
   text: string
@@ -25,6 +35,9 @@ const Offices = () => {
   const [offices, setOffices] = useState<Office[]>([])
   const [officesLoaded, setOfficesLoaded] = useState(false)
 
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(0)
+
   const [countries, setCountries] = useState<Option[]>([])
   const [states, setStates] = useState<Option[]>([])
   const [cities, setCities] = useState<Option[]>([])
@@ -32,48 +45,59 @@ const Offices = () => {
   const [statesDisabled, setStatesDisabled] = useState(true)
   const [citiesDisabled, setCitiesDisabled] = useState(true)
 
-  const [selectedCountry, setSelectedCountry] = useState("TR")
-
-  const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(0)
-
-  const fetchCountries = () => {
+  const fetchCountries = async () => {
     setCountries([])
+    setStates([])
+    setStatesDisabled(true)
+
     const countriesArr: { value: string; text: string }[] = []
-    const restCountries = Country.getAllCountries()
+    const restCountries: Country[] = await getCountries()
 
     if (restCountries) {
-      restCountries.forEach((country) => {
-        countriesArr.push({ value: country.isoCode, text: country.name })
+      restCountries.forEach((country: Country) => {
+        countriesArr.push({
+          value: country.id.toString(),
+          text: country.translations.tr || country.name,
+        })
       })
       setCountries(countriesArr)
-      setStates([])
     }
   }
 
-  const fetchStates = (countryCode: string) => {
+  const fetchStates = async (countryId: string) => {
+    setStates([])
     setStatesDisabled(true)
+    setCities([])
+    setCitiesDisabled(true)
 
     const statesArr: { value: string; text: string }[] = []
-    const restStates = State.getStatesOfCountry(countryCode)
+    const restStates: State[] = await getStatesByCountry(countryId)
 
     if (restStates) {
-      restStates.forEach((state) => {
-        statesArr.push({ value: state.isoCode, text: state.name })
+      restStates.forEach((state: State) => {
+        statesArr.push({
+          value: state.id.toString(),
+          text: state.name,
+        })
       })
       setStates(statesArr)
       setStatesDisabled(false)
-      setCities([])
     }
   }
 
-  const fetchCities = async (countryCode: string, stateCode: string) => {
+  const fetchCities = async (stateId: string) => {
+    setCities([])
+    setCitiesDisabled(true)
+
     const citiesArr: { value: string; text: string }[] = []
-    const restCities = City.getCitiesOfState(countryCode, stateCode)
+    const restCities: City[] = await getCitiesByState(stateId)
 
     if (restCities) {
-      restCities.forEach((city) => {
-        citiesArr.push({ value: city.name, text: city.name })
+      restCities.forEach((city: City) => {
+        citiesArr.push({
+          value: city.id.toString(),
+          text: city.name,
+        })
       })
       setCities(citiesArr)
       setCitiesDisabled(false)
@@ -103,13 +127,14 @@ const Offices = () => {
 
   useEffect(() => {
     fetchCountries()
-    fetchStates("TR")
+    fetchStates("225")
     fetchOffices()
   }, [])
 
   const renderOffices = () => {
     const startIndex = (currentPage - 1) * PAGE_SIZE
     const endIndex = startIndex + PAGE_SIZE
+
     return offices.slice(startIndex, endIndex).map((office, idx) => (
       <motion.div
         initial={{ opacity: 0, y: 25 }}
@@ -133,66 +158,68 @@ const Offices = () => {
 
       <div className="ky-page-content">
         <div className="row">
-          {countries && countries?.length ? (
-            <motion.div
-              initial={{ opacity: 0, y: 25 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="col-lg-3"
-            >
-              <form className="ky-offices-search ky-card ky-form">
-                <div className="ky-card-header">Ofis Ara</div>
-                <div className="ky-card-content">
-                  <div className="ky-form-group">
-                    <KYInput
-                      id="search_office_name"
-                      type="text"
-                      placeholder="Ofis Adı"
-                    />
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="col-lg-3"
+          >
+            <form className="ky-offices-search ky-card ky-form">
+              <div className="ky-card-header">Ofis Ara</div>
+              <div className="ky-card-content">
+                <div className="ky-form-group">
+                  <KYInput
+                    id="search_office_name"
+                    type="text"
+                    placeholder="Ofis Adı"
+                  />
 
-                    <KYSelect
-                      id="sell_rent_country"
-                      defaultValue="TR"
-                      options={countries}
-                      onChange={(e) => {
-                        fetchStates(e.target.value)
-                        setSelectedCountry(e.target.value)
-                      }}
-                      placeholder="Ülke"
-                    />
-                    {!statesDisabled && states?.length ? (
+                  {countries && countries?.length ? (
+                    <>
                       <KYSelect
-                        id="sell_rent_state"
-                        options={states}
+                        id="sell_rent_country"
+                        defaultValue="225"
+                        options={countries}
                         onChange={(e) => {
-                          fetchCities(selectedCountry, e.target.value)
+                          fetchStates(e.target.value)
                         }}
-                        placeholder="Şehir"
-                        disabled={statesDisabled}
+                        placeholder="Ülke"
                       />
-                    ) : (
-                      ""
-                    )}
-                    {!citiesDisabled ? (
-                      <KYSelect
-                        id="sell_rent_city"
-                        options={cities}
-                        required
-                        placeholder="İlçe"
-                        disabled={citiesDisabled}
-                      />
-                    ) : (
-                      ""
-                    )}
-                    <KYButton type="submit" text="Ara" secondary />
-                  </div>
+                      {!statesDisabled && states?.length ? (
+                        <KYSelect
+                          id="sell_rent_state"
+                          options={states}
+                          onChange={(e) => {
+                            fetchCities(e.target.value)
+                          }}
+                          placeholder="Şehir"
+                          disabled={statesDisabled}
+                        />
+                      ) : (
+                        ""
+                      )}
+                      {!citiesDisabled && cities?.length ? (
+                        <KYSelect
+                          id="sell_rent_city"
+                          options={cities}
+                          required
+                          placeholder="İlçe"
+                          disabled={citiesDisabled}
+                        />
+                      ) : (
+                        ""
+                      )}
+                    </>
+                  ) : (
+                    ""
+                  )}
+
+                  <KYButton type="submit" text="Ara" secondary />
                 </div>
-              </form>
-            </motion.div>
-          ) : (
-            ""
-          )}
+              </div>
+            </form>
+          </motion.div>
 
           <div className="col-lg-8">
             <div className="row ky-offices-list">{renderOffices()}</div>

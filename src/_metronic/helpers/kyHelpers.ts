@@ -1,28 +1,95 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { formatValue } from "react-currency-input-field"
 
+const apiUrl =
+  "https://countries-states-cities-api.netlify.app/.netlify/functions/"
+
 const getCountries = async () => {
-  return ""
+  try {
+    const response = await fetch(apiUrl + "getCountries")
+    if (!response.ok) {
+      throw new Error("Failed to fetch countries")
+    }
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error("Error fetching countries:", error)
+    throw error
+  }
 }
 
-const getStatesByCountry = async (countryCode: string) => {
-  return countryCode
+const getStatesByCountry = async (countryId: string) => {
+  try {
+    const response = await fetch(
+      apiUrl + "getStatesByCountry?countryId=" + countryId
+    )
+    if (!response.ok) {
+      throw new Error("Failed to fetch states")
+    }
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error("Error fetching states:", error)
+    throw error
+  }
 }
 
 const getCitiesByState = async (stateId: string) => {
-  return stateId
+  try {
+    const response = await fetch(apiUrl + "getCitiesByState?stateId=" + stateId)
+    if (!response.ok) {
+      throw new Error("Failed to fetch cities")
+    }
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error("Error fetching cities:", error)
+    throw error
+  }
 }
 
-const getCountryById = (countryId: number) => {
-  return countryId
+const getCountryById = async (countryId: string) => {
+  try {
+    const response = await fetch(
+      apiUrl + "getCountryById?countryId=" + countryId
+    )
+    if (!response.ok) {
+      throw new Error("Failed to fetch country")
+    }
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error("Error fetching country:", error)
+    throw error
+  }
 }
 
-const getStateById = (stateId: number) => {
-  return stateId
+const getStateById = async (stateId: string) => {
+  try {
+    const response = await fetch(apiUrl + "getStateById?stateId=" + stateId)
+    if (!response.ok) {
+      throw new Error("Failed to fetch state")
+    }
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error("Error fetching state:", error)
+    throw error
+  }
 }
 
-const getCityById = async (cityName: string) => {
-  return cityName
+const getCityById = async (cityId: string) => {
+  try {
+    const response = await fetch(apiUrl + "getCityById?cityId=" + cityId)
+    if (!response.ok) {
+      throw new Error("Failed to fetch city")
+    }
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error("Error fetching city:", error)
+    throw error
+  }
 }
 
 const getUserRoleText = (text: string) => {

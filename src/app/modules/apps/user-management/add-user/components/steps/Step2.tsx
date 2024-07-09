@@ -109,7 +109,7 @@ const Step2: FC<Step2Props> = ({ setFieldValue, values }) => {
     }
   }
 
-  const handleCountryChange = (e: ChangeEvent<HTMLSelectElement>) => {
+  const handleCountryChange = async (e: ChangeEvent<HTMLSelectElement>) => {
     setCurrentCountry(e.target.value)
     setFieldValue("address.country", e.target.value)
     console.log(e.target.value)
@@ -117,7 +117,7 @@ const Step2: FC<Step2Props> = ({ setFieldValue, values }) => {
     if (e.target.value) {
       const selectedOption = e.target.selectedOptions[0]
       const countryId = selectedOption.getAttribute("country-id")
-      const statesArr = getStatesByCountry(parseInt(countryId as string))
+      const statesArr = await getStatesByCountry(countryId ?? "")
       setStates(statesArr || [])
       setCountrySelected(true)
     } else {
@@ -133,7 +133,7 @@ const Step2: FC<Step2Props> = ({ setFieldValue, values }) => {
     if (e.target.value) {
       const selectedOption = e.target.selectedOptions[0]
       const stateId = selectedOption.getAttribute("state-id")
-      const citiesArr = getCitiesByState(parseInt(stateId as string))
+      const citiesArr = await getCitiesByState(stateId ?? "")
       setCities(citiesArr || [])
       setStateSelected(true)
     } else {
@@ -158,14 +158,18 @@ const Step2: FC<Step2Props> = ({ setFieldValue, values }) => {
   }
 
   useEffect(() => {
-    const data = getCountries()
-    setCountries(data)
-    setCurrentCountry("225")
-    setFieldValue("address.country", "225")
+    const fetchAddress = async () => {
+      const data = await getCountries()
+      setCountries(data)
+      setCurrentCountry("225")
+      setFieldValue("address.country", "225")
 
-    const statesArr = getStatesByCountry(225)
-    setStates(statesArr || [])
-    setCountrySelected(true)
+      const statesArr = await getStatesByCountry("225")
+      setStates(statesArr || [])
+      setCountrySelected(true)
+    }
+
+    fetchAddress()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

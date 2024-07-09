@@ -105,7 +105,7 @@ const EditUser: React.FC<Props> = ({ user, setUser }) => {
     }
   }
 
-  const handleCountryChange = (
+  const handleCountryChange = async (
     e: ChangeEvent<HTMLSelectElement>,
     setFieldValue: any
   ) => {
@@ -116,7 +116,7 @@ const EditUser: React.FC<Props> = ({ user, setUser }) => {
     if (e.target.value) {
       const selectedOption = e.target.selectedOptions[0]
       const countryId = selectedOption.getAttribute("country-id")
-      const statesArr = getStatesByCountry(parseInt(countryId ?? ""))
+      const statesArr = await getStatesByCountry(countryId ?? "")
       setStates(statesArr || [])
       setCountrySelected(true)
     } else {
@@ -139,7 +139,7 @@ const EditUser: React.FC<Props> = ({ user, setUser }) => {
     if (e.target.value) {
       const selectedOption = e.target.selectedOptions[0]
       const stateId = selectedOption.getAttribute("state-id")
-      const citiesArr = getCitiesByState(parseInt(stateId as string))
+      const citiesArr = await getCitiesByState(stateId ?? "")
       setCities(citiesArr || [])
       setStateSelected(true)
     } else {
@@ -227,29 +227,32 @@ const EditUser: React.FC<Props> = ({ user, setUser }) => {
   useEffect(() => {
     setUserForEdit(user)
 
-    const data = getCountries()
-    setCountries(data)
+    const fetchUserAddress = async () => {
+      const data = await getCountries()
+      setCountries(data)
 
-    if (user.address?.country) {
-      const statesArr = getStatesByCountry(parseInt(user.address.country))
-      setStates(statesArr || [])
-      setCurrentCountry(user.address.country)
-      setCountrySelected(true)
+      if (user.address?.country) {
+        const statesArr = await getStatesByCountry(user.address.country)
+        setStates(statesArr || [])
+        setCurrentCountry(user.address.country)
+        setCountrySelected(true)
+      }
+
+      if (user.address?.state) {
+        const citiesArr = await getCitiesByState(user.address.state)
+        setCities(citiesArr || [])
+        setCurrentState(user.address.state)
+        setStateSelected(true)
+      }
+
+      if (user.address?.city) {
+        setCurrentCity(user.address.city)
+      }
     }
 
-    if (user.address?.state) {
-      const citiesArr = getCitiesByState(parseInt(user.address.state))
-      setCities(citiesArr || [])
-      setCurrentState(user.address.state)
-      setStateSelected(true)
-    }
-
-    if (user.address?.city) {
-      setCurrentCity(user.address.city)
-    }
+    fetchUserAddress()
 
     if (user.phoneNumber) setCurrentPhoneNumber(user.phoneNumber)
-
     if (user.officeId) setCurrentOfficeId(user.officeId)
   }, [user])
 

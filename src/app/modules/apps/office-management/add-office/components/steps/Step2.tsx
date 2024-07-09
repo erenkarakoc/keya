@@ -39,14 +39,14 @@ const Step2: FC<Step2Props> = ({ setFieldValue }) => {
   )
   const [countryCode, setCountryCode] = useState<string | null>("TR")
 
-  const handleCountryChange = (e: ChangeEvent<HTMLSelectElement>) => {
+  const handleCountryChange = async (e: ChangeEvent<HTMLSelectElement>) => {
     setCurrentCountry(e.target.value)
     setFieldValue("address.country", e.target.value)
 
     if (e.target.value) {
       const selectedOption = e.target.selectedOptions[0]
       const countryId = selectedOption.getAttribute("country-id")
-      const statesArr = getStatesByCountry(parseInt(countryId as string))
+      const statesArr = await getStatesByCountry(countryId as string)
       setStates(statesArr || [])
       setCountrySelected(true)
     } else {
@@ -62,7 +62,7 @@ const Step2: FC<Step2Props> = ({ setFieldValue }) => {
     if (e.target.value) {
       const selectedOption = e.target.selectedOptions[0]
       const stateId = selectedOption.getAttribute("state-id")
-      const citiesArr = getCitiesByState(parseInt(stateId as string))
+      const citiesArr = await getCitiesByState(stateId ?? "")
       setCities(citiesArr || [])
       setStateSelected(true)
     } else {
@@ -87,13 +87,16 @@ const Step2: FC<Step2Props> = ({ setFieldValue }) => {
   }
 
   useEffect(() => {
-    const data = getCountries()
-    setCountries(data)
+    const fetchAddress = async () => {
+      const data = await getCountries()
+      setCountries(data)
 
-    const statesArr = getStatesByCountry(225)
-    setStates(statesArr || [])
-    setCountrySelected(true)
-    setCurrentCountry("225")
+      const statesArr = await getStatesByCountry("225")
+      setStates(statesArr || [])
+      setCountrySelected(true)
+      setCurrentCountry("225")
+    }
+    fetchAddress()
   }, [])
 
   useEffect(() => {

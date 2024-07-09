@@ -164,18 +164,21 @@ const FranchisePage = () => {
                         className="ms-5"
                         onClick={() => {
                           setCurrentApplication(application)
-                          if (application.address.country) {
-                            const country = getCountryById(
-                              Number(application.address.country)
-                            )
-                            setCurrentCountry(country?.translations.tr ?? "")
+                          const setCurrentAddress = async () => {
+                            if (application.address.country) {
+                              const country = await getCountryById(
+                                application.address.country
+                              )
+                              setCurrentCountry(country?.translations.tr ?? "")
+                            }
+                            if (application.address.state) {
+                              const state = await getStateById(
+                                application.address.state
+                              )
+                              setCurrentState(state?.name ?? "")
+                            }
                           }
-                          if (application.address.state) {
-                            const state = getStateById(
-                              Number(application.address.state)
-                            )
-                            setCurrentState(state?.name ?? "")
-                          }
+                          setCurrentAddress()
                           setShow(true)
                         }}
                       >

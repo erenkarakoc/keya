@@ -28,14 +28,18 @@ const ProfileHeader: React.FC<Props> = ({ office }) => {
   const [currentState, setCurrentState] = useState("")
 
   useEffect(() => {
-    if (office.address.country) {
-      const countryName = getCountryById(parseInt(office.address.country))
-      setCurrentCountry(countryName?.translations.tr ?? "")
+    const fetchAddress = async () => {
+      if (office.address.country) {
+        const countryName = await getCountryById(office.address.country)
+        setCurrentCountry(countryName?.translations.tr ?? "")
+      }
+      if (office.address.state) {
+        const stateName = await getStateById(office.address.state)
+        setCurrentState(stateName?.name ?? "")
+      }
     }
-    if (office.address.state) {
-      const stateName = getStateById(parseInt(office.address.state))
-      setCurrentState(stateName?.name ?? "")
-    }
+
+    fetchAddress()
   }, [office])
 
   useEffect(() => {

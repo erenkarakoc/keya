@@ -14,6 +14,11 @@ import { User } from "../../../modules/apps/user-management//_core/_models"
 import { getUsersByRole } from "../../../modules/apps/user-management//_core/_requests"
 import { motion } from "framer-motion"
 import { KYPagination } from "../../components/KYPagination/KYPagination"
+import {
+  City,
+  Country,
+  State,
+} from "../../../../_metronic/helpers/address-helper/_models"
 
 interface Option {
   value: string
@@ -26,80 +31,72 @@ const Agents = () => {
   const [users, setUsers] = useState<User[]>([])
   const [usersLoaded, setUsersLoaded] = useState(false)
 
-  const [countries, setCountries] = useState<Option[]>([])
-  const [states, setStates] = useState<Option[]>([])
-  const [cities, setCities] = useState<Option[]>([])
-  const [statesDisabled, setStatesDisabled] = useState(true)
-  const [citiesDisabled, setCitiesDisabled] = useState(true)
-
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(0)
 
-  const fetchCountries = () => {
-    try {
-      const countriesData = getCountries()
-      const countriesArr = countriesData.map((country) => ({
-        value: country.id.toString(),
-        text: country.translations.tr || "",
-      }))
+  const [countries, setCountries] = useState<Option[]>([])
+  const [states, setStates] = useState<Option[]>([])
+  const [cities, setCities] = useState<Option[]>([])
+
+  const [statesDisabled, setStatesDisabled] = useState(true)
+  const [citiesDisabled, setCitiesDisabled] = useState(true)
+
+  const fetchCountries = async () => {
+    setCountries([])
+    setStates([])
+    setStatesDisabled(true)
+
+    const countriesArr: { value: string; text: string }[] = []
+    const restCountries: Country[] = await getCountries()
+
+    if (restCountries) {
+      restCountries.forEach((country: Country) => {
+        countriesArr.push({
+          value: country.id.toString(),
+          text: country.translations.tr || country.name,
+        })
+      })
       setCountries(countriesArr)
-    } catch (error) {
-      console.error("Error fetching countries:", error)
     }
   }
 
-  const fetchStates = (countryId: number) => {
-    if (countryId) {
-      try {
-        const statesData = getStatesByCountry(countryId)
+  const fetchStates = async (countryId: string) => {
+    setStates([])
+    setStatesDisabled(true)
+    setCities([])
+    setCitiesDisabled(true)
 
-        if (statesData) {
-          const statesArr = statesData.map((state) => ({
-            value: state.id.toString(),
-            text: state.name || "",
-          }))
+    const statesArr: { value: string; text: string }[] = []
+    const restStates: State[] = await getStatesByCountry(countryId)
 
-          setStatesDisabled(false)
-          setStates(statesArr)
-
-          setCities([])
-        } else {
-          console.log("Şehir bulunamadı")
-        }
-      } catch (error) {
-        console.error("Error fetching states:", error)
-      }
-    } else {
-      setStates([])
-      setStatesDisabled(true)
-
-      setCities([])
-      setCitiesDisabled(true)
+    if (restStates) {
+      restStates.forEach((state: State) => {
+        statesArr.push({
+          value: state.id.toString(),
+          text: state.name,
+        })
+      })
+      setStates(statesArr)
+      setStatesDisabled(false)
     }
   }
 
-  const fetchCities = (stateId: number) => {
-    if (stateId) {
-      try {
-        const citiesData = getCitiesByState(stateId)
+  const fetchCities = async (stateId: string) => {
+    setCities([])
+    setCitiesDisabled(true)
 
-        if (citiesData) {
-          const citiesArr = citiesData.map((state) => ({
-            value: state.id.toString(),
-            text: state.name || "",
-          }))
+    const citiesArr: { value: string; text: string }[] = []
+    const restCities: City[] = await getCitiesByState(stateId)
 
-          setCitiesDisabled(false)
-          setCities(citiesArr)
-        } else {
-          console.log("İlçe bulunamadı")
-        }
-      } catch (error) {
-        console.error("Error fetching states:", error)
-      }
-    } else {
-      setCities([])
-      setCitiesDisabled(true)
+    if (restCities) {
+      restCities.forEach((city: City) => {
+        citiesArr.push({
+          value: city.id.toString(),
+          text: city.name,
+        })
+      })
+      setCities(citiesArr)
+      setCitiesDisabled(false)
     }
   }
 
@@ -128,13 +125,14 @@ const Agents = () => {
 
   useEffect(() => {
     fetchCountries()
-    fetchStates(225)
+    fetchStates("225")
     fetchAgentsAndBrokers()
   }, [])
 
   const renderUsers = () => {
     const startIndex = (currentPage - 1) * PAGE_SIZE
     const endIndex = startIndex + PAGE_SIZE
+
     return users.slice(startIndex, endIndex).map((user, idx) => (
       <motion.div
         initial={{ opacity: 0, y: 25 }}
@@ -174,27 +172,46 @@ const Agents = () => {
                     type="text"
                     placeholder="Danışman Adı"
                   />
-                  <KYSelect
-                    id="sell_rent_country"
-                    defaultValue="225"
-                    options={countries}
-                    onChange={(e) => fetchStates(parseInt(e.target.value))}
-                    placeholder="Ülke"
-                  />
-                  <KYSelect
-                    id="sell_rent_state"
-                    options={states}
-                    onChange={(e) => fetchCities(parseInt(e.target.value))}
-                    placeholder="Şehir"
-                    disabled={statesDisabled}
-                  />
-                  <KYSelect
-                    id="sell_rent_city"
-                    options={cities}
-                    required
-                    placeholder="İlçe"
-                    disabled={citiesDisabled}
-                  />
+
+                  {countries && countries?.length ? (
+                    <>
+                      <KYSelect
+                        id="sell_rent_country"
+                        defaultValue="225"
+                        options={countries}
+                        onChange={(e) => {
+                          fetchStates(e.target.value)
+                        }}
+                        placeholder="Ülke"
+                      />
+                      {!statesDisabled && states?.length ? (
+                        <KYSelect
+                          id="sell_rent_state"
+                          options={states}
+                          onChange={(e) => {
+                            fetchCities(e.target.value)
+                          }}
+                          placeholder="Şehir"
+                          disabled={statesDisabled}
+                        />
+                      ) : (
+                        ""
+                      )}
+                      {!citiesDisabled && cities?.length ? (
+                        <KYSelect
+                          id="sell_rent_city"
+                          options={cities}
+                          required
+                          placeholder="İlçe"
+                          disabled={citiesDisabled}
+                        />
+                      ) : (
+                        ""
+                      )}
+                    </>
+                  ) : (
+                    ""
+                  )}
                   <KYButton type="submit" text="Ara" secondary />
                 </div>
               </div>

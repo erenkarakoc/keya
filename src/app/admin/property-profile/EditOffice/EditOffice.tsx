@@ -176,7 +176,7 @@ const EditOffice: React.FC<Props> = ({ office, setOffice }) => {
     }
   }
 
-  const handleCountryChange = (
+  const handleCountryChange = async (
     e: ChangeEvent<HTMLSelectElement>,
     setFieldValue: any
   ) => {
@@ -187,7 +187,7 @@ const EditOffice: React.FC<Props> = ({ office, setOffice }) => {
     if (e.target.value) {
       const selectedOption = e.target.selectedOptions[0]
       const countryId = selectedOption.getAttribute("country-id")
-      const statesArr = getStatesByCountry(parseInt(countryId ?? ""))
+      const statesArr = await getStatesByCountry(countryId ?? "")
       setStates(statesArr || [])
       setCountrySelected(true)
     } else {
@@ -210,7 +210,7 @@ const EditOffice: React.FC<Props> = ({ office, setOffice }) => {
     if (e.target.value) {
       const selectedOption = e.target.selectedOptions[0]
       const stateId = selectedOption.getAttribute("state-id")
-      const citiesArr = getCitiesByState(parseInt(stateId as string))
+      const citiesArr = await getCitiesByState(stateId ?? "")
       setCities(citiesArr || [])
       setStateSelected(true)
     } else {
@@ -269,26 +269,30 @@ const EditOffice: React.FC<Props> = ({ office, setOffice }) => {
   useEffect(() => {
     setOfficeForEdit(office)
 
-    const data = getCountries()
-    setCountries(data)
+    const fetchOfficeAddress = async () => {
+      const data = await getCountries()
+      setCountries(data)
 
-    if (office.address.country) {
-      const statesArr = getStatesByCountry(parseInt(office.address.country))
-      setStates(statesArr || [])
-      setCurrentCountry(office.address.country)
-      setCountrySelected(true)
+      if (office.address.country) {
+        const statesArr = await getStatesByCountry(office.address.country)
+        setStates(statesArr || [])
+        setCurrentCountry(office.address.country)
+        setCountrySelected(true)
+      }
+
+      if (office.address.state) {
+        const citiesArr = await getCitiesByState(office.address.state)
+        setCities(citiesArr || [])
+        setCurrentState(office.address.state)
+        setStateSelected(true)
+      }
+
+      if (office.address.city) {
+        setCurrentCity(office.address.city)
+      }
     }
 
-    if (office.address.state) {
-      const citiesArr = getCitiesByState(parseInt(office.address.state))
-      setCities(citiesArr || [])
-      setCurrentState(office.address.state)
-      setStateSelected(true)
-    }
-
-    if (office.address.city) {
-      setCurrentCity(office.address.city)
-    }
+    fetchOfficeAddress()
   }, [office])
 
   useEffect(() => {

@@ -52,9 +52,9 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
     setFieldValue("soldStatus.otherExpenses", currentOtherExpenses)
 
     const calculatedTotalProfit =
-      parseInt(currentAgentFee) +
-      parseInt(currentOfficeFee) +
-      parseInt(currentTeamLeaderProfit)
+      Number(currentAgentFee) +
+      Number(currentOfficeFee) +
+      Number(currentTeamLeaderProfit)
 
     const transaction = {
       userIds: values.userIds,
@@ -129,7 +129,7 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
     }
 
     if (property.saleDetails?.soldDate) {
-      const date = new Date(parseInt(property.saleDetails.soldDate))
+      const date = new Date(Number(property.saleDetails.soldDate))
       const year = date.getFullYear()
       const month = String(date.getMonth() + 1).padStart(2, "0")
       const day = String(date.getDate()).padStart(2, "0")

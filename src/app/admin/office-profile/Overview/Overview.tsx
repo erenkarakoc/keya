@@ -35,21 +35,21 @@ const Overview: React.FC<OverviewProps> = ({
   const [properties, setProperties] = useState<Property[]>()
 
   useEffect(() => {
-    const fetchAddress = () => {
+    const fetchAddress = async () => {
       let country = ""
       let state = ""
       let city = ""
 
       if (office.address?.country) {
-        const countryData = getCountryById(parseInt(office.address.country))
+        const countryData = await getCountryById(office.address.country)
         country = countryData ? countryData.translations.tr : ""
       }
       if (office.address?.state) {
-        const stateData = getStateById(parseInt(office.address.state))
+        const stateData = await getStateById(office.address.state)
         state = stateData ? stateData.name : ""
       }
       if (office.address?.city) {
-        const cityData = getCityById(parseInt(office.address.city))
+        const cityData = await getCityById(office.address.city)
         city = cityData ? cityData.name : ""
       }
 
