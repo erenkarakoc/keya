@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState } from "react"
 import { KTIcon } from "../../../../../_metronic/helpers"
 import { Step0 } from "./components/steps/Step0"

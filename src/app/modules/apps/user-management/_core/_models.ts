@@ -3,6 +3,7 @@ import { Response } from "../../../../../_metronic/helpers"
 export type User = {
   id: string
   uid: string
+  tc: string
   email: string
   firstName: string
   lastName: string
