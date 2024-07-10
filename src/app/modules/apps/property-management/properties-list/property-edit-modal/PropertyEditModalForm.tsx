@@ -691,7 +691,7 @@ const PropertyEditModalForm: FC<Props> = ({ property, isPropertyLoading }) => {
                 )}
 
                 <div
-                  className="image-input image-input-outline d-flex justify-content-center flex-wrap py-5 px-2 gap-2 mt-6"
+                  className="image-input image-input-outline d-flex flex-wrap py-5 px-2 gap-2 mt-6"
                   data-kt-image-input="true"
                   style={{ maxHeight: 300, overflowY: "auto" }}
                 >

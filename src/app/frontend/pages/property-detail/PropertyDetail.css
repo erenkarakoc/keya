@@ -97,23 +97,39 @@ a.ky-property-row:hover .ky-property-row-label {
   opacity: 1;
 }
 
-.mainImages .swiper-button-next {
+.ky-page-property-detail .mainImages {
+  height: 400px;
+}
+
+.ky-page-property-detail .mainImages .swiper-slide {
+  height: 400px;
+  width: 400px;
+}
+
+.ky-page-property-detail .mainImages .swiper-slide img {
+  height: 100%;
+  width: 100%;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.ky-page-property-detail .mainImages .swiper-button-next {
   background: linear-gradient(to left, #00000070, transparent);
   right: 0;
 }
-.mainImages .swiper-button-prev {
+.ky-page-property-detail .mainImages .swiper-button-prev {
   background: linear-gradient(to right, #00000070, transparent);
   left: 0;
 }
-.mainImages .swiper-button-next,
-.mainImages .swiper-button-prev {
+.ky-page-property-detail .mainImages .swiper-button-next,
+.ky-page-property-detail .mainImages .swiper-button-prev {
   width: 40px;
   height: 100%;
   top: 22px;
 }
 
-.mainImages .swiper-button-next::after,
-.mainImages .swiper-button-prev::after {
+.ky-page-property-detail .mainImages .swiper-button-next::after,
+.ky-page-property-detail .mainImages .swiper-button-prev::after {
   font-size: 14px;
 }
 
