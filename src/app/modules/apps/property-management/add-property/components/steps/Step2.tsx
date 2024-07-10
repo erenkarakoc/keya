@@ -58,10 +58,10 @@ const Step2: FC<Step2Props> = ({ values, currentDues, setCurrentDues }) => {
   const handleFiles = async (files: File[]) => {
     const uploadPromises: Promise<void>[] = []
     const currentCount = uploadedImageUrls.length
-    const remainingSlots = 50 - currentCount
+    const remainingSlots = 100 - currentCount
 
-    if (currentCount >= 50) {
-      toast.error("En fazla 50 görsel ekleyebilirsiniz.")
+    if (currentCount >= 100) {
+      toast.error("En fazla 100 görsel ekleyebilirsiniz.")
       return
     }
 
@@ -70,9 +70,9 @@ const Step2: FC<Step2Props> = ({ values, currentDues, setCurrentDues }) => {
 
     filesToUpload.forEach((file) => {
       const fileSizeInMB = file.size / (1024 * 1024)
-      if (fileSizeInMB > 2) {
+      if (fileSizeInMB > 5) {
         toast.error(
-          `${file.name} adlı dosya yüklenemedi. Dosya boyutu 2 MB'den küçük olmalıdır!`
+          `${file.name} adlı dosya yüklenemedi. Dosya boyutu 5 MB'den küçük olmalıdır!`
         )
         return
       }
@@ -95,7 +95,7 @@ const Step2: FC<Step2Props> = ({ values, currentDues, setCurrentDues }) => {
     await Promise.all(uploadPromises)
 
     if (excessFiles.length > 0) {
-      toast.error("En fazla 50 görsel ekleyebilirsiniz.")
+      toast.error("En fazla 100 görsel ekleyebilirsiniz.")
     }
   }
 
