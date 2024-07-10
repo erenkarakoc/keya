@@ -8,7 +8,4 @@ export default defineConfig({
   build: {
     chunkSizeWarningLimit: 3000,
   },
-  server: {
-    host: "192.168.1.22",
-  },
 })

@@ -24,6 +24,7 @@ import "yet-another-react-lightbox/plugins/thumbnails.css"
 import CurrencyInput from "react-currency-input-field"
 
 import toast from "react-hot-toast"
+import imageCompression from "browser-image-compression"
 
 const storage = getStorage(firebaseApp)
 
@@ -41,10 +42,12 @@ interface Step2Props {
 }
 
 const Step2: FC<Step2Props> = ({ values, currentDues, setCurrentDues }) => {
-  const [lightboxOpen, setLightboxOpen] = useState(false)
-
   const [isDragging, setIsDragging] = useState(false)
+  const [uploadingImages, setUploadingImages] = useState(false)
+  const [totalImagesToUpload, setTotalImagesToUpload] = useState(0)
   const [uploadedImageUrls, setUploadedImageUrls] = useState<string[]>([])
+
+  const [lightboxOpen, setLightboxOpen] = useState(false)
 
   const { setFieldValue } = useFormikContext()
 
@@ -60,6 +63,9 @@ const Step2: FC<Step2Props> = ({ values, currentDues, setCurrentDues }) => {
     const currentCount = uploadedImageUrls.length
     const remainingSlots = 100 - currentCount
 
+    setUploadingImages(true)
+    setTotalImagesToUpload(files.length)
+
     if (currentCount >= 100) {
       toast.error("En fazla 100 görsel ekleyebilirsiniz.")
       return
@@ -68,13 +74,37 @@ const Step2: FC<Step2Props> = ({ values, currentDues, setCurrentDues }) => {
     const filesToUpload = files.slice(0, remainingSlots)
     const excessFiles = files.slice(remainingSlots)
 
-    filesToUpload.forEach((file) => {
+    filesToUpload.forEach(async (file) => {
+      let readyToUpload = file
       const fileSizeInMB = file.size / (1024 * 1024)
+
       if (fileSizeInMB > 5) {
-        toast.error(
-          `${file.name} adlı dosya yüklenemedi. Dosya boyutu 5 MB'den küçük olmalıdır!`
-        )
-        return
+        try {
+          const compressionPromise = imageCompression(file, { maxSizeMB: 2 })
+
+          toast.promise(
+            compressionPromise,
+            {
+              loading: `${file.name} adlı yüksek boyutlu görsel sıkıştırılıyor, lütfen bekleyin...`,
+              success: `${file.name} adlı görsel başarıyla sıkıştırıldı.`,
+              error: `${file.name} adlı görsel sıkıştırılamadı. Lütfen tekrar deneyin veya farklı bir görsel yükleyin.`,
+            },
+            {
+              id: file.name,
+              success: {
+                duration: 2000,
+              },
+              position: "bottom-right",
+            }
+          )
+
+          const compressedFile = await compressionPromise
+          readyToUpload = compressedFile
+        } catch (error) {
+          toast.error(
+            `${file.name} adlı dosya yüklenemedi. Dosya boyutu 5 MB'den küçük olmalıdır!`
+          )
+        }
       }
 
       const randomName = generateRandomName()
@@ -82,7 +112,7 @@ const Step2: FC<Step2Props> = ({ values, currentDues, setCurrentDues }) => {
         storage,
         `images/properties/${urlify(values.title)}/${randomName}`
       )
-      const uploadPromise = uploadBytes(storageRef, file)
+      const uploadPromise = uploadBytes(storageRef, readyToUpload)
         .then(() => getDownloadURL(storageRef))
         .then((downloadURL) => {
           setUploadedImageUrls((prevUrls) => [...prevUrls, downloadURL])
@@ -93,6 +123,8 @@ const Step2: FC<Step2Props> = ({ values, currentDues, setCurrentDues }) => {
     })
 
     await Promise.all(uploadPromises)
+
+    setUploadingImages(false)
 
     if (excessFiles.length > 0) {
       toast.error("En fazla 100 görsel ekleyebilirsiniz.")
@@ -176,8 +208,22 @@ const Step2: FC<Step2Props> = ({ values, currentDues, setCurrentDues }) => {
           İzin verilen dosya türleri: png, jpg, jpeg.
         </div>
 
+        {uploadingImages ? (
+          <div className="d-flex align-items-center gap-5 mt-5">
+            <div className="text-gray-600 fw-semibold fs-7">
+              <span className="spinner-border spinner-border-lg"></span>
+            </div>
+            <span className="text-gray-600">
+              Görseller karşıya yükleniyor. {uploadedImageUrls.length} /{" "}
+              {totalImagesToUpload} yüklendi.
+            </span>
+          </div>
+        ) : (
+          ""
+        )}
+
         <div
-          className="image-input image-input-outline d-flex flex-wrap mt-6"
+          className="image-input image-input-outline d-flex justify-content-center flex-wrap py-5 px-2 gap-2 mt-6"
           data-kt-image-input="true"
           style={{ maxHeight: 300, overflowY: "auto" }}
         >
@@ -189,13 +235,14 @@ const Step2: FC<Step2Props> = ({ values, currentDues, setCurrentDues }) => {
                 backgroundImage: `url(${url})`,
                 cursor: "pointer",
                 flexShrink: 0,
+                boxShadow: "0 0 10px -2px rgba(0, 0, 0, 0.1)",
               }}
               onClick={() => {
                 setLightboxOpen(true)
               }}
             >
               <label
-                className="btn btn-icon btn-circle btn-color-white w-20px h-20px bg-gray-300 bg-hover-gray-400 shadow"
+                className="btn btn-icon btn-circle btn-color-white w-20px h-20px bg-gray-500 bg-hover-gray-400 shadow"
                 data-kt-image-input-action="change"
                 data-bs-toggle="tooltip"
                 title="Fotoğrafı Sil"
@@ -216,7 +263,7 @@ const Step2: FC<Step2Props> = ({ values, currentDues, setCurrentDues }) => {
           ))}
         </div>
 
-        {uploadedImageUrls.length ? (
+        {!uploadingImages && uploadedImageUrls.length ? (
           <div className="form-text mt-2">
             {uploadedImageUrls.length} görsel yüklendi.
           </div>
