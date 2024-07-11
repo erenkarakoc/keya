@@ -69,6 +69,17 @@ a.ky-office-row:hover .ky-office-row-label {
   border-radius: 6px;
   overflow: hidden;
 }
+
+.ky-page-office-detail .swiper-button-prev {
+  left: 5px;
+}
+.ky-page-office-detail .swiper-button-next {
+  right: 5px;
+}
+.ky-page-office-detail .swiper-button-prev::after,
+.ky-page-office-detail .swiper-button-next::after {
+  font-size: 14px;
+}
 /* Swiper End */
 
 .ky-office-name {

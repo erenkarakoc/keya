@@ -35,6 +35,7 @@ const AddUser = () => {
   const stepperRef = useRef<HTMLDivElement | null>(null)
   const [stepper, setStepper] = useState<StepperComponent | null>(null)
   const [submittingForm, setSubmittingForm] = useState<boolean>(false)
+  const [emailAlreadyExists, setEmailAlreadyExists] = useState(false)
 
   const [currentSchemaIndex, setCurrentSchemaIndex] = useState<number>(0)
   const schemas = [
@@ -62,6 +63,8 @@ const AddUser = () => {
   const submitStep = async (values: ICreateAccount, actions: FormikValues) => {
     if (!stepper) return
 
+    console.log(values)
+
     if (stepper.currentStepIndex !== stepper.totalStepsNumber) {
       stepper.goNext()
       setCurrentSchemaIndex((prevIndex) => prevIndex + 1)
@@ -69,14 +72,15 @@ const AddUser = () => {
       setSubmittingForm(true)
 
       try {
-        const res: any = await registerUser(values)
+        values.createdAt = new Date().getTime().toString()
+        values.updatedAt = new Date().getTime().toString()
 
-        console.log(res)
+        const res: any = await registerUser(values)
 
         setSubmittingForm(false)
         actions.setSubmitting(false)
 
-        addUsersToOffice(values.officeId, [res?.data?.userId])
+        await addUsersToOffice(values.officeId, [res?.data?.userId])
 
         toast.success("Kullanıcı başarıyla eklendi!")
 
@@ -254,7 +258,12 @@ const AddUser = () => {
                   </div>
 
                   <div data-kt-stepper-element="content">
-                    <Step1 setFieldValue={setFieldValue} />
+                    <Step1
+                      values={values}
+                      setFieldValue={setFieldValue}
+                      emailAlreadyExists={emailAlreadyExists}
+                      setEmailAlreadyExists={setEmailAlreadyExists}
+                    />
                   </div>
 
                   <div data-kt-stepper-element="content">
@@ -286,6 +295,7 @@ const AddUser = () => {
                       <button
                         type="submit"
                         className="btn btn-lg btn-primary me-3"
+                        disabled={emailAlreadyExists}
                       >
                         <span className="indicator-label">
                           {submittingForm ? (

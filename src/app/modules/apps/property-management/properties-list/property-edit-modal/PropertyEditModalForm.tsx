@@ -330,7 +330,7 @@ const PropertyEditModalForm: FC<Props> = ({ property, isPropertyLoading }) => {
       let readyToUpload = file
       const fileSizeInMB = file.size / (1024 * 1024)
 
-      if (fileSizeInMB > 5) {
+      if (fileSizeInMB > 2) {
         try {
           const compressionPromise = imageCompression(file, { maxSizeMB: 2 })
 

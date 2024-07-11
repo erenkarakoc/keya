@@ -23,7 +23,10 @@ export type User = {
     city?: string
     addressLine?: string
   }
+  ref: string
+  joinedAt: string
   createdAt: string
+  updatedAt: string
   lastLoginAt: string
 }
 

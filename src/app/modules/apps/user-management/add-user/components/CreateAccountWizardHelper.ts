@@ -2,6 +2,7 @@ import * as Yup from "yup"
 
 export type ICreateAccount = {
   id: string
+  tc: string
   email: string
   firstName: string
   lastName: string
@@ -9,6 +10,7 @@ export type ICreateAccount = {
   confirmpassword: string
   photoURL: string
   phoneNumber: string
+  birthDate: string
   officeId: string
   role: string
   address: {
@@ -17,6 +19,9 @@ export type ICreateAccount = {
     city?: number
     addressLine?: string
   }
+  joinedAt: string
+  createdAt: string
+  updatedAt: string
 }
 
 const step0Schema = Yup.object({
@@ -32,6 +37,9 @@ const step1Schema = Yup.object({
     .min(3, "Soyad en az 3 karakterden oluşmalı")
     .max(50, "Soyad en fazla 50 karakterden oluşmalı")
     .required("Soyad alanı zorunludur"),
+  tc: Yup.string()
+    .min(11, "Kimlik Numarası alanı 11 haneli olmalıdır")
+    .max(11, "Kimlik Numarası alanı 11 haneli olmalıdır"),
   email: Yup.string()
     .email("Geçerli bir e-posta adresi gir")
     .min(3, "E-posta en az 3 karakterden oluşmalı")
@@ -53,15 +61,18 @@ const step1Schema = Yup.object({
 
 const step2Schema = Yup.object({
   photoURL: Yup.string().required("Bir fotoğraf seçilmesi zorunludur"),
-  phoneNumber: Yup.string()
-    .matches(/^\+/, "Telefon numarası + işareti ile başlamalıdır")
-    .required("Telefon numarası zorunludur"),
+  phoneNumber: Yup.string().matches(
+    /^\+/,
+    "Telefon numarası + işareti ile başlamalıdır"
+  ),
+  birthDate: Yup.string(),
   address: Yup.object({
     country: Yup.number().nullable(),
     state: Yup.number().nullable(),
     city: Yup.number().nullable(),
     addressLine: Yup.string(),
   }),
+  joinedAt: Yup.string(),
 })
 
 const step3Schema = Yup.object({
@@ -74,6 +85,7 @@ const step4Schema = Yup.object({
 
 const inits: ICreateAccount = {
   id: "",
+  tc: "",
   email: "",
   firstName: "",
   lastName: "",
@@ -81,6 +93,7 @@ const inits: ICreateAccount = {
   confirmpassword: "",
   photoURL: "",
   phoneNumber: "",
+  birthDate: "",
   officeId: "",
   role: "",
   address: {
@@ -89,6 +102,9 @@ const inits: ICreateAccount = {
     city: undefined,
     addressLine: "",
   },
+  joinedAt: "",
+  createdAt: "",
+  updatedAt: "",
 }
 
 export {

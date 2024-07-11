@@ -1,25 +1,60 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { ChangeEvent, FC, useEffect, useState } from "react"
 import { ErrorMessage, Field } from "formik"
 import { getUserEmails } from "../../../_core/_requests"
+import { slugify } from "../../../../../../../_metronic/helpers/kyHelpers"
 
 interface Step1Props {
+  values: any
   setFieldValue: (
     field: string,
     value: string,
     shouldValidate?: boolean
   ) => void
+  emailAlreadyExists: boolean
+  setEmailAlreadyExists: any
 }
 
-const Step1: FC<Step1Props> = ({ setFieldValue }) => {
+const Step1: FC<Step1Props> = ({
+  values,
+  setFieldValue,
+  emailAlreadyExists,
+  setEmailAlreadyExists,
+}) => {
   const [currentEmail, setCurrentEmail] = useState("")
   const [emails, setEmails] = useState<string[]>()
-  const [emailAlreadyExists, setEmailAlreadyExists] = useState(false)
+  const [currentIdNo, setCurrentIdNo] = useState("")
+
+  const checkEmailAlreadyExists = (email: string) => {
+    if (emails && emails.includes(email)) {
+      setEmailAlreadyExists(true)
+    } else {
+      setEmailAlreadyExists(false)
+    }
+  }
 
   useEffect(() => {
     const fetchEmails = async () => setEmails(await getUserEmails())
 
     fetchEmails()
   }, [])
+
+  useEffect(() => {
+    const setEmailFromName = () => {
+      if (values.firstName && values.lastName) {
+        const emailFromName =
+          slugify(values.firstName + values.lastName) + "@keya.com.tr"
+
+        setFieldValue("email", emailFromName)
+        setCurrentEmail(emailFromName)
+
+        checkEmailAlreadyExists(emailFromName)
+      }
+    }
+
+    setEmailFromName()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.firstName, values.lastName])
 
   return (
     <div className="w-100">
@@ -60,6 +95,33 @@ const Step1: FC<Step1Props> = ({ setFieldValue }) => {
       </div>
 
       <div className="mb-10 fv-row">
+        <label className="form-label mb-3">
+          T.C. Kimlik No/Yabancı Kimlik No
+        </label>
+
+        <Field
+          type="text"
+          className="form-control form-control-lg form-control-solid"
+          name="tc"
+          value={currentIdNo}
+          onChange={(e: any) => {
+            e.preventDefault()
+            const value = e.target.value
+
+            if (/^\d*$/.test(value)) {
+              setCurrentIdNo(value)
+              setFieldValue("tc", value)
+              setFieldValue("password", value)
+              setFieldValue("confirmpassword", value)
+            }
+          }}
+        />
+        <div className="text-danger mt-2">
+          <ErrorMessage name="tc" />
+        </div>
+      </div>
+
+      <div className="mb-10 fv-row">
         <label className="form-label required mb-3">E-posta</label>
 
         <Field
@@ -71,11 +133,7 @@ const Step1: FC<Step1Props> = ({ setFieldValue }) => {
             setCurrentEmail(e.target.value ?? "")
             setFieldValue("email", e.target.value ?? "")
 
-            if (emails && emails.includes(e.target.value)) {
-              setEmailAlreadyExists(true)
-            } else {
-              setEmailAlreadyExists(false)
-            }
+            checkEmailAlreadyExists(e.target.value)
           }}
         />
         {emailAlreadyExists ? (

@@ -19,7 +19,13 @@ import { isNotEmpty, toAbsoluteUrl } from "../../../../../../_metronic/helpers"
 import { Office } from "../../../office-management/_core/_models"
 import { getAllOffices } from "../../../office-management/_core/_requests"
 
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage"
 import { firebaseApp } from "../../../../../../firebase/BaseConfig"
 import { httpsCallable, getFunctions } from "firebase/functions"
 import { getAuth } from "@firebase/auth"
@@ -32,10 +38,14 @@ import {
   State,
 } from "../../../../../../_metronic/helpers/address-helper/_models"
 import {
+  generateRandomName,
   getCitiesByState,
   getCountries,
   getStatesByCountry,
+  slugify,
 } from "../../../../../../_metronic/helpers/kyHelpers"
+
+import imageCompression from "browser-image-compression"
 
 const storage = getStorage(firebaseApp)
 const auth = getAuth()
@@ -70,15 +80,6 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
   const { setItemIdForUpdate } = useListView()
   const { refetch } = useQueryResponse()
 
-  const [uploadedImage, setUploadedImage] = useState<File | string | null>(null)
-  const [userForEdit, setUserForEdit] = useState<User>({
-    ...user,
-  })
-
-  const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(
-    userForEdit.photoURL as string
-  )
-
   const [countries, setCountries] = useState<Country[]>([])
 
   const [currentCountry, setCurrentCountry] = useState<string | null>("")
@@ -98,17 +99,83 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
 
   const [offices, setOffices] = useState<Office[]>()
 
+  const [uploadingImage, setUploadingImage] = useState(false)
+  const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null)
   const blankImg = toAbsoluteUrl("media/svg/avatars/blank.svg")
 
-  const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (
+    e: ChangeEvent<HTMLInputElement>,
+    setFieldValue: any
+  ) => {
     if (e.target.files?.[0]) {
-      const selectedFile = e.target.files[0]
-      setUploadedImage(selectedFile)
-      setUploadedImageUrl(URL.createObjectURL(selectedFile))
-      setUserForEdit((prevUser) => ({
-        ...prevUser,
-        photoURL: URL.createObjectURL(selectedFile),
-      }))
+      setUploadingImage(true)
+
+      let readyToUpload = e.target.files[0]
+      const fileSizeInMB = readyToUpload.size / (1024 * 1024)
+
+      if (fileSizeInMB > 2) {
+        try {
+          const compressionPromise = imageCompression(readyToUpload, {
+            maxSizeMB: 2,
+          })
+
+          toast.promise(
+            compressionPromise,
+            {
+              loading: `${readyToUpload.name} adlı yüksek boyutlu görsel sıkıştırılıyor, lütfen bekleyin...`,
+              success: `${readyToUpload.name} adlı görsel başarıyla sıkıştırıldı.`,
+              error: `${readyToUpload.name} adlı görsel sıkıştırılamadı. Lütfen tekrar deneyin veya farklı bir görsel yükleyin.`,
+            },
+            {
+              id: readyToUpload.name,
+              success: {
+                duration: 2000,
+              },
+              position: "bottom-right",
+            }
+          )
+
+          const compressedFile = await compressionPromise
+          readyToUpload = compressedFile
+        } catch (error) {
+          toast.error(
+            `${readyToUpload.name} adlı dosya yüklenemedi. Dosya boyutu 5 MB'den küçük olmalıdır!`
+          )
+        }
+      }
+
+      try {
+        const randomName = generateRandomName()
+        const storageRef = ref(
+          storage,
+          `images/users/${slugify(
+            user.firstName + "-" + user.lastName
+          )}-${randomName}`
+        )
+        await uploadBytes(storageRef, readyToUpload)
+        const downloadURL = await getDownloadURL(storageRef)
+        setUploadedImageUrl(downloadURL)
+        setFieldValue("photoURL", downloadURL)
+      } catch (error) {
+        console.error("Error uploading image:", error)
+        setUploadedImageUrl(null)
+      }
+    }
+
+    setUploadingImage(false)
+  }
+
+  const handleImageDelete = async (setFieldValue: any) => {
+    if (uploadedImageUrl) {
+      try {
+        const storageRef = ref(storage, uploadedImageUrl)
+        await deleteObject(storageRef)
+        setFieldValue("photoURL", "")
+        setUploadedImageUrl("")
+        toast.success("Görsel silindi.")
+      } catch (error) {
+        console.error("Error deleting image:", error)
+      }
     }
   }
 
@@ -119,11 +186,12 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
     setCurrentCountry(e.target.value)
     setFieldValue("address.country", e.target.value)
     setFieldValue("address.state", "")
+    setFieldValue("address.city", "")
+    setCurrentState("")
+    setCurrentCity("")
 
     if (e.target.value) {
-      const selectedOption = e.target.selectedOptions[0]
-      const countryId = selectedOption.getAttribute("country-id")
-      const statesArr = await getStatesByCountry(countryId ?? "")
+      const statesArr = await getStatesByCountry(e.target.value)
       setStates(statesArr || [])
       setCountrySelected(true)
     } else {
@@ -142,11 +210,10 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
     setCurrentState(e.target.value)
     setFieldValue("address.state", e.target.value)
     setFieldValue("address.city", "")
+    setCurrentCity("")
 
     if (e.target.value) {
-      const selectedOption = e.target.selectedOptions[0]
-      const stateId = selectedOption.getAttribute("state-id")
-      const citiesArr = await getCitiesByState(stateId ?? "")
+      const citiesArr = await getCitiesByState(e.target.value)
       setCities(citiesArr || [])
       setStateSelected(true)
     } else {
@@ -161,7 +228,7 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
     setFieldValue: any
   ) => {
     setCurrentCity(e.target.value)
-    setFieldValue("city", e.target.value)
+    setFieldValue("address.city", e.target.value)
   }
 
   const handlePhoneNumberChange = (
@@ -192,26 +259,14 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
           console.log("User is not authenticated. Please sign in.")
           return
         }
-        if (uploadedImage) {
-          try {
-            const storageRef = ref(
-              storage,
-              `images/avatars/avatar-${userForEdit.uid}`
-            )
-            await uploadBytes(storageRef, uploadedImage as File)
-            const downloadURL = await getDownloadURL(storageRef)
-            values.photoURL = downloadURL
-          } catch (error) {
-            console.error("Error uploading image:", error)
-          }
-        }
 
-        const oldOfficeId = userForEdit.officeId
+        const oldOfficeId = user.officeId
         const newOfficeId = values.officeId
 
         await removeUsersFromOffice(oldOfficeId, [values.uid])
         await addUsersToOffice(newOfficeId, [values.uid])
 
+        values.updatedAt = new Date().getTime().toString()
         await updateUser(values)
         await updateEmail({ uid: values.uid, newEmail: values.email })
 
@@ -266,6 +321,7 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
 
   useEffect(() => {
     if (user.phoneNumber) setCurrentPhoneNumber(user.phoneNumber)
+    if (user.photoURL) setUploadedImageUrl(user.photoURL)
   }, [user])
 
   return (
@@ -274,7 +330,7 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
         id="kt_modal_add_office_form"
         className="form"
         onSubmit={handleSubmit}
-        initialValues={userForEdit}
+        initialValues={user}
         validationSchema={editUserSchema}
         enableReinitialize={true}
         noValidate
@@ -292,15 +348,17 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
               data-kt-scroll-offset="300px"
             >
               <div className="fv-row mb-7">
+                {/* begin::Image input */}
                 <div
                   className="image-input image-input-outline"
                   data-kt-image-input="true"
                   style={{
                     backgroundImage: `url('${
-                      userForEdit.photoURL ? userForEdit.photoURL : blankImg
+                      uploadedImageUrl ? uploadedImageUrl : blankImg
                     }')`,
                   }}
                 >
+                  {/* begin::Preview existing avatar */}
                   <div
                     className="image-input-wrapper w-125px h-125px"
                     style={{
@@ -309,12 +367,14 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
                       }')`,
                     }}
                   ></div>
+                  {/* end::Preview existing avatar */}
 
+                  {/* begin::Label */}
                   <label
                     className="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
                     data-kt-image-input-action="change"
                     data-bs-toggle="tooltip"
-                    title="Fotoğrafı Değiştir"
+                    title="Fotoğraf Seçin"
                   >
                     <i className="bi bi-pencil-fill fs-7"></i>
 
@@ -322,14 +382,55 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
                       type="file"
                       name="avatar"
                       accept=".png, .jpg, .jpeg"
-                      onChange={handleImageChange}
+                      onChange={(e) => handleImageChange(e, setFieldValue)}
+                    />
+
+                    <input
+                      type="hidden"
+                      name="photoURL"
+                      value={uploadedImageUrl ? uploadedImageUrl : ""}
+                      className="d-none"
+                      disabled
                     />
                   </label>
+                  {/* end::Label */}
+
+                  {/* begin::Cancel */}
+                  {uploadedImageUrl && (
+                    <span
+                      className="btn btn-icon btn-circle btn-color-white w-25px h-25px bg-body shadow"
+                      data-kt-image-input-action="remove"
+                      data-bs-toggle="tooltip"
+                      title="Fotoğrafı Sil"
+                      onClick={() => handleImageDelete(setFieldValue)}
+                    >
+                      <i className="bi bi-x fs-7 text-gray-600"></i>
+                    </span>
+                  )}
+                  {/* end::Cancel */}
                 </div>
+                {/* end::Image input */}
 
                 <div className="form-text">
                   İzin verilen dosya türleri: png, jpg, jpeg.
                 </div>
+
+                <div className="text-danger mt-2">
+                  <ErrorMessage name="photoURL" className="mt-10" />
+                </div>
+
+                {uploadingImage ? (
+                  <div className="d-flex align-items-center gap-5 mt-5">
+                    <div className="text-gray-600 fw-semibold fs-7">
+                      <span className="spinner-border spinner-border-lg"></span>
+                    </div>
+                    <span className="text-gray-600">
+                      Görsel karşıya yükleniyor.
+                    </span>
+                  </div>
+                ) : (
+                  ""
+                )}
               </div>
 
               <div className="fv-row mb-7">
@@ -406,6 +507,21 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
               </div>
 
               <div className="fv-row mb-10">
+                <label className="d-flex align-items-center form-label">
+                  <span>Doğum Tarihi</span>
+                </label>
+
+                <Field
+                  type="date"
+                  className="form-control form-control-lg form-control-solid"
+                  name="birthDate"
+                />
+                <div className="text-danger mt-2">
+                  <ErrorMessage name="birthDate" />
+                </div>
+              </div>
+
+              <div className="fv-row mb-10">
                 <label className="form-label">Ülke</label>
 
                 <Field
@@ -418,11 +534,7 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
                   <option></option>
                   {countries &&
                     countries.map((country) => (
-                      <option
-                        country-id={country.id}
-                        value={country.id}
-                        key={country.id}
-                      >
+                      <option value={country.id} key={country.id}>
                         {country.translations.tr}
                       </option>
                     ))}
@@ -446,11 +558,7 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
                   <option></option>
                   {countrySelected
                     ? states.map((state) => (
-                        <option
-                          value={state.id}
-                          state-id={state.id}
-                          key={state.id}
-                        >
+                        <option value={state.id} key={state.id}>
                           {state.name}
                         </option>
                       ))
@@ -475,7 +583,7 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
                   <option></option>
                   {countrySelected && stateSelected
                     ? cities.map((city) => (
-                        <option value={city.id} city-id={city.id} key={city.id}>
+                        <option value={city.id} key={city.id}>
                           {city.name}
                         </option>
                       ))
@@ -678,6 +786,35 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
                       </div>
                     </label>
                   </div>
+                </div>
+              </div>
+
+              <div className="fv-row mb-10">
+                <label className="d-flex align-items-center form-label">
+                  <span>Referans Adı Soyadı</span>
+                </label>
+
+                <Field
+                  className="form-control form-control-lg form-control-solid"
+                  name="ref"
+                />
+                <div className="text-danger mt-2">
+                  <ErrorMessage name="ref" />
+                </div>
+              </div>
+
+              <div className="fv-row mb-10">
+                <label className="d-flex align-items-center form-label">
+                  <span>Katılım Tarihi</span>
+                </label>
+
+                <Field
+                  type="date"
+                  className="form-control form-control-lg form-control-solid"
+                  name="joinedAt"
+                />
+                <div className="text-danger mt-2">
+                  <ErrorMessage name="joinedAt" />
                 </div>
               </div>
             </div>

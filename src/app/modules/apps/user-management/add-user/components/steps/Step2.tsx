@@ -26,6 +26,7 @@ import {
   deleteObject,
 } from "firebase/storage"
 import { firebaseApp } from "../../../../../../../firebase/BaseConfig"
+import imageCompression from "browser-image-compression"
 
 const storage = getStorage(firebaseApp)
 
@@ -59,20 +60,46 @@ const Step2: FC<Step2Props> = ({ setFieldValue, values }) => {
   )
   const [countryCode, setCountryCode] = useState<string | null>("TR")
 
+  const [uploadingImage, setUploadingImage] = useState(false)
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null)
   const blankImg = toAbsoluteUrl("media/svg/avatars/blank.svg")
 
   const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
-      const file = e.target.files[0]
-      const fileSizeInMB = file.size / (1024 * 1024)
+      setUploadingImage(true)
+
+      let readyToUpload = e.target.files[0]
+      const fileSizeInMB = readyToUpload.size / (1024 * 1024)
 
       if (fileSizeInMB > 2) {
-        toast.error(
-          `${file.name} adlı dosya yüklenemedi. Dosya boyutu 2 MB'den küçük olmalıdır!`
-        )
-        setUploadedImageUrl(null)
-        return
+        try {
+          const compressionPromise = imageCompression(readyToUpload, {
+            maxSizeMB: 2,
+          })
+
+          toast.promise(
+            compressionPromise,
+            {
+              loading: `${readyToUpload.name} adlı yüksek boyutlu görsel sıkıştırılıyor, lütfen bekleyin...`,
+              success: `${readyToUpload.name} adlı görsel başarıyla sıkıştırıldı.`,
+              error: `${readyToUpload.name} adlı görsel sıkıştırılamadı. Lütfen tekrar deneyin veya farklı bir görsel yükleyin.`,
+            },
+            {
+              id: readyToUpload.name,
+              success: {
+                duration: 2000,
+              },
+              position: "bottom-right",
+            }
+          )
+
+          const compressedFile = await compressionPromise
+          readyToUpload = compressedFile
+        } catch (error) {
+          toast.error(
+            `${readyToUpload.name} adlı dosya yüklenemedi. Dosya boyutu 5 MB'den küçük olmalıdır!`
+          )
+        }
       }
 
       try {
@@ -83,7 +110,7 @@ const Step2: FC<Step2Props> = ({ setFieldValue, values }) => {
             values.firstName + "-" + values.lastName
           )}-${randomName}`
         )
-        await uploadBytes(storageRef, e.target.files[0])
+        await uploadBytes(storageRef, readyToUpload)
         const downloadURL = await getDownloadURL(storageRef)
         setUploadedImageUrl(downloadURL)
         setFieldValue("photoURL", downloadURL)
@@ -92,6 +119,8 @@ const Step2: FC<Step2Props> = ({ setFieldValue, values }) => {
         setUploadedImageUrl(null)
       }
     }
+
+    setUploadingImage(false)
   }
 
   const handleImageDelete = async () => {
@@ -99,12 +128,11 @@ const Step2: FC<Step2Props> = ({ setFieldValue, values }) => {
       try {
         const storageRef = ref(storage, uploadedImageUrl)
         await deleteObject(storageRef)
-        console.log(uploadedImageUrl)
         setFieldValue("photoURL", "")
+        setUploadedImageUrl("")
         toast.success("Görsel silindi.")
       } catch (error) {
         console.error("Error deleting image:", error)
-        toast.error("Görsel silinirken bir hata oluştu.")
       }
     }
   }
@@ -244,7 +272,7 @@ const Step2: FC<Step2Props> = ({ setFieldValue, values }) => {
               title="Fotoğrafı Sil"
               onClick={handleImageDelete}
             >
-              <i className="bi bi-x fs-7"></i>
+              <i className="bi bi-x fs-7 text-gray-600"></i>
             </span>
           )}
           {/* end::Cancel */}
@@ -260,11 +288,22 @@ const Step2: FC<Step2Props> = ({ setFieldValue, values }) => {
         <div className="text-danger mt-2">
           <ErrorMessage name="photoURL" className="mt-10" />
         </div>
+
+        {uploadingImage ? (
+          <div className="d-flex align-items-center gap-5 mt-5">
+            <div className="text-gray-600 fw-semibold fs-7">
+              <span className="spinner-border spinner-border-lg"></span>
+            </div>
+            <span className="text-gray-600">Görsel karşıya yükleniyor.</span>
+          </div>
+        ) : (
+          ""
+        )}
       </div>
       {/* end::Input group */}
 
       <div className="fv-row mb-10">
-        <label className="form-label required">Telefon Numarası</label>
+        <label className="form-label">Telefon Numarası</label>
 
         <div className="position-relative">
           <Field
@@ -285,6 +324,21 @@ const Step2: FC<Step2Props> = ({ setFieldValue, values }) => {
         </div>
         <div className="form-text">
           Lütfen numaranın başında ülke kodu bulundurun. Örn. +90
+        </div>
+      </div>
+
+      <div className="fv-row mb-10">
+        <label className="d-flex align-items-center form-label">
+          <span>Doğum Tarihi</span>
+        </label>
+
+        <Field
+          type="date"
+          className="form-control form-control-lg form-control-solid"
+          name="birthDate"
+        />
+        <div className="text-danger mt-2">
+          <ErrorMessage name="birthDate" />
         </div>
       </div>
 
@@ -379,6 +433,35 @@ const Step2: FC<Step2Props> = ({ setFieldValue, values }) => {
         </div>
 
         <div className="form-text">Detaylı adres bilgisi</div>
+      </div>
+
+      <div className="fv-row mb-10">
+        <label className="d-flex align-items-center form-label">
+          <span>Referans Adı Soyadı</span>
+        </label>
+
+        <Field
+          className="form-control form-control-lg form-control-solid"
+          name="ref"
+        />
+        <div className="text-danger mt-2">
+          <ErrorMessage name="ref" />
+        </div>
+      </div>
+
+      <div className="fv-row mb-10">
+        <label className="d-flex align-items-center form-label">
+          <span>Katılım Tarihi</span>
+        </label>
+
+        <Field
+          type="date"
+          className="form-control form-control-lg form-control-solid"
+          name="joinedAt"
+        />
+        <div className="text-danger mt-2">
+          <ErrorMessage name="joinedAt" />
+        </div>
       </div>
     </div>
   )
