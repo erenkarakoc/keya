@@ -25,6 +25,7 @@ import { getFunctions, httpsCallable } from "firebase/functions"
 
 import toast from "react-hot-toast"
 import { addUsersToOffice } from "../_core/_requests"
+import { timestampToISODate } from "../../../../../_metronic/helpers/kyHelpers"
 
 initializeApp(firebaseConfig)
 const functions = getFunctions()
@@ -63,8 +64,6 @@ const AddUser = () => {
   const submitStep = async (values: ICreateAccount, actions: FormikValues) => {
     if (!stepper) return
 
-    console.log(values)
-
     if (stepper.currentStepIndex !== stepper.totalStepsNumber) {
       stepper.goNext()
       setCurrentSchemaIndex((prevIndex) => prevIndex + 1)
@@ -72,8 +71,8 @@ const AddUser = () => {
       setSubmittingForm(true)
 
       try {
-        values.createdAt = new Date().getTime().toString()
-        values.updatedAt = new Date().getTime().toString()
+        values.createdAt = timestampToISODate(new Date().getTime().toString())
+        values.updatedAt = timestampToISODate(new Date().getTime().toString())
 
         const res: any = await registerUser(values)
 

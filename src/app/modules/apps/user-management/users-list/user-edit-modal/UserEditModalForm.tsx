@@ -96,6 +96,7 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
     "+90 "
   )
   const [countryCode, setCountryCode] = useState<string | null>("TR")
+  const [currentIdNo, setCurrentIdNo] = useState("")
 
   const [offices, setOffices] = useState<Office[]>()
 
@@ -322,6 +323,10 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
   useEffect(() => {
     if (user.phoneNumber) setCurrentPhoneNumber(user.phoneNumber)
     if (user.photoURL) setUploadedImageUrl(user.photoURL)
+    if (user.tc) {
+      setCurrentIdNo(user.tc)
+    }
+    console.log(user)
   }, [user])
 
   return (
@@ -503,6 +508,33 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
                 </div>
                 <div className="form-text">
                   Lütfen numaranın başında ülke kodu bulundurun. Örn. +90
+                </div>
+              </div>
+
+              <div className="mb-10 fv-row">
+                <label className="form-label mb-3">
+                  T.C. Kimlik No/Yabancı Kimlik No
+                </label>
+
+                <Field
+                  type="text"
+                  className="form-control form-control-lg form-control-solid"
+                  name="tc"
+                  value={currentIdNo}
+                  onChange={(e: any) => {
+                    e.preventDefault()
+                    const value = e.target.value
+
+                    if (/^\d*$/.test(value)) {
+                      setCurrentIdNo(value)
+                      setFieldValue("tc", value)
+                      setFieldValue("password", value)
+                      setFieldValue("confirmpassword", value)
+                    }
+                  }}
+                />
+                <div className="text-danger mt-2">
+                  <ErrorMessage name="tc" />
                 </div>
               </div>
 

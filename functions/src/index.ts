@@ -27,15 +27,11 @@ export const registerUser = functions.https.onCall(async (data) => {
   try {
     const {
       email,
-      firstName,
-      lastName,
       password,
       confirmpassword,
-      photoURL,
-      phoneNumber,
-      officeId,
-      role,
-      address,
+      firstName,
+      lastName,
+      ...rest
     } = data;
     if (password !== confirmpassword) {
       throw new functions.https.HttpsError(
@@ -51,17 +47,9 @@ export const registerUser = functions.https.onCall(async (data) => {
     await usersCollectionRef.doc(userRecord.uid).set({
       id: userRecord.uid,
       uid: userRecord.uid,
-      email,
-      firstName,
-      lastName,
-      photoURL,
-      phoneNumber,
-      officeId,
-      role,
-      address,
-      createdAt: userRecord.metadata.creationTime || "",
       searchIndexEmail: email,
       searchIndexName: firstName + " " + lastName,
+      ...rest,
     });
     return {
       success: true,
@@ -69,11 +57,10 @@ export const registerUser = functions.https.onCall(async (data) => {
       userId: userRecord.uid,
     };
   } catch (error) {
-    console.error("Error when registering user:", error);
     throw new functions.https.HttpsError(
       "unknown",
       "Error when registering user.",
-      error
+      error,
     );
   }
 });
