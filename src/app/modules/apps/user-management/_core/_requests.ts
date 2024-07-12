@@ -72,8 +72,8 @@ const getUsers = async (queryString: string): Promise<UsersQueryResponse> => {
 
       q = query(
         usersCollection,
-        where("searchIndexEmail", ">=", slugifiedSearchQuery),
-        where("searchIndexEmail", "<=", slugifiedSearchQuery + "\uf8ff")
+        where("email", ">=", slugifiedSearchQuery),
+        where("email", "<=", slugifiedSearchQuery + "\uf8ff")
       )
     }
 

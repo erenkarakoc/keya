@@ -6,7 +6,10 @@ import { KTIcon } from "../../../../_metronic/helpers"
 import { Property } from "../../../modules/apps/property-management/_core/_models"
 import { User } from "../../../modules/apps/user-management/_core/_models"
 import { Office } from "../../../modules/apps/office-management/_core/_models"
-import { formatPrice } from "../../../../_metronic/helpers/kyHelpers"
+import {
+  ISODateToTimestamp,
+  formatPrice,
+} from "../../../../_metronic/helpers/kyHelpers"
 
 type Props = {
   className: string
@@ -27,7 +30,7 @@ const DashboardPropertiesTable: React.FC<Props> = ({
     if (properties.length > 0) {
       const sortedProperties = [...properties].sort(
         (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          ISODateToTimestamp(b.createdAt) - ISODateToTimestamp(a.createdAt)
       )
       setLatestProperties(sortedProperties.slice(0, 10))
     }

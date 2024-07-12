@@ -43,6 +43,7 @@ import {
   getCountries,
   getStatesByCountry,
   slugify,
+  timestampToISODate,
 } from "../../../../../../_metronic/helpers/kyHelpers"
 
 import imageCompression from "browser-image-compression"
@@ -273,7 +274,7 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
         await removeUsersFromOffice(oldOfficeId, [values.uid])
         await addUsersToOffice(newOfficeId, [values.uid])
 
-        values.updatedAt = new Date().getTime().toString()
+        values.updatedAt = timestampToISODate(new Date().getTime().toString())
         await updateUser(values)
         await updateEmail({ uid: values.uid, newEmail: values.email })
 

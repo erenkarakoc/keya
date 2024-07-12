@@ -38,6 +38,7 @@ import toast from "react-hot-toast"
 import { getOfficeIdByUserId } from "../../user-management/_core/_requests"
 import { Modal } from "react-bootstrap"
 import { getPropertyFromSahibinden } from "../_core/_requests"
+import { timestampToISODate } from "../../../../../_metronic/helpers/kyHelpers"
 
 initializeApp(firebaseConfig)
 const db = getFirestore(firebaseApp)
@@ -109,9 +110,11 @@ const AddProperty = () => {
         const permitUntilDate =
           values?.ownerDetails?.permitUntilDate === "limitless"
             ? "limitless"
-            : new Date(values?.ownerDetails?.permitUntilDate ?? "")
-                .getTime()
-                .toString()
+            : timestampToISODate(
+                new Date(values?.ownerDetails?.permitUntilDate ?? "")
+                  .getTime()
+                  .toString()
+              )
 
         await updateDoc(newPropertyRef, {
           id: newPropertyRef.id,
@@ -125,8 +128,8 @@ const AddProperty = () => {
             permitUntilDate,
             permitPrice: values.ownerDetails?.permitPrice,
           },
-          createdAt: new Date().getTime().toString(),
-          updatedAt: new Date().getTime().toString(),
+          createdAt: timestampToISODate(new Date().getTime().toString()),
+          updatedAt: timestampToISODate(new Date().getTime().toString()),
         })
 
         setSubmittingForm(false)

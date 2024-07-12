@@ -2,8 +2,6 @@
 import { ID } from "../../../../../_metronic/helpers"
 import { Property, PropertiesQueryResponse } from "./_models"
 
-import { slugify } from "../../../../../_metronic/helpers/kyHelpers"
-
 import { firebaseConfig } from "../../../../../firebase/BaseConfig"
 import { initializeApp } from "firebase/app"
 import {
@@ -46,12 +44,10 @@ const getProperties = async (
 
     // Apply search filter if search query is provided
     if (searchQuery) {
-      const slugifiedSearchQuery = slugify(searchQuery)
-
       q = query(
         propertiesCollection,
-        where("title", ">=", slugifiedSearchQuery),
-        where("title", "<=", slugifiedSearchQuery + "\uf8ff")
+        where("title", ">=", searchQuery),
+        where("title", "<=", searchQuery + "\uf8ff")
       )
     }
 

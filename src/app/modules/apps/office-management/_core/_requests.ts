@@ -1,8 +1,6 @@
 import { ID } from "../../../../../_metronic/helpers"
 import { Office, OfficesQueryResponse } from "./_models"
 
-import { slugify } from "../../../../../_metronic/helpers/kyHelpers"
-
 import { firebaseConfig } from "../../../../../firebase/BaseConfig"
 import { initializeApp } from "firebase/app"
 import {
@@ -46,12 +44,10 @@ const getOffices = async (
 
     // Apply search filter if search query is provided
     if (searchQuery) {
-      const slugifiedSearchQuery = slugify(searchQuery)
-
       q = query(
         officesCollection,
-        where("name", ">=", slugifiedSearchQuery),
-        where("name", "<=", slugifiedSearchQuery + "\uf8ff")
+        where("name", ">=", searchQuery),
+        where("name", "<=", searchQuery + "\uf8ff")
       )
     }
 

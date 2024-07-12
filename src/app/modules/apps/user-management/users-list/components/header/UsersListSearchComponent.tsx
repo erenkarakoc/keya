@@ -33,7 +33,13 @@ const UsersListSearchComponent = () => {
     const handleKeyDown = (event: any) => {
       if (event.ctrlKey && event.key === "k") {
         event.preventDefault()
-        document.getElementById("users_list_search_user_input")?.focus()
+
+        const inputElement = document.getElementById(
+          "users_list_search_user_input"
+        ) as HTMLInputElement | null
+
+        inputElement?.focus()
+        inputElement?.select()
       }
     }
 

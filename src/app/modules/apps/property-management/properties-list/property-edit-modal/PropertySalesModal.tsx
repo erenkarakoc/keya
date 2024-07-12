@@ -11,6 +11,7 @@ import {
   getTransactionsByPropertyId,
   newTransaction,
 } from "../../../transactions-management/_core/_requests"
+import { timestampToISODate } from "../../../../../../_metronic/helpers/kyHelpers"
 
 interface PropertySalesModalProp {
   show: boolean
@@ -43,7 +44,7 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
     setFieldValue("saleDetails.soldPrice", currentSoldPrice)
 
     const date = new Date(currentSoldDate)
-    setFieldValue("saleDetails.soldDate", date.getTime())
+    setFieldValue("saleDetails.soldDate", timestampToISODate(date.getTime().toString()))
 
     setFieldValue("soldStatus.soldPrice", currentSoldPrice)
     setFieldValue("soldStatus.officeProfit", currentOfficeFee)
@@ -70,7 +71,8 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
       agentGotPaid: values.soldStatus.agentGotPaid,
       informationForm: values.soldStatus.informationForm,
       otherExpenses: values.soldStatus.otherExpenses,
-      createdAt: new Date().getTime().toString(),
+      createdAt: timestampToISODate(new Date().getTime().toString()),
+      updatedAt: timestampToISODate(new Date().getTime().toString()),
     }
 
     values.soldStatus = transaction

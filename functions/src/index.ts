@@ -49,10 +49,7 @@ export const registerUser = functions.https.onCall(async (data) => {
     const usersCollectionRef = admin.firestore().collection("users");
 
     const userData = {
-      id: userRecord.uid,
       uid: userRecord.uid,
-      searchIndexEmail: email,
-      searchIndexName: firstName + " " + lastName,
       firstName: firstName,
       lastName: lastName,
       ...rest,
