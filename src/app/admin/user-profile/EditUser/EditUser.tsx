@@ -25,6 +25,8 @@ import {
   getCountries,
   getStatesByCountry,
   getCitiesByState,
+  generateRandomName,
+  slugify,
 } from "../../../../_metronic/helpers/kyHelpers"
 
 import { isNotEmpty, toAbsoluteUrl } from "../../../../_metronic/helpers"
@@ -36,12 +38,19 @@ import {
 } from "../../../modules/apps/user-management/_core/_requests"
 import { getAllOffices } from "../../../modules/apps/office-management/_core/_requests"
 
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage"
+import {
+  deleteObject,
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytes,
+} from "firebase/storage"
 import { getAuth } from "@firebase/auth"
 import { getFunctions, httpsCallable } from "firebase/functions"
 import { firebaseApp } from "../../../../firebase/BaseConfig"
 import { UserDeleteModal } from "../../../modules/apps/user-management/users-list/user-delete-modal/UserDeleteModal"
 import { useAuth } from "../../../modules/auth"
+import imageCompression from "browser-image-compression"
 
 const storage = getStorage(firebaseApp)
 const auth = getAuth()
@@ -62,14 +71,13 @@ const EditUser: React.FC<Props> = ({ user, setUser }) => {
   const { currentUser } = useAuth()
   const [submittingForm, setSubmittingForm] = useState<boolean>(false)
 
-  const [uploadedImage, setUploadedImage] = useState<File | string | null>(null)
   const [userForEdit, setUserForEdit] = useState<User>({
     ...user,
   })
 
-  const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(
-    userForEdit.photoURL as string
-  )
+  const [uploadingImage, setUploadingImage] = useState(false)
+  const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null)
+  const blankImg = toAbsoluteUrl("media/svg/avatars/blank.svg")
 
   const [countries, setCountries] = useState<Country[]>([])
 
@@ -87,21 +95,84 @@ const EditUser: React.FC<Props> = ({ user, setUser }) => {
     "+90 "
   )
   const [countryCode, setCountryCode] = useState<string | null>("TR")
+  const [currentIdNo, setCurrentIdNo] = useState("")
 
   const [offices, setOffices] = useState<Office[]>()
   const [currentOfficeId, setCurrentOfficeId] = useState("")
 
-  const blankImg = toAbsoluteUrl("media/svg/avatars/blank.svg")
-
-  const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (
+    e: ChangeEvent<HTMLInputElement>,
+    setFieldValue: any
+  ) => {
     if (e.target.files?.[0]) {
-      const selectedFile = e.target.files[0]
-      setUploadedImage(selectedFile)
-      setUploadedImageUrl(URL.createObjectURL(selectedFile))
-      setUserForEdit((prevUser) => ({
-        ...prevUser,
-        photoURL: URL.createObjectURL(selectedFile),
-      }))
+      setUploadingImage(true)
+
+      let readyToUpload = e.target.files[0]
+      const fileSizeInMB = readyToUpload.size / (1024 * 1024)
+
+      if (fileSizeInMB > 2) {
+        try {
+          const compressionPromise = imageCompression(readyToUpload, {
+            maxSizeMB: 2,
+          })
+
+          toast.promise(
+            compressionPromise,
+            {
+              loading: `${readyToUpload.name} adlı yüksek boyutlu görsel sıkıştırılıyor, lütfen bekleyin...`,
+              success: `${readyToUpload.name} adlı görsel başarıyla sıkıştırıldı.`,
+              error: `${readyToUpload.name} adlı görsel sıkıştırılamadı. Lütfen tekrar deneyin veya farklı bir görsel yükleyin.`,
+            },
+            {
+              id: readyToUpload.name,
+              success: {
+                duration: 2000,
+              },
+              position: "bottom-right",
+            }
+          )
+
+          const compressedFile = await compressionPromise
+          readyToUpload = compressedFile
+        } catch (error) {
+          toast.error(
+            `${readyToUpload.name} adlı dosya yüklenemedi. Dosya boyutu 5 MB'den küçük olmalıdır!`
+          )
+        }
+      }
+
+      try {
+        const randomName = generateRandomName()
+        const storageRef = ref(
+          storage,
+          `images/users/${slugify(
+            user.firstName + "-" + user.lastName
+          )}-${randomName}`
+        )
+        await uploadBytes(storageRef, readyToUpload)
+        const downloadURL = await getDownloadURL(storageRef)
+        setUploadedImageUrl(downloadURL)
+        setFieldValue("photoURL", downloadURL)
+      } catch (error) {
+        console.error("Error uploading image:", error)
+        setUploadedImageUrl(null)
+      }
+    }
+
+    setUploadingImage(false)
+  }
+
+  const handleImageDelete = async (setFieldValue: any) => {
+    if (uploadedImageUrl) {
+      try {
+        const storageRef = ref(storage, uploadedImageUrl)
+        await deleteObject(storageRef)
+        setFieldValue("photoURL", "")
+        setUploadedImageUrl("")
+        toast.success("Görsel silindi.")
+      } catch (error) {
+        console.error("Error deleting image:", error)
+      }
     }
   }
 
@@ -112,11 +183,12 @@ const EditUser: React.FC<Props> = ({ user, setUser }) => {
     setCurrentCountry(e.target.value)
     setFieldValue("address.country", e.target.value)
     setFieldValue("address.state", "")
+    setFieldValue("address.city", "")
+    setCurrentState("")
+    setCurrentCity("")
 
     if (e.target.value) {
-      const selectedOption = e.target.selectedOptions[0]
-      const countryId = selectedOption.getAttribute("country-id")
-      const statesArr = await getStatesByCountry(countryId ?? "")
+      const statesArr = await getStatesByCountry(e.target.value.split("|")[1])
       setStates(statesArr || [])
       setCountrySelected(true)
     } else {
@@ -135,11 +207,12 @@ const EditUser: React.FC<Props> = ({ user, setUser }) => {
     setCurrentState(e.target.value)
     setFieldValue("address.state", e.target.value)
     setFieldValue("address.city", "")
+    setCurrentCity("")
 
     if (e.target.value) {
-      const selectedOption = e.target.selectedOptions[0]
-      const stateId = selectedOption.getAttribute("state-id")
-      const citiesArr = await getCitiesByState(stateId ?? "")
+      const citiesArr = await getCitiesByState(
+        e.target.getAttribute("state-id") ?? ""
+      )
       setCities(citiesArr || [])
       setStateSelected(true)
     } else {
@@ -178,19 +251,6 @@ const EditUser: React.FC<Props> = ({ user, setUser }) => {
         if (!auth.currentUser) {
           console.error("User is not authenticated. Please sign in.")
           return
-        }
-        if (uploadedImage) {
-          try {
-            const storageRef = ref(
-              storage,
-              `images/avatars/avatar-${userForEdit.uid}`
-            )
-            await uploadBytes(storageRef, uploadedImage as File)
-            const downloadURL = await getDownloadURL(storageRef)
-            values.photoURL = downloadURL
-          } catch (error) {
-            console.error("Error uploading image:", error)
-          }
         }
 
         const oldOfficeId = userForEdit.officeId
@@ -232,9 +292,11 @@ const EditUser: React.FC<Props> = ({ user, setUser }) => {
       setCountries(data)
 
       if (user.address?.country) {
-        const statesArr = await getStatesByCountry(user.address.country)
+        const statesArr = await getStatesByCountry(
+          user.address.country.split("|")[1]
+        )
         setStates(statesArr || [])
-        setCurrentCountry(user.address.country)
+        setCurrentCountry(user.address.country.split("|")[0])
         setCountrySelected(true)
       }
 
@@ -252,8 +314,12 @@ const EditUser: React.FC<Props> = ({ user, setUser }) => {
 
     fetchUserAddress()
 
-    if (user.phoneNumber) setCurrentPhoneNumber(user.phoneNumber)
     if (user.officeId) setCurrentOfficeId(user.officeId)
+    if (user.phoneNumber) setCurrentPhoneNumber(user.phoneNumber)
+    if (user.photoURL) setUploadedImageUrl(user.photoURL)
+    if (user.tc) {
+      setCurrentIdNo(user.tc)
+    }
   }, [user])
 
   return (
@@ -280,50 +346,90 @@ const EditUser: React.FC<Props> = ({ user, setUser }) => {
               className="d-flex justify-content-center align-items-center"
             >
               <div className="card-body mw-800px py-20">
-                <div className="row mb-8">
-                  <label className="col-lg-3 col-form-label">
-                    Profil Fotoğrafı
-                  </label>
-                  <div className="col-lg-9">
+                <div className="fv-row mb-7">
+                  {/* begin::Image input */}
+                  <div
+                    className="image-input image-input-outline"
+                    data-kt-image-input="true"
+                    style={{
+                      backgroundImage: `url('${
+                        uploadedImageUrl ? uploadedImageUrl : blankImg
+                      }')`,
+                    }}
+                  >
+                    {/* begin::Preview existing avatar */}
                     <div
-                      className="image-input image-input-outline"
-                      data-kt-image-input="true"
+                      className="image-input-wrapper w-125px h-125px"
                       style={{
                         backgroundImage: `url('${
-                          userForEdit.photoURL ? userForEdit.photoURL : blankImg
+                          uploadedImageUrl ? uploadedImageUrl : blankImg
                         }')`,
                       }}
+                    ></div>
+                    {/* end::Preview existing avatar */}
+
+                    {/* begin::Label */}
+                    <label
+                      className="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
+                      data-kt-image-input-action="change"
+                      data-bs-toggle="tooltip"
+                      title="Fotoğraf Seçin"
                     >
-                      <div
-                        className="image-input-wrapper w-125px h-125px"
-                        style={{
-                          backgroundImage: `url('${
-                            uploadedImageUrl ? uploadedImageUrl : blankImg
-                          }')`,
-                        }}
-                      ></div>
+                      <i className="bi bi-pencil-fill fs-7"></i>
 
-                      <label
-                        className="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-                        data-kt-image-input-action="change"
+                      <input
+                        type="file"
+                        name="avatar"
+                        accept=".png, .jpg, .jpeg"
+                        onChange={(e) => handleImageChange(e, setFieldValue)}
+                      />
+
+                      <input
+                        type="hidden"
+                        name="photoURL"
+                        value={uploadedImageUrl ? uploadedImageUrl : ""}
+                        className="d-none"
+                        disabled
+                      />
+                    </label>
+                    {/* end::Label */}
+
+                    {/* begin::Cancel */}
+                    {uploadedImageUrl && (
+                      <span
+                        className="btn btn-icon btn-circle btn-color-white w-25px h-25px bg-body shadow"
+                        data-kt-image-input-action="remove"
                         data-bs-toggle="tooltip"
-                        title="Fotoğrafı Değiştir"
+                        title="Fotoğrafı Sil"
+                        onClick={() => handleImageDelete(setFieldValue)}
                       >
-                        <i className="bi bi-pencil-fill fs-7"></i>
-
-                        <input
-                          type="file"
-                          name="avatar"
-                          accept=".png, .jpg, .jpeg"
-                          onChange={handleImageChange}
-                        />
-                      </label>
-                    </div>
-
-                    <div className="form-text">
-                      İzin verilen dosya türleri: png, jpg, jpeg.
-                    </div>
+                        <i className="bi bi-x fs-7 text-gray-600"></i>
+                      </span>
+                    )}
+                    {/* end::Cancel */}
                   </div>
+                  {/* end::Image input */}
+
+                  <div className="form-text">
+                    İzin verilen dosya türleri: png, jpg, jpeg.
+                  </div>
+
+                  <div className="text-danger mt-2">
+                    <ErrorMessage name="photoURL" className="mt-10" />
+                  </div>
+
+                  {uploadingImage ? (
+                    <div className="d-flex align-items-center gap-5 mt-5">
+                      <div className="text-gray-600 fw-semibold fs-7">
+                        <span className="spinner-border spinner-border-lg"></span>
+                      </div>
+                      <span className="text-gray-600">
+                        Görsel karşıya yükleniyor.
+                      </span>
+                    </div>
+                  ) : (
+                    ""
+                  )}
                 </div>
 
                 <div className="row mb-8">
@@ -360,6 +466,37 @@ const EditUser: React.FC<Props> = ({ user, setUser }) => {
                       <span className="text-danger mt-1">
                         <ErrorMessage name="lastName" />
                       </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="row mb-8">
+                  <label className="col-lg-3 col-form-label">
+                    T.C. Kimlik No/Yabancı Kimlik No
+                  </label>
+
+                  <div className="col-lg-9">
+                    <div className="d-flex flex-column">
+                      <Field
+                        type="text"
+                        className="form-control form-control-lg form-control-solid"
+                        name="tc"
+                        value={currentIdNo}
+                        onChange={(e: any) => {
+                          e.preventDefault()
+                          const value = e.target.value
+
+                          if (/^\d*$/.test(value)) {
+                            setCurrentIdNo(value)
+                            setFieldValue("tc", value)
+                            setFieldValue("password", value)
+                            setFieldValue("confirmpassword", value)
+                          }
+                        }}
+                      />
+                      <div className="text-danger mt-2">
+                        <ErrorMessage name="tc" />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -425,9 +562,30 @@ const EditUser: React.FC<Props> = ({ user, setUser }) => {
                 <div className="separator separator-dashed my-10"></div>
 
                 <div className="row mb-8">
+                  <label className="col-lg-3 col-form-label">
+                    <span>Doğum Tarihi</span>
+                  </label>
+
+                  <div className="col-lg-9">
+                    <div className="d-flex flex-column position-relative">
+                      <Field
+                        type="date"
+                        className="form-control form-control-lg form-control-solid"
+                        name="birthDate"
+                      />
+                      <div className="text-danger mt-2">
+                        <ErrorMessage name="birthDate" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="separator separator-dashed my-10"></div>
+
+                <div className="row mb-8">
                   <label className="col-lg-3 col-form-label">Ülke</label>
                   <div className="col-lg-9">
-                    <div className="d-flex flex-column ">
+                    <div className="d-flex flex-column">
                       <Field
                         as="select"
                         className="form-select form-select-lg form-select-solid"
@@ -441,8 +599,10 @@ const EditUser: React.FC<Props> = ({ user, setUser }) => {
                         {countries &&
                           countries.map((country) => (
                             <option
-                              country-id={country.id}
-                              value={country.id}
+                              value={
+                                country.translations.tr ||
+                                country.name + "|" + country.id
+                              }
                               key={country.id}
                             >
                               {country.translations.tr}
@@ -475,7 +635,7 @@ const EditUser: React.FC<Props> = ({ user, setUser }) => {
                         {countrySelected
                           ? states.map((state) => (
                               <option
-                                value={state.id}
+                                value={state.name + "|" + state.id}
                                 state-id={state.id}
                                 key={state.id}
                               >
@@ -509,7 +669,7 @@ const EditUser: React.FC<Props> = ({ user, setUser }) => {
                         {countrySelected && stateSelected
                           ? cities.map((city) => (
                               <option
-                                value={city.id}
+                                value={city.name + "|" + city.id}
                                 city-id={city.id}
                                 key={city.id}
                               >
@@ -742,7 +902,45 @@ const EditUser: React.FC<Props> = ({ user, setUser }) => {
                           </div>
                         </div>
                       </div>
+
                       <div className="separator separator-dashed my-10"></div>
+
+                      <div className="row mb-8">
+                        <label className="col-lg-3 col-form-label">
+                          <span>Referans Adı Soyadı</span>
+                        </label>
+
+                        <div className="col-lg-9">
+                          <div className="d-flex flex-column ">
+                            <Field
+                              className="form-control form-control-lg form-control-solid"
+                              name="ref"
+                            />
+                            <div className="text-danger mt-2">
+                              <ErrorMessage name="ref" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="row mb-8">
+                        <label className="col-lg-3 col-form-label">
+                          <span>Katılım Tarihi</span>
+                        </label>
+
+                        <div className="col-lg-9">
+                          <div className="d-flex flex-column ">
+                            <Field
+                              type="date"
+                              className="form-control form-control-lg form-control-solid"
+                              name="joinedAt"
+                            />
+                            <div className="text-danger mt-2">
+                              <ErrorMessage name="joinedAt" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </>
                   )}
 

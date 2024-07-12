@@ -192,7 +192,8 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
     setCurrentCity("")
 
     if (e.target.value) {
-      const statesArr = await getStatesByCountry(e.target.value)
+      const statesArr = await getStatesByCountry(e.target.value.split("|")[1])
+
       setStates(statesArr || [])
       setCountrySelected(true)
     } else {
@@ -214,7 +215,12 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
     setCurrentCity("")
 
     if (e.target.value) {
-      const citiesArr = await getCitiesByState(e.target.value)
+      const selectedOption = e.target.selectedOptions[0]
+      const stateId = selectedOption.getAttribute("state-id") ?? ""
+      const citiesArr = await getCitiesByState(stateId)
+
+      console.log(stateId)
+
       setCities(citiesArr || [])
       setStateSelected(true)
     } else {
@@ -299,14 +305,18 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
       setCountries(data)
 
       if (user.address?.country) {
-        const statesArr = await getStatesByCountry(user.address.country)
+        const statesArr = await getStatesByCountry(
+          user.address.country.split("|")[1]
+        )
         setStates(statesArr || [])
         setCurrentCountry(user.address.country)
         setCountrySelected(true)
       }
 
       if (user.address?.state) {
-        const citiesArr = await getCitiesByState(user.address.state)
+        const citiesArr = await getCitiesByState(
+          user.address.state.split("|")[1]
+        )
         setCities(citiesArr || [])
         setCurrentState(user.address.state)
         setStateSelected(true)
@@ -326,7 +336,6 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
     if (user.tc) {
       setCurrentIdNo(user.tc)
     }
-    console.log(user)
   }, [user])
 
   return (
@@ -466,6 +475,33 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
                 <ErrorMessage name="lastName" />
               </div>
 
+              <div className="mb-10 fv-row">
+                <label className="form-label mb-3">
+                  T.C. Kimlik No/Yabancı Kimlik No
+                </label>
+
+                <Field
+                  type="text"
+                  className="form-control form-control-lg form-control-solid"
+                  name="tc"
+                  value={currentIdNo}
+                  onChange={(e: any) => {
+                    e.preventDefault()
+                    const value = e.target.value
+
+                    if (/^\d*$/.test(value)) {
+                      setCurrentIdNo(value)
+                      setFieldValue("tc", value)
+                      setFieldValue("password", value)
+                      setFieldValue("confirmpassword", value)
+                    }
+                  }}
+                />
+                <div className="text-danger mt-2">
+                  <ErrorMessage name="tc" />
+                </div>
+              </div>
+
               <div className="fv-row mb-7">
                 <label className="required fw-bold fs-6 mb-2">E-posta</label>
 
@@ -511,33 +547,6 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
                 </div>
               </div>
 
-              <div className="mb-10 fv-row">
-                <label className="form-label mb-3">
-                  T.C. Kimlik No/Yabancı Kimlik No
-                </label>
-
-                <Field
-                  type="text"
-                  className="form-control form-control-lg form-control-solid"
-                  name="tc"
-                  value={currentIdNo}
-                  onChange={(e: any) => {
-                    e.preventDefault()
-                    const value = e.target.value
-
-                    if (/^\d*$/.test(value)) {
-                      setCurrentIdNo(value)
-                      setFieldValue("tc", value)
-                      setFieldValue("password", value)
-                      setFieldValue("confirmpassword", value)
-                    }
-                  }}
-                />
-                <div className="text-danger mt-2">
-                  <ErrorMessage name="tc" />
-                </div>
-              </div>
-
               <div className="fv-row mb-10">
                 <label className="d-flex align-items-center form-label">
                   <span>Doğum Tarihi</span>
@@ -566,8 +575,15 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
                   <option></option>
                   {countries &&
                     countries.map((country) => (
-                      <option value={country.id} key={country.id}>
-                        {country.translations.tr}
+                      <option
+                        value={
+                          (country.translations.tr || country.name) +
+                          "|" +
+                          country.id
+                        }
+                        key={country.id}
+                      >
+                        {country.translations.tr || country.name}
                       </option>
                     ))}
                 </Field>
@@ -590,7 +606,11 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
                   <option></option>
                   {countrySelected
                     ? states.map((state) => (
-                        <option value={state.id} key={state.id}>
+                        <option
+                          value={state.name + "|" + state.id}
+                          state-id={state.id}
+                          key={state.id}
+                        >
                           {state.name}
                         </option>
                       ))
@@ -615,7 +635,11 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
                   <option></option>
                   {countrySelected && stateSelected
                     ? cities.map((city) => (
-                        <option value={city.id} key={city.id}>
+                        <option
+                          value={city.name + "|" + city.id}
+                          city-id={city.id}
+                          key={city.id}
+                        >
                           {city.name}
                         </option>
                       ))
@@ -633,10 +657,10 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
 
                 <Field
                   className="form-control form-control-lg form-control-solid"
-                  name="addressLine"
+                  name="address.addressLine"
                 />
                 <div className="text-danger mt-2">
-                  <ErrorMessage name="addressLine" />
+                  <ErrorMessage name="address.addressLine" />
                 </div>
 
                 <div className="form-text">Detaylı adres bilgisi</div>

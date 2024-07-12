@@ -41,7 +41,9 @@ const Overview: React.FC<OverviewProps> = ({
       let city = ""
 
       if (user.address?.country) {
-        const countryData = await getCountryById(user.address.country)
+        const countryData = await getCountryById(
+          user.address.country.split("|")[1]
+        )
         country = countryData ? countryData.translations.tr : ""
       }
       if (user.address?.state) {

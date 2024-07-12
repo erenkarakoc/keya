@@ -44,9 +44,8 @@ const Step2: FC<Step2Props> = ({ setFieldValue }) => {
     setFieldValue("address.country", e.target.value)
 
     if (e.target.value) {
-      const selectedOption = e.target.selectedOptions[0]
-      const countryId = selectedOption.getAttribute("country-id")
-      const statesArr = await getStatesByCountry(countryId as string)
+      const statesArr = await getStatesByCountry(e.target.value.split("|")[1])
+
       setStates(statesArr || [])
       setCountrySelected(true)
     } else {
@@ -60,9 +59,7 @@ const Step2: FC<Step2Props> = ({ setFieldValue }) => {
     setFieldValue("address.state", e.target.value)
 
     if (e.target.value) {
-      const selectedOption = e.target.selectedOptions[0]
-      const stateId = selectedOption.getAttribute("state-id")
-      const citiesArr = await getCitiesByState(stateId ?? "")
+      const citiesArr = await getCitiesByState(e.target.value.split("|")[1])
       setCities(citiesArr || [])
       setStateSelected(true)
     } else {
@@ -166,8 +163,9 @@ const Step2: FC<Step2Props> = ({ setFieldValue }) => {
           {countries &&
             countries.map((country) => (
               <option
-                country-id={country.id}
-                value={country.id}
+                value={
+                  country.translations.tr || country.name + "|" + country.id
+                }
                 key={country.id}
               >
                 {country.translations.tr}
@@ -193,7 +191,11 @@ const Step2: FC<Step2Props> = ({ setFieldValue }) => {
           <option></option>
           {countrySelected
             ? states.map((state) => (
-                <option value={state.id} state-id={state.id} key={state.id}>
+                <option
+                  value={state.name + "|" + state.id}
+                  state-id={state.id}
+                  key={state.id}
+                >
                   {state.name}
                 </option>
               ))
@@ -218,7 +220,11 @@ const Step2: FC<Step2Props> = ({ setFieldValue }) => {
           <option></option>
           {countrySelected && stateSelected
             ? cities.map((city) => (
-                <option value={city.id} city-id={city.id} key={city.id}>
+                <option
+                  value={city.name + "|" + city.id}
+                  city-id={city.id}
+                  key={city.id}
+                >
                   {city.name}
                 </option>
               ))

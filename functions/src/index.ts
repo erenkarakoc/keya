@@ -33,34 +33,44 @@ export const registerUser = functions.https.onCall(async (data) => {
       lastName,
       ...rest
     } = data;
+
     if (password !== confirmpassword) {
       throw new functions.https.HttpsError(
         "invalid-argument",
         "Password and confirm password do not match."
       );
     }
+
     const userRecord = await admin.auth().createUser({
       email,
       password,
     });
+
     const usersCollectionRef = admin.firestore().collection("users");
-    await usersCollectionRef.doc(userRecord.uid).set({
+
+    const userData = {
       id: userRecord.uid,
       uid: userRecord.uid,
       searchIndexEmail: email,
       searchIndexName: firstName + " " + lastName,
+      firstName: firstName,
+      lastName: lastName,
       ...rest,
-    });
+    };
+
+    await usersCollectionRef.doc(userRecord.uid).set(userData);
+
     return {
       success: true,
       message: "User registered successfully.",
-      userId: userRecord.uid,
+      userData: userData,
     };
   } catch (error) {
+    console.error("Error when registering user:", error);
     throw new functions.https.HttpsError(
       "unknown",
       "Error when registering user.",
-      error,
+      error
     );
   }
 });

@@ -67,9 +67,9 @@ const step2Schema = Yup.object({
   ),
   birthDate: Yup.string(),
   address: Yup.object({
-    country: Yup.number().nullable(),
-    state: Yup.number().nullable(),
-    city: Yup.number().nullable(),
+    country: Yup.string(),
+    state: Yup.string(),
+    city: Yup.string(),
     addressLine: Yup.string(),
   }),
   joinedAt: Yup.string(),
