@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
 import { Office } from "../../../modules/apps/office-management/_core/_models"
+import { User } from "../../../modules/apps/user-management/_core/_models"
 
 import { getOfficeById } from "../../../modules/apps/office-management/_core/_requests"
 
@@ -27,6 +28,7 @@ const OfficeDetail = () => {
   const { id } = useParams()
   const [office, setOffice] = useState<Office>()
   const [officeAddress, setOfficeAddress] = useState("")
+  const [users, setUsers] = useState<User[]>()
 
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperModel | null>(null)
 
@@ -225,6 +227,12 @@ const OfficeDetail = () => {
                       <span>İlanlar</span>
                     </li>
                     <li
+                      className={`${activeTab === "users" ? "active" : ""}`}
+                      onClick={() => setActiveTab("users")}
+                    >
+                      <span>İlanlar</span>
+                    </li>
+                    <li
                       className={`${activeTab === "comments" ? "active" : ""}`}
                       onClick={() => setActiveTab("comments")}
                     >
@@ -257,7 +265,15 @@ const OfficeDetail = () => {
                       : " d-flex flex-column"
                   }`}
                 >
-                  <OfficePropertiesList office={office} />
+                  <OfficePropertiesList office={office} properties={properties} />
+                </div>
+
+                <div
+                  className={`ky-office-tab${
+                    activeTab != "users" ? " d-none" : " d-flex flex-column"
+                  }`}
+                >
+                  <OfficeUsersList users={users} />
                 </div>
 
                 <div

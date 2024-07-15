@@ -24,7 +24,7 @@ const OfficeUsersCell: FC<Props> = ({ userIds }) => {
               if (
                 user &&
                 usersArr.length <= 4 &&
-                (user.role === "agent" || user.role === "broker")
+                (user.role === "agent" || user.role === "broker" || user.role === "admin")
               ) {
                 usersArr.push(user)
               }
@@ -57,7 +57,7 @@ const OfficeUsersCell: FC<Props> = ({ userIds }) => {
               key={user.id}
               className="symbol symbol-circle symbol-30px with-tooltip overflow-hidden"
               style={{
-                marginRight: -30,
+                marginRight: -20,
                 border: "2px solid #fff",
               }}
             >

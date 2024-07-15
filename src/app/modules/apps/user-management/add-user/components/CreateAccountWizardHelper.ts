@@ -1,7 +1,6 @@
 import * as Yup from "yup"
 
 export type ICreateAccount = {
-  id: string
   tc: string
   email: string
   firstName: string
@@ -30,11 +29,9 @@ const step0Schema = Yup.object({
 
 const step1Schema = Yup.object({
   firstName: Yup.string()
-    .min(3, "Ad en az 3 karakterden oluşmalı")
     .max(50, "Ad en fazla 50 karakterden oluşmalı")
     .required("Ad alanı zorunludur"),
   lastName: Yup.string()
-    .min(3, "Soyad en az 3 karakterden oluşmalı")
     .max(50, "Soyad en fazla 50 karakterden oluşmalı")
     .required("Soyad alanı zorunludur"),
   tc: Yup.string()
@@ -84,7 +81,6 @@ const step4Schema = Yup.object({
 })
 
 const inits: ICreateAccount = {
-  id: "",
   tc: "",
   email: "",
   firstName: "",

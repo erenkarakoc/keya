@@ -8,6 +8,8 @@ import { Office } from "../../../../modules/apps/office-management/_core/_models
 
 interface Props {
   office: Office
+  properties: Property[]
+  propertiesLoaded: boolean
 }
 
 const PAGE_SIZE = 8

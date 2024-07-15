@@ -20,19 +20,14 @@ const serviceAccountConfig: admin.ServiceAccount =
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccountConfig),
   databaseURL:
-    "https://keya-web-default-rtdb." + "europe-west1.firebasedatabase.app",
+    "https://keya-web-default-rtdb.europe-west1.firebasedatabase.app",
 });
 
 export const registerUser = functions.https.onCall(async (data) => {
   try {
-    const {
-      email,
-      password,
-      confirmpassword,
-      firstName,
-      lastName,
-      ...rest
-    } = data;
+    const email = data.email;
+    const password = data.password;
+    const confirmpassword = data.confirmpassword;
 
     if (password !== confirmpassword) {
       throw new functions.https.HttpsError(
@@ -48,22 +43,18 @@ export const registerUser = functions.https.onCall(async (data) => {
 
     const usersCollectionRef = admin.firestore().collection("users");
 
-    const userData = {
+    await usersCollectionRef.doc(userRecord.uid).set({
+      id: userRecord.uid,
       uid: userRecord.uid,
-      firstName: firstName,
-      lastName: lastName,
-      ...rest,
-    };
-
-    await usersCollectionRef.doc(userRecord.uid).set(userData);
+      ...data,
+    });
 
     return {
       success: true,
       message: "User registered successfully.",
-      userData: userData,
+      userData: userRecord,
     };
   } catch (error) {
-    console.error("Error when registering user:", error);
     throw new functions.https.HttpsError(
       "unknown",
       "Error when registering user.",

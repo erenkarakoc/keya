@@ -4,12 +4,21 @@ import { KTIcon } from "../../../../../../../_metronic/helpers"
 import { UsersListFilter } from "./UsersListFilter"
 
 import * as XLSX from "xlsx"
-import { getAllUsers } from "../../../_core/_requests"
+
 import { User } from "../../../_core/_models"
-import { getUserRoleText } from "../../../../../../../_metronic/helpers/kyHelpers"
+import { Office } from "../../../../office-management/_core/_models"
+
+import { getAllUsers } from "../../../_core/_requests"
+import { getAllOffices } from "../../../../office-management/_core/_requests"
+
+import {
+  getUserRoleText,
+  slugify,
+} from "../../../../../../../_metronic/helpers/kyHelpers"
 
 const exportUsersToExcel = async () => {
   const data: User[] = await getAllUsers()
+  const offices: Office[] = await getAllOffices()
 
   const headers: { header: string; key: string }[] = [
     { header: "TC", key: "tc" },
@@ -26,8 +35,8 @@ const exportUsersToExcel = async () => {
     { header: "Referans", key: "ref" },
     { header: "Katılış Tarihi", key: "joinedAt" },
     { header: "Kullanıcı Sayfası", key: "id" },
-    { header: "Ofis Sayfası", key: "officeId" },
     { header: "Fotoğraf", key: "photoURL" },
+    { header: "Ofis Sayfası", key: "officeId" },
     { header: "Sisteme Kayıt Tarihi", key: "createdAt" },
     { header: "Son Güncelleme Tarihi", key: "updatedAt" },
   ]
@@ -54,6 +63,20 @@ const exportUsersToExcel = async () => {
         if (value && key === "role") {
           value = getUserRoleText(value)
         }
+        if (value && key === "officeId") {
+          const office = offices.find((office) => office.id === value)
+
+          if (office) {
+            value =
+              import.meta.env.VITE_APP_NAME +
+              " " +
+              office.name +
+              "|" +
+              office.id
+          } else {
+            value = ""
+          }
+        }
       })
 
       formattedUser[header.header] = value
@@ -64,26 +87,60 @@ const exportUsersToExcel = async () => {
 
   const worksheet = XLSX.utils.json_to_sheet(formattedData, {
     header: headers.map((h) => h.header),
+    cellStyles: true,
   })
+
+  worksheet["!autofilter"] = { ref: `A1:R1` }
 
   formattedData.forEach((user, index) => {
     const rowIndex = index + 2
+
+    if (user["Telefon"]) {
+      worksheet[`E${rowIndex}`] = {
+        f: `HYPERLINK("https://wa.me/${slugify(user["Telefon"])}", "${
+          user["Telefon"]
+        }")`,
+      }
+    }
     if (user["Kullanıcı Sayfası"]) {
       worksheet[`N${rowIndex}`] = {
         f: `HYPERLINK("https://keya.com.tr/kullanici-detayi/${user["Kullanıcı Sayfası"]}", "Link")`,
       }
     }
-    if (user["Ofis Sayfası"]) {
-      worksheet[`O${rowIndex}`] = {
-        f: `HYPERLINK("https://keya.com.tr/ofis-detayi/${user["Ofis Sayfası"]}", "Link")`,
-      }
-    }
     if (user["Fotoğraf"]) {
-      worksheet[`P${rowIndex}`] = {
+      worksheet[`O${rowIndex}`] = {
         f: `HYPERLINK("${user["Fotoğraf"]}", "Link")`,
       }
     }
+    if (user["Ofis Sayfası"]) {
+      worksheet[`P${rowIndex}`] = {
+        f: `HYPERLINK("https://keya.com.tr/ofis-detayi/${
+          user["Ofis Sayfası"].split("|")[1]
+        }", "${user["Ofis Sayfası"].split("|")[0]}")`,
+      }
+    }
   })
+
+  worksheet["!cols"] = [
+    { width: 12 },
+    { width: 15 },
+    { width: 15 },
+    { width: 28 },
+    { width: 16 },
+    { width: 7 },
+    { width: 9 },
+    { width: 13 },
+    { width: 13 },
+    { width: 10 },
+    { width: 21 },
+    { width: 20 },
+    { width: 10 },
+    { width: 4.5 },
+    { width: 4.5 },
+    { width: 14 },
+    { width: 10 },
+    { width: 10 },
+  ]
 
   const workbook = XLSX.utils.book_new()
   XLSX.utils.book_append_sheet(workbook, worksheet, "Tüm Kullanıcılar")

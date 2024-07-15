@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FC, useState, useEffect, ChangeEvent, DragEvent } from "react"
 
@@ -14,7 +15,7 @@ import { Office } from "../../_core/_models"
 
 import {
   generateRandomName,
-  slugify,
+  urlify,
 } from "../../../../../../_metronic/helpers/kyHelpers"
 import {
   getCountries,
@@ -48,6 +49,8 @@ import MultiSelect from "../../../components/multiselect/MultiSelect"
 
 import { AsYouType } from "libphonenumber-js"
 
+import imageCompression from "browser-image-compression"
+
 import {
   step1Schema,
   step2Schema,
@@ -77,6 +80,8 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
   const [submittingForm, setSubmittingForm] = useState<boolean>(false)
 
   const [isDragging, setIsDragging] = useState(false)
+  const [uploadingImages, setUploadingImages] = useState(false)
+  const [totalImagesToUpload, setTotalImagesToUpload] = useState(0)
   const [uploadedImageUrls, setUploadedImageUrls] = useState<string[]>([])
   const [lightboxOpen, setLightboxOpen] = useState(false)
 
@@ -102,44 +107,78 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
   )
   const [countryCode, setCountryCode] = useState<string | null>("TR")
 
-  const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (
+    e: ChangeEvent<HTMLInputElement>,
+    setFieldValue: any
+  ) => {
     const files = e.target.files
     if (files && files.length > 0) {
-      await handleFiles(Array.from(files))
+      await handleFiles(Array.from(files), setFieldValue)
     }
   }
 
-  const handleFiles = async (files: File[]) => {
+  const handleFiles = async (files: File[], setFieldValue: any) => {
     const uploadPromises: Promise<void>[] = []
     const currentCount = uploadedImageUrls.length
-    const remainingSlots = 50 - currentCount
+    const remainingSlots = 100 - currentCount
 
-    if (currentCount >= 50) {
-      toast.error("En fazla 50 görsel ekleyebilirsiniz.")
+    setUploadingImages(true)
+    setTotalImagesToUpload(files.length)
+
+    if (currentCount >= 100) {
+      toast.error("En fazla 100 görsel ekleyebilirsiniz.")
       return
     }
 
     const filesToUpload = files.slice(0, remainingSlots)
     const excessFiles = files.slice(remainingSlots)
 
-    filesToUpload.forEach((file) => {
+    filesToUpload.forEach(async (file) => {
+      let readyToUpload = file
       const fileSizeInMB = file.size / (1024 * 1024)
+
       if (fileSizeInMB > 2) {
-        toast.error(
-          `${file.name} adlı dosya yüklenemedi. Dosya boyutu 2 MB'den küçük olmalıdır!`
-        )
-        return
+        try {
+          const compressionPromise = imageCompression(file, { maxSizeMB: 2 })
+
+          toast.promise(
+            compressionPromise,
+            {
+              loading: `${file.name} adlı yüksek boyutlu görsel sıkıştırılıyor, lütfen bekleyin...`,
+              success: `${file.name} adlı görsel başarıyla sıkıştırıldı.`,
+              error: `${file.name} adlı görsel sıkıştırılamadı. Lütfen tekrar deneyin veya farklı bir görsel yükleyin.`,
+            },
+            {
+              id: file.name,
+              success: {
+                duration: 2000,
+              },
+              position: "bottom-right",
+            }
+          )
+
+          const compressedFile = await compressionPromise
+          readyToUpload = compressedFile
+        } catch (error) {
+          toast.error(
+            `${file.name} adlı dosya yüklenemedi. Dosya boyutu 5 MB'den küçük olmalıdır!`
+          )
+        }
       }
 
       const randomName = generateRandomName()
       const storageRef = ref(
         storage,
-        `images/offices/${slugify(office.name)}/${randomName}`
+        `images/offices/${urlify(office.name)}/${randomName}`
       )
-      const uploadPromise = uploadBytes(storageRef, file)
+      const uploadPromise = uploadBytes(storageRef, readyToUpload)
         .then(() => getDownloadURL(storageRef))
         .then((downloadURL) => {
-          setUploadedImageUrls((prevUrls) => [...prevUrls, downloadURL])
+          setUploadedImageUrls((prevUrls) => {
+            const updatedUrls = [...prevUrls, downloadURL]
+            setFieldValue("photoURLs", updatedUrls)
+            return updatedUrls
+          })
         })
         .catch((error) => console.error("Error uploading image:", error))
 
@@ -148,23 +187,32 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
 
     await Promise.all(uploadPromises)
 
+    setUploadingImages(false)
+
     if (excessFiles.length > 0) {
-      toast.error("En fazla 50 görsel ekleyebilirsiniz.")
+      toast.error("En fazla 100 görsel ekleyebilirsiniz.")
     }
   }
 
-  const handleImageDelete = async (url: string, setFieldValue: any) => {
+  const handleImageDelete = async (url: string) => {
     try {
       const storageRef = ref(storage, url)
 
+      await getDownloadURL(storageRef)
       await deleteObject(storageRef)
 
       setUploadedImageUrls((prevUrls) =>
         prevUrls.filter((prevUrl) => prevUrl !== url)
       )
-      setFieldValue("photoURLs", uploadedImageUrls)
-    } catch (error) {
-      console.error("Error deleting image:", error)
+    } catch (error: any) {
+      if (error.code === "storage/object-not-found") {
+        setUploadedImageUrls((prevUrls) =>
+          prevUrls.filter((prevUrl) => prevUrl !== url)
+        )
+        console.log("Object does not exist")
+      } else {
+        console.error("Error deleting image:", error)
+      }
     }
   }
 
@@ -264,17 +312,24 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
   useEffect(() => {
     const fetchBrokers = async () => {
       try {
-        2
-        const response = await getUsersByRole("broker")
-        if (response) {
-          const brokersArr = response.map((user) => ({
+        const brokers = await getUsersByRole("broker")
+        const admins = await getUsersByRole("admin")
+
+        if (brokers && admins) {
+          const brokersArr = brokers.map((user) => ({
+            id: user.id,
+            label: user.email,
+          }))
+          const adminsArr = admins.map((user) => ({
             id: user.id,
             label: user.email,
           }))
 
+          const usersArr = brokersArr.concat(adminsArr)
+
           const owners: string[] = office.owners
 
-          const chosenBrokersArr = brokersArr
+          const chosenBrokersArr = usersArr
             .filter((broker) => owners.includes(broker.id))
             .map((broker) => ({
               id: broker.id,
@@ -282,7 +337,7 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
             }))
 
           setChosenBrokers(chosenBrokersArr)
-          setBrokers(brokersArr)
+          setBrokers(usersArr)
         }
       } catch (error) {
         console.error("Error fetching brokers:", error)
@@ -378,7 +433,10 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                       e.dataTransfer.files &&
                       e.dataTransfer.files.length > 0
                     ) {
-                      await handleFiles(Array.from(e.dataTransfer.files))
+                      await handleFiles(
+                        Array.from(e.dataTransfer.files),
+                        setFieldValue
+                      )
                       e.dataTransfer.clearData()
                     }
                   }}
@@ -387,9 +445,7 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                     id="ky-office-image-input"
                     type="file"
                     accept=".png, .jpg, .jpeg"
-                    onChange={(e) => {
-                      handleImageChange(e)
-                    }}
+                    onChange={(e) => handleImageChange(e, setFieldValue)}
                     multiple
                   />
                   <label htmlFor="ky-office-image-input">
@@ -401,8 +457,22 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                   İzin verilen dosya türleri: png, jpg, jpeg.
                 </div>
 
+                {uploadingImages ? (
+                  <div className="d-flex align-items-center gap-5 mt-5">
+                    <div className="text-gray-600 fw-semibold fs-7">
+                      <span className="spinner-border spinner-border-lg"></span>
+                    </div>
+                    <span className="text-gray-600">
+                      Görseller karşıya yükleniyor. {uploadedImageUrls.length} /{" "}
+                      {totalImagesToUpload} yüklendi.
+                    </span>
+                  </div>
+                ) : (
+                  ""
+                )}
+
                 <div
-                  className="image-input image-input-outline d-flex flex-wrap mt-6"
+                  className="image-input image-input-outline d-flex flex-wrap py-5 px-2 gap-2 mt-6"
                   data-kt-image-input="true"
                   style={{ maxHeight: 300, overflowY: "auto" }}
                 >
@@ -414,13 +484,14 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                         backgroundImage: `url(${url})`,
                         cursor: "pointer",
                         flexShrink: 0,
+                        boxShadow: "0 0 10px -2px rgba(0, 0, 0, 0.1)",
                       }}
                       onClick={() => {
                         setLightboxOpen(true)
                       }}
                     >
                       <label
-                        className="btn btn-icon btn-circle btn-color-white w-20px h-20px bg-gray-300 bg-hover-gray-400 shadow"
+                        className="btn btn-icon btn-circle btn-color-white w-20px h-20px bg-gray-500 bg-hover-gray-400 shadow"
                         data-kt-image-input-action="change"
                         data-bs-toggle="tooltip"
                         title="Fotoğrafı Sil"
@@ -431,7 +502,7 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                         }}
                         onClick={(e) => {
                           e.stopPropagation()
-                          handleImageDelete(url, setFieldValue)
+                          handleImageDelete(url)
                         }}
                       >
                         <i className="bi bi-x fs-7"></i>
@@ -441,7 +512,7 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                   ))}
                 </div>
 
-                {uploadedImageUrls.length ? (
+                {!uploadingImages && uploadedImageUrls.length ? (
                   <div className="form-text mt-2">
                     {uploadedImageUrls.length} görsel yüklendi.
                   </div>
@@ -593,7 +664,11 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                   {countries &&
                     countries.map((country) => (
                       <option
-                        value={(country.translations.tr || country.name) + "|" + country.id}
+                        value={
+                          (country.translations.tr || country.name) +
+                          "|" +
+                          country.id
+                        }
                         key={country.id}
                       >
                         {country.translations.tr}

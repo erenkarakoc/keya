@@ -304,9 +304,9 @@ const getCurrentMonthNameTurkish = (currentDate: Date) => {
 }
 
 const timestampToISODate = (timestamp: string) => {
-  const date = new Date(parseInt(timestamp))
+  const date = new Date(Number(timestamp))
   const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, "0") // Month is zero-based, so add 1
+  const month = String(date.getMonth() + 1).padStart(2, "0")
   const day = String(date.getDate()).padStart(2, "0")
 
   return `${year}-${month}-${day}`

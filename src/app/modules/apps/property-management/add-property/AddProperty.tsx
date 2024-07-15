@@ -380,7 +380,12 @@ const AddProperty = () => {
                                   map
                                 )
                                 setQuickAddModalShow(false)
+                                setPastedData("")
+                                toast.success(
+                                  "Bilgiler Sahibinden ilanından getirildi."
+                                )
                               } else {
+                                setPastedData("")
                                 toast.error(
                                   "Lütfen geçerli bir Sahibinden ilanı verisi sağlayın."
                                 )
