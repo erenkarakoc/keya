@@ -1,9 +1,9 @@
-.swiper {
+.property-profile-header .swiper {
   width: 100%;
   height: 100%;
 }
 
-.swiper-slide {
+.property-profile-header .swiper-slide {
   text-align: center;
   font-size: 18px;
   background: #fff;
@@ -12,67 +12,73 @@
   align-items: center;
 }
 
-.swiper-slide img {
+.property-profile-header .swiper-slide img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.swiper {
+.property-profile-header .swiper {
   width: 100%;
   height: 300px;
   margin-left: auto;
   margin-right: auto;
+  border-radius: 15px;
+  overflow: hidden;
 }
 
-.swiper-slide {
+.property-profile-header .swiper-slide {
   background-size: cover;
   background-position: center;
 }
 
-.mainSwiper {
+.property-profile-header .mainSwiper {
   height: 80%;
   width: 100%;
 }
 
-.thumbnailSwiper {
+.property-profile-header .thumbnailSwiper {
   height: 20%;
   box-sizing: border-box;
-  padding: 10px 0;
+  margin-top: 10px;
+  border-radius: 10px;
 }
 
-.thumbnailSwiper .swiper-slide {
+.property-profile-header .thumbnailSwiper .swiper-slide {
+  aspect-ratio: 1 / 1;
   width: 25%;
-  height: 100%;
   opacity: 0.4;
+  border-radius: 10px;
+  overflow: hidden;
   cursor: pointer;
 }
 
-.thumbnailSwiper .swiper-slide-thumb-active {
+.property-profile-header .thumbnailSwiper .swiper-slide-thumb-active {
   opacity: 1;
 }
 
-.swiper-slide img {
+.property-profile-header .swiper-slide img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  user-select: none;
 }
 
-.swiper-button-prev,
-.swiper-button-next {
+.property-profile-header .swiper-button-prev,
+.property-profile-header .swiper-button-next {
   top: 22px;
   transform: unset;
   height: 100%;
 }
-.swiper-button-prev {
+.property-profile-header .swiper-button-prev {
   left: 0;
 }
-.swiper-button-next {
+.property-profile-header .swiper-button-next {
   right: 0;
 }
-.swiper-button-prev::after,
-.swiper-button-next::after {
+.property-profile-header .swiper-button-prev::after,
+.property-profile-header .swiper-button-next::after {
   font-size: 14px;
 }

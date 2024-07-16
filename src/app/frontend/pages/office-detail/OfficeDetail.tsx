@@ -4,8 +4,6 @@ import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
 import { Office } from "../../../modules/apps/office-management/_core/_models"
-import { User } from "../../../modules/apps/user-management/_core/_models"
-
 import { getOfficeById } from "../../../modules/apps/office-management/_core/_requests"
 
 import { KTIcon } from "../../../../_metronic/helpers"
@@ -23,12 +21,12 @@ import { KYText } from "../../components/KYText/KYText"
 import { Swiper, SwiperSlide } from "swiper/react"
 import { FreeMode, Navigation, Thumbs } from "swiper/modules"
 import { Swiper as SwiperModel } from "swiper/types"
+import { OfficeUsersList } from "./components/OfficeUsersList"
 
 const OfficeDetail = () => {
   const { id } = useParams()
   const [office, setOffice] = useState<Office>()
   const [officeAddress, setOfficeAddress] = useState("")
-  const [users, setUsers] = useState<User[]>()
 
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperModel | null>(null)
 
@@ -230,7 +228,7 @@ const OfficeDetail = () => {
                       className={`${activeTab === "users" ? "active" : ""}`}
                       onClick={() => setActiveTab("users")}
                     >
-                      <span>İlanlar</span>
+                      <span>Danışmanlar</span>
                     </li>
                     <li
                       className={`${activeTab === "comments" ? "active" : ""}`}
@@ -265,7 +263,7 @@ const OfficeDetail = () => {
                       : " d-flex flex-column"
                   }`}
                 >
-                  <OfficePropertiesList office={office} properties={properties} />
+                  <OfficePropertiesList office={office} />
                 </div>
 
                 <div
@@ -273,7 +271,7 @@ const OfficeDetail = () => {
                     activeTab != "users" ? " d-none" : " d-flex flex-column"
                   }`}
                 >
-                  <OfficeUsersList users={users} />
+                  <OfficeUsersList office={office} />
                 </div>
 
                 <div

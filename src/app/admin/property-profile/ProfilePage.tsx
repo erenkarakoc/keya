@@ -18,6 +18,7 @@ import { ProfileHeader } from "./ProfileHeader"
 
 import { Property } from "../../modules/apps/property-management/_core/_models"
 import { getPropertyById } from "../../modules/apps/property-management/_core/_requests"
+import { EditProperty } from "./EditProperty/EditProperty"
 
 const ProfilePage = () => {
   const navigate = useNavigate()
@@ -90,15 +91,15 @@ const ProfilePage = () => {
               </>
             }
           />
-          {/* <Route
+          <Route
             path="duzenle"
             element={
               <>
                 <PageTitle breadcrumbs={profileBreadCrumbs}>Düzenle</PageTitle>
-                <EditOffice office={office} setOffice={setOffice} />
+                <EditProperty property={property} setProperty={setProperty} />
               </>
             }
-          /> */}
+          />
 
           <Route index element={<Navigate to="genel" />} />
         </Route>
@@ -106,9 +107,9 @@ const ProfilePage = () => {
     ) : (
       <div className="card">
         <div className="card-body py-20 d-flex flex-column text-center">
-          <h4>Ofis bulunamadı!</h4>
+          <h4>İlan bulunamadı!</h4>
           <span className="text-gray-600 fw-semibold fs-7 ">
-            Bu ofis silinmiş veya hiç var olmamış olabilir.
+            Bu ilan silinmiş veya hiç var olmamış olabilir.
           </span>
 
           <a onClick={() => navigate(-1)} className="mt-10" href="javascript:;">

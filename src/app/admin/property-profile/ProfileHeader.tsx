@@ -59,7 +59,7 @@ const ProfileHeader: React.FC<Props> = ({ property }) => {
   }, [property])
 
   return (
-    <div className="card mb-5 mb-xl-10">
+    <div className="property-profile-header card mb-5 mb-xl-10">
       <div className="card-body pt-9 pb-0">
         <div className="row">
           <div className="col-md-6 col-lg-4 mb-6 mb-md-0">
@@ -72,7 +72,6 @@ const ProfileHeader: React.FC<Props> = ({ property }) => {
                       "--swiper-pagination-color": "#fff",
                     } as React.CSSProperties
                   }
-                  spaceBetween={10}
                   navigation={true}
                   thumbs={{ swiper: thumbsSwiper }}
                   modules={[FreeMode, Navigation, Thumbs]}

@@ -11,29 +11,36 @@ import { getOfficeById } from "../../../../../modules/apps/office-management/_co
 
 interface KYAgentCardProps {
   user: User
+  officeNameDisabled?: boolean
 }
 
-const KYAgentCard: React.FC<KYAgentCardProps> = ({ user }) => {
+const KYAgentCard: React.FC<KYAgentCardProps> = ({
+  user,
+  officeNameDisabled,
+}) => {
   const [opacity, setOpacity] = useState(0)
   const [office, setOffice] = useState<Office | null>(null)
 
   useEffect(() => {
     const fetchOfficeName = async () => {
-      try {
-        const fetchedOffice: Office | undefined = await getOfficeById(
-          user.officeId
-        )
-        if (fetchedOffice) {
-          setOffice(fetchedOffice)
-        } else {
-          console.error("Office not found for user:", user.officeId)
+      if (!officeNameDisabled) {
+        try {
+          const fetchedOffice: Office | undefined = await getOfficeById(
+            user.officeId
+          )
+          if (fetchedOffice) {
+            setOffice(fetchedOffice)
+          } else {
+            console.error("Office not found for user:", user.officeId)
+          }
+        } catch (error) {
+          console.error("Error fetching office:", error)
         }
-      } catch (error) {
-        console.error("Error fetching office:", error)
       }
     }
 
     fetchOfficeName()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.officeId])
 
   return (
@@ -41,8 +48,11 @@ const KYAgentCard: React.FC<KYAgentCardProps> = ({ user }) => {
       <div
         className={`ky-agent-card-office-wrapper${office ? " has-office" : ""}`}
       >
-        {office ? (
-          <a href={`/ofis-detayi/${office.id}/`} className="ky-agent-card-office">
+        {!officeNameDisabled && office ? (
+          <a
+            href={`/ofis-detayi/${office.id}/`}
+            className="ky-agent-card-office"
+          >
             {import.meta.env.VITE_APP_NAME}
             <span>{office.name}</span>
           </a>

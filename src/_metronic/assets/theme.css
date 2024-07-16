@@ -113,14 +113,15 @@
 
 .custom-quill .ql-toolbar {
   border: none !important;
-  border-bottom: 2px solid var(--bs-gray-400) !important;
+  border-bottom: 2px solid var(--bs-midnight-2) !important;
   border-radius: 0.85rem 0.85rem 0 0;
+  background-color: var(--ky-midnight-3) !important;
 }
 
 .custom-quill .ql-editor {
   border: none !important;
   border-radius: 0 0 0.85rem 0.85rem;
-  background-color: var(--bs-gray-100);
+  background-color: var(--ky-midnight-3);
 }
 
 /* Card */

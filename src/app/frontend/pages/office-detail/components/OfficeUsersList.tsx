@@ -1,10 +1,12 @@
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
-import { Property } from "../../../../modules/apps/property-management/_core/_models"
-import { KYPropertyCard } from "../../properties/components/KYPropertyCard/KYPropertyCard"
+
 import { KYPagination } from "../../../components/KYPagination/KYPagination"
-import { getAllProperties } from "../../../../modules/apps/property-management/_core/_requests"
+
 import { Office } from "../../../../modules/apps/office-management/_core/_models"
+import { User } from "../../../../modules/apps/user-management/_core/_models"
+import { getAllUsers } from "../../../../modules/apps/user-management/_core/_requests"
+import { KYAgentCard } from "../../agents/components/KYAgentCard/KYAgentCard"
 
 interface Props {
   office: Office
@@ -12,55 +14,55 @@ interface Props {
 
 const PAGE_SIZE = 8
 
-const OfficePropertiesList: React.FC<Props> = ({ office }) => {
-  const [properties, setProperties] = useState<Property[]>([])
-  const [propertiesLoaded, setPropertiesLoaded] = useState(false)
+const OfficeUsersList: React.FC<Props> = ({ office }) => {
+  const [users, setUsers] = useState<User[]>([])
+  const [usersLoaded, setUsersLoaded] = useState(false)
 
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(0)
 
   useEffect(() => {
-    const fetchProperties = async () => {
+    const fetchUsers = async () => {
       try {
-        const allProperties = await getAllProperties()
+        const allUsers = await getAllUsers()
 
-        const officeProperties = allProperties.filter((property) =>
-          property.officeId.includes(office.id)
+        const officeUsers = allUsers.filter((user) =>
+          user.officeId.includes(office.id)
         )
 
-        officeProperties.sort((a, b) => {
+        officeUsers.sort((a, b) => {
           if (a.createdAt < b.createdAt) return -1
           if (a.createdAt > b.createdAt) return 1
           return 0
         })
 
-        setProperties(officeProperties)
-        setPropertiesLoaded(true)
+        setUsers(officeUsers)
+        setUsersLoaded(true)
 
-        const totalOffices = officeProperties.length
+        const totalOffices = officeUsers.length
         setTotalPages(Math.ceil(totalOffices / PAGE_SIZE))
       } catch (error) {
-        setPropertiesLoaded(false)
-        console.error("Error fetching properties:", error)
+        setUsersLoaded(false)
+        console.error("Error fetching users:", error)
       }
     }
 
-    fetchProperties()
+    fetchUsers()
   }, [office])
 
   const renderOffices = () => {
     const startIndex = (currentPage - 1) * PAGE_SIZE
     const endIndex = startIndex + PAGE_SIZE
-    return properties.slice(startIndex, endIndex).map((property, idx) => (
+    return users.slice(startIndex, endIndex).map((user, idx) => (
       <motion.div
         initial={{ opacity: 0, y: 25 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ delay: 0.2 + idx * 0.1 }}
         className="col-lg-3"
-        key={property.id}
+        key={user.id}
       >
-        <KYPropertyCard property={property} />
+        <KYAgentCard user={user} officeNameDisabled={true} />
       </motion.div>
     ))
   }
@@ -70,7 +72,7 @@ const OfficePropertiesList: React.FC<Props> = ({ office }) => {
       <div className="row ky-offices-list" style={{ marginBottom: "auto" }}>
         {renderOffices()}
       </div>
-      {propertiesLoaded && properties.length > PAGE_SIZE && (
+      {usersLoaded && users.length > PAGE_SIZE && (
         <KYPagination
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
@@ -81,4 +83,4 @@ const OfficePropertiesList: React.FC<Props> = ({ office }) => {
   )
 }
 
-export { OfficePropertiesList }
+export { OfficeUsersList }
