@@ -159,6 +159,33 @@ const getUsers = async (queryString: string): Promise<UsersQueryResponse> => {
   }
 }
 
+const searchUsers = async (queryStr: string) => {
+  try {
+    const db = getFirestore()
+    const usersCollectionRef = collection(db, "users")
+
+    const q = query(
+      usersCollectionRef,
+      where("email", ">=", slugify(queryStr)),
+      where("email", "<=", slugify(queryStr) + "\uf8ff")
+    )
+
+    const userDocSnapshot = await getDocs(q)
+
+    const users: User[] = []
+
+    userDocSnapshot.forEach((doc) => {
+      const userData = doc.data() as User
+      users.push({ ...userData, id: doc.id })
+    })
+
+    return users
+  } catch (error) {
+    console.error("Error fetching users by search query:", error)
+    return []
+  }
+}
+
 const getUserById = async (id: ID): Promise<User | undefined> => {
   try {
     if (!id) {
@@ -384,6 +411,7 @@ const deleteSelectedUsers = async (userIds: Array<ID>): Promise<void> => {
 export {
   getAllUsers,
   getUsers,
+  searchUsers,
   getUserById,
   getUsersById,
   getUsersByRole,

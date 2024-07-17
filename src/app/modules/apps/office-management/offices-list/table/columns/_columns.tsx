@@ -23,7 +23,7 @@ const officesColumns: ReadonlyArray<Column<Office>> = [
   {
     Header: (props) => <OfficeCustomHeader tableProps={props} title='Şehir' className='min-w-125px' />,
     accessor: 'address',
-    Cell: ({...props}) => <OfficeBadgeCell stateId={props.data[props.row.index].address.state ?? "2217"} />,
+    Cell: ({...props}) => <OfficeBadgeCell stateId={props.data[props.row.index].address.state?.split("|")[1]} />,
   },
   {
     Header: (props) => <OfficeCustomHeader tableProps={props} title='Broker' className='min-w-125px' />,

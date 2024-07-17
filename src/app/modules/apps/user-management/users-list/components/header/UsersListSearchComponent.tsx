@@ -12,7 +12,6 @@ import { useQueryRequest } from "../../../_core/QueryRequestProvider"
 const UsersListSearchComponent = () => {
   const { updateState } = useQueryRequest()
   const [searchTerm, setSearchTerm] = useState<string>("")
-  const [inputHasFocus, setInputHasFocus] = useState(false)
   // Debounce search term so that it only gives us latest value ...
   // ... if searchTerm has not been updated within last 500ms.
   // The goal is to only have the API call fire when user stops typing ...
@@ -29,27 +28,6 @@ const UsersListSearchComponent = () => {
     // More details about useDebounce: https://usehooks.com/useDebounce/
   )
 
-  useEffect(() => {
-    const handleKeyDown = (event: any) => {
-      if (event.ctrlKey && event.key === "k") {
-        event.preventDefault()
-
-        const inputElement = document.getElementById(
-          "users_list_search_user_input"
-        ) as HTMLInputElement | null
-
-        inputElement?.focus()
-        inputElement?.select()
-      }
-    }
-
-    window.addEventListener("keydown", handleKeyDown)
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown)
-    }
-  }, [])
-
   return (
     <div className="card-title">
       {/* begin::Search */}
@@ -63,23 +41,7 @@ const UsersListSearchComponent = () => {
           placeholder="Kullanıcı Ara"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          onFocus={() => setInputHasFocus(true)}
-          onBlur={() => setInputHasFocus(false)}
         />
-        <span
-          className={`position-absolute p-1 rounded-1 bg-gray-300 text-gray-600 fw-bolder${
-            inputHasFocus ? " d-none" : ""
-          }`}
-          style={{
-            pointerEvents: "none",
-            top: "50%",
-            right: "10px",
-            transform: "translateY(-50%)",
-            fontSize: "8px",
-          }}
-        >
-          CTRL+K
-        </span>
       </div>
       {/* end::Search */}
     </div>

@@ -31,7 +31,6 @@ import {
   getUserRoleText,
   timestampToISODate,
   urlify,
-  ISODateToTimestamp,
 } from "../../../../_metronic/helpers/kyHelpers"
 
 import { getAllUsers } from "../../../modules/apps/user-management/_core/_requests"
@@ -77,7 +76,7 @@ type Props = {
   setProperty: React.Dispatch<React.SetStateAction<Property | undefined>>
 }
 
-const EditProperty: React.FC<Props> = ({ property }) => {
+const EditProperty: React.FC<Props> = ({ property, setProperty }) => {
   const featuresInner = [
     "ADSL",
     "Ahşap Doğrama",
@@ -453,6 +452,7 @@ const EditProperty: React.FC<Props> = ({ property }) => {
       values.title = values.title.toUpperCase()
 
       await updateProperty(values)
+      setProperty(values)
 
       toast.success("İlan bilgileri güncellendi.")
     } catch (ex) {
@@ -2106,7 +2106,7 @@ const EditProperty: React.FC<Props> = ({ property }) => {
                             setCurrentPermitDate(e.target.value)
                             setFieldValue(
                               "ownerDetails.permitDate",
-                              ISODateToTimestamp(e.target.value)
+                              e.target.value
                             )
                           }}
                         />
@@ -2131,7 +2131,7 @@ const EditProperty: React.FC<Props> = ({ property }) => {
                             setCurrentPermitUntilDate(e.target.value)
                             setFieldValue(
                               "ownerDetails.permitUntilDate",
-                              ISODateToTimestamp(e.target.value)
+                              e.target.value
                             )
                           }}
                         />

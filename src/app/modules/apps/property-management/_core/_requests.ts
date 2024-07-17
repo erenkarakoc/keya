@@ -157,6 +157,33 @@ const getAllProperties = async (): Promise<Property[]> => {
   }
 }
 
+const searchProperties = async (queryStr: string) => {
+  try {
+    const db = getFirestore()
+    const propertiesCollectionRef = collection(db, "properties")
+
+    const q = query(
+      propertiesCollectionRef,
+      where("title", ">=", queryStr.toUpperCase()),
+      where("title", "<=", queryStr.toUpperCase() + "\uf8ff")
+    )
+
+    const propertyDocSnapshot = await getDocs(q)
+
+    const properties: Property[] = []
+
+    propertyDocSnapshot.forEach((doc) => {
+      const propertyData = doc.data() as Property
+      properties.push({ ...propertyData, id: doc.id })
+    })
+
+    return properties
+  } catch (error) {
+    console.error("Error fetching users by search query:", error)
+    return []
+  }
+}
+
 const getPropertiesBySearchTerm = async (
   searchTerm: string
 ): Promise<Property[]> => {
@@ -667,6 +694,7 @@ const getPropertyFromSahibinden = (
 export {
   getProperties,
   getAllProperties,
+  searchProperties,
   getPropertiesBySearchTerm,
   getPropertiesByUserIds,
   getPropertiesByOfficeId,

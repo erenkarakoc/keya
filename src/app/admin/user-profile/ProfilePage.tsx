@@ -1,12 +1,5 @@
 import { useEffect, useState } from "react"
-import {
-  Navigate,
-  Outlet,
-  Route,
-  Routes,
-  useNavigate,
-  useParams,
-} from "react-router-dom"
+import { Navigate, Outlet, Route, Routes, useParams } from "react-router-dom"
 
 import { PageLink, PageTitle } from "../../../_metronic/layout/core"
 
@@ -21,8 +14,6 @@ import { User } from "../../modules/apps/user-management/_core/_models"
 import { getUserById } from "../../modules/apps/user-management/_core/_requests"
 
 const ProfilePage = () => {
-  const navigate = useNavigate()
-
   const { id } = useParams()
   const [user, setUser] = useState<User>()
   const [userLoading, setUserLoading] = useState(true)
@@ -131,7 +122,7 @@ const ProfilePage = () => {
             Bu kullanıcı silinmiş veya hiç var olmamış olabilir.
           </span>
 
-          <a onClick={() => navigate(-1)} className="mt-10" href="javascript:;">
+          <a className="mt-10" href="/arayuz">
             Geri dön
           </a>
         </div>

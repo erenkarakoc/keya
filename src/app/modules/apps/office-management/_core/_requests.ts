@@ -153,6 +153,37 @@ const getAllOffices = async (): Promise<Office[]> => {
   }
 }
 
+const searchOffices = async (queryStr: string) => {
+  try {
+    const db = getFirestore()
+    const officesCollectionRef = collection(db, "offices")
+
+    queryStr = queryStr.charAt(0).toUpperCase() + queryStr.slice(1)
+
+    const q = query(
+      officesCollectionRef,
+      where("name", ">=", queryStr),
+      where("name", "<=", queryStr + "\uf8ff")
+    )
+
+    const officeDocSnapshot = await getDocs(q)
+
+    const offices: Office[] = []
+
+    console.log(queryStr)
+
+    officeDocSnapshot.forEach((doc) => {
+      const officeData = doc.data() as Office
+      offices.push({ ...officeData, id: doc.id })
+    })
+
+    return offices
+  } catch (error) {
+    console.error("Error fetching users by search query:", error)
+    return []
+  }
+}
+
 const getOfficeById = async (id: string): Promise<Office | undefined> => {
   try {
     const db = getFirestore()
@@ -244,6 +275,7 @@ const deleteSelectedOffices = async (officeIds: Array<ID>): Promise<void> => {
 export {
   getOffices,
   getAllOffices,
+  searchOffices,
   getOfficeById,
   getOfficeNameById,
   deleteOffice,
