@@ -26,7 +26,7 @@ const getProperties = async (
   queryString: string
 ): Promise<PropertiesQueryResponse> => {
   try {
-    const params = new URLSearchParams(queryString)
+    const params = new URLSearchParams(queryString.toUpperCase())
     const page = parseInt(params.get("page") || "1", 10)
     const itemsPerPage = parseInt(params.get("items_per_page") || "10", 10) as
       | 10
@@ -66,10 +66,6 @@ const getProperties = async (
     }
 
     const snapshot = await getDocs(q)
-
-    if (snapshot.empty) {
-      console.log("No documents found")
-    }
 
     const properties: Property[] = []
     snapshot.forEach((doc) => {

@@ -22,10 +22,30 @@ import {
 initializeApp(firebaseConfig)
 const db = getFirestore()
 
+function modifySearchParameter(queryString: string) {
+  const appName = import.meta.env.VITE_APP_NAME
+  const dynamicRegex = new RegExp(appName, "gi")
+
+  queryString = queryString.replace(" ", "")
+  queryString = queryString.replace("%20", "")
+
+  return queryString.replace(/(search=)([^&]*)/, (match, p1, p2) => {
+    let cleanedValue = p2.replace(dynamicRegex, "").trim()
+    if (cleanedValue.length > 0) {
+      cleanedValue =
+        cleanedValue.charAt(0).toUpperCase() + cleanedValue.slice(1)
+    }
+
+    return p1 + cleanedValue
+  })
+}
+
 const getOffices = async (
   queryString: string
 ): Promise<OfficesQueryResponse> => {
   try {
+    queryString = modifySearchParameter(queryString)
+    console.log(queryString)
     const params = new URLSearchParams(queryString)
     const page = parseInt(params.get("page") || "1", 10)
     const itemsPerPage = parseInt(params.get("items_per_page") || "10", 10) as
@@ -169,8 +189,6 @@ const searchOffices = async (queryStr: string) => {
     const officeDocSnapshot = await getDocs(q)
 
     const offices: Office[] = []
-
-    console.log(queryStr)
 
     officeDocSnapshot.forEach((doc) => {
       const officeData = doc.data() as Office
