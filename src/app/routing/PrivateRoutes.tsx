@@ -20,9 +20,14 @@ const PrivateRoutes = () => {
   const OfficesPage = lazy(
     () => import("../modules/apps/office-management/OfficesPage")
   )
+
   const FranchisePage = lazy(
     () => import("../modules/apps/franchise-management/FranchisePage")
   )
+  const TransactionsPage = lazy(
+    () => import("../modules/apps/transactions-management/TransactionsPage")
+  )
+
   const UserProfilePage = lazy(
     () => import("../admin/user-profile/ProfilePage")
   )
@@ -102,6 +107,14 @@ const PrivateRoutes = () => {
           element={
             <SuspensedView>
               <FranchisePage />
+            </SuspensedView>
+          }
+        />
+        <Route
+          path="islem-yonetimi/*"
+          element={
+            <SuspensedView>
+              <TransactionsPage />
             </SuspensedView>
           }
         />

@@ -45,7 +45,6 @@ const getOffices = async (
 ): Promise<OfficesQueryResponse> => {
   try {
     queryString = modifySearchParameter(queryString)
-    console.log(queryString)
     const params = new URLSearchParams(queryString)
     const page = parseInt(params.get("page") || "1", 10)
     const itemsPerPage = parseInt(params.get("items_per_page") || "10", 10) as

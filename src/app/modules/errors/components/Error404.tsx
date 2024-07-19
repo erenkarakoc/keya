@@ -1,9 +1,19 @@
-import { FC } from "react"
-import { KYButton } from "../../../frontend/components/KYButton/KYButton"
-import { toAbsoluteUrl } from "../../../../_metronic/helpers"
 import "./Error.css"
+import { FC } from "react"
+import { useNavigate } from "react-router-dom"
+import { toAbsoluteUrl } from "../../../../_metronic/helpers"
 
 const Error404: FC = () => {
+  const navigate = useNavigate()
+
+  const goBack = () => {
+    if (window.history.length > 2) {
+      navigate(-1)
+    } else {
+      navigate("/")
+    }
+  }
+
   return (
     <>
       {/* begin::Title */}
@@ -33,12 +43,13 @@ const Error404: FC = () => {
 
       {/* begin::Link */}
       <div className="mb-0">
-        <KYButton
-          width="fit-content"
-          to="/"
-          text="Ana Sayfa'ya dön"
-          className="ky-error-page-button mx-auto"
-        />
+        <a
+          onClick={goBack}
+          className="ky-button ky-button-secondary w-fit-content px-5 fw-bold mx-auto"
+          style={{ color: "var(--ky-light)" }}
+        >
+          Geri Dön
+        </a>
       </div>
       {/* end::Link */}
     </>

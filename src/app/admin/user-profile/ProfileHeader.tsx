@@ -3,11 +3,18 @@ import { Link, useLocation } from "react-router-dom"
 
 import { KTIcon, toAbsoluteUrl } from "../../../_metronic/helpers"
 
-import { getUserRoleText } from "../../../_metronic/helpers/kyHelpers"
+import {
+  formatPrice,
+  getUserRoleText,
+} from "../../../_metronic/helpers/kyHelpers"
 import { User } from "../../modules/apps/user-management/_core/_models"
 import { KYOfficeImage } from "../../frontend/components/KYOfficeImage/KYOfficeImage"
 import { getOfficeById } from "../../modules/apps/office-management/_core/_requests"
 import { Office } from "../../modules/apps/office-management/_core/_models"
+import { Transaction } from "../../modules/apps/transactions-management/_core/_models"
+import { getThisMonthsTransactionsByUserId } from "../../modules/apps/transactions-management/_core/_requests"
+import { Property } from "../../modules/apps/property-management/_core/_models"
+import { getPropertiesByUserIds } from "../../modules/apps/property-management/_core/_requests"
 
 interface Props {
   user: User
@@ -17,14 +24,48 @@ const ProfileHeader: React.FC<Props> = ({ user }) => {
   const location = useLocation()
 
   const [office, setOffice] = useState<Office>()
+  const [properties, setProperties] = useState<Property[]>()
+
+  const [thisMonthsTransactions, setThisMonthsTransactions] =
+    useState<Transaction[]>()
+  const [thisMonthsProfit, setThisMonthsProfit] = useState(0)
 
   useEffect(() => {
     const fetchOffice = async () => {
       setOffice(await getOfficeById(user.officeId))
     }
 
+    const fetchProperties = async () => {
+      setProperties(await getPropertiesByUserIds([user.id]))
+    }
+
+    const fetchThisMonthsTransactions = async () => {
+      setThisMonthsTransactions(
+        await getThisMonthsTransactionsByUserId(user.id)
+      )
+    }
+
     fetchOffice()
+    fetchProperties()
+    fetchThisMonthsTransactions()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
+
+  useEffect(() => {
+    const calculateThisMonthsProfit = () => {
+      if (thisMonthsTransactions) {
+        let profit = 0
+
+        thisMonthsTransactions.map((transaction: Transaction) => {
+          profit = profit + Number(transaction.agentProfit)
+        })
+
+        setThisMonthsProfit(profit)
+      }
+    }
+
+    calculateThisMonthsProfit()
+  }, [thisMonthsTransactions])
 
   return (
     <div className="card mb-5 mb-xl-10">
@@ -93,7 +134,9 @@ const ProfileHeader: React.FC<Props> = ({ user }) => {
                         iconName="arrow-up"
                         className="fs-3 text-success me-2"
                       />
-                      <div className="fs-2 fw-bolder">15.000₺</div>
+                      <div className="fs-2 fw-bolder">
+                        {formatPrice(thisMonthsProfit.toString())}
+                      </div>
                     </div>
 
                     <div className="fw-bold fs-6 text-gray-500">
@@ -107,7 +150,7 @@ const ProfileHeader: React.FC<Props> = ({ user }) => {
                         iconName="arrow-down"
                         className="fs-3 text-danger me-2"
                       />
-                      <div className="fs-2 fw-bolder">17</div>
+                      <div className="fs-2 fw-bolder">{properties?.length}</div>
                     </div>
 
                     <div className="fw-bold fs-6 text-gray-500">Portföy</div>
@@ -117,7 +160,6 @@ const ProfileHeader: React.FC<Props> = ({ user }) => {
                     <div className="py-3 pr-4 me-6 mb-3">
                       <a
                         href={`/arayuz/ofis-detayi/${office.id}`}
-                        target="_blank"
                         className="d-flex justify-content-center align-items-center"
                       >
                         <KYOfficeImage

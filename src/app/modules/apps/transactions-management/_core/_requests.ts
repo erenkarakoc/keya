@@ -150,6 +150,70 @@ const getTransactionsByPropertyId = async (
   }
 }
 
+const getThisMonthsTransactions = async (): Promise<Transaction[]> => {
+  try {
+    const allTransactions = await getAllTransactions()
+
+    const startOfMonth = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      1
+    ).getTime()
+    const endOfMonth =
+      new Date(
+        new Date().getFullYear(),
+        new Date().getMonth() + 1,
+        0
+      ).getTime() +
+      (24 * 60 * 60 * 1000 - 1)
+
+    const thisMonthsTransactions = allTransactions.filter((transaction) => {
+      const transactionDate = Number(transaction.createdAt)
+      return transactionDate >= startOfMonth && transactionDate <= endOfMonth
+    })
+
+    return thisMonthsTransactions
+  } catch (error) {
+    console.error("Error fetching this month's transactions:", error)
+    return []
+  }
+}
+
+const getThisMonthsTransactionsByUserId = async (
+  userId: string
+): Promise<Transaction[]> => {
+  try {
+    const allTransactions = await getAllTransactions()
+
+    const startOfMonth = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      1
+    ).getTime()
+    const endOfMonth =
+      new Date(
+        new Date().getFullYear(),
+        new Date().getMonth() + 1,
+        0
+      ).getTime() +
+      (24 * 60 * 60 * 1000 - 1)
+
+    const thisMonthsTransactions = allTransactions.filter((transaction) => {
+      const transactionDate = Number(transaction.createdAt)
+      return (
+        transaction.userIds.includes(userId) &&
+        transactionDate >= startOfMonth &&
+        transactionDate <= endOfMonth
+      )
+    })
+
+    return thisMonthsTransactions
+  } catch (error) {
+    console.error("Error fetching this month's transactions by user ID:", error)
+    return []
+  }
+}
+
 const updateTransaction = async (
   transaction: Transaction
 ): Promise<Transaction | undefined> => {
@@ -205,6 +269,8 @@ export {
   getTransactionsByUserId,
   getTransactionsByOfficeId,
   getTransactionsByPropertyId,
+  getThisMonthsTransactions,
+  getThisMonthsTransactionsByUserId,
   updateTransaction,
   deleteTransaction,
   deleteSelectedTransactions,

@@ -140,12 +140,12 @@ export function AsideMenuMain() {
 
           <AsideMenuItemWithSub
             to=""
-            title="İlan Muhasebesi"
+            title="İşlemler"
             fontIcon="bi-sticky"
             icon="black-right"
           >
             <AsideMenuItem
-              to=""
+              to="islem-yonetimi"
               icon="black-right"
               title="Tüm İşlemler"
               fontIcon="bi-layers"

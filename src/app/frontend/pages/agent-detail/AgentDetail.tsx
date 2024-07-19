@@ -1,7 +1,7 @@
 import "./AgentDetail.css"
 import React, { useEffect, useState } from "react"
 
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 
 import { User } from "../../../modules/apps/user-management/_core/_models"
 import { Office } from "../../../modules/apps/office-management/_core/_models"
@@ -22,6 +22,8 @@ import { KYText } from "../../components/KYText/KYText"
 
 const AgentDetail = () => {
   const { id } = useParams()
+  const navigate = useNavigate()
+
   const [user, setUser] = useState<User>()
   const [isUserLoading, setIsUserLoading] = useState(true)
   const [office, setOffice] = useState<Office>()
@@ -29,16 +31,19 @@ const AgentDetail = () => {
 
   const [activeTab, setActiveTab] = useState("about")
 
+  const goBack = () => {
+    if (window.history.length > 2) {
+      navigate(-1)
+    } else {
+      navigate("/")
+    }
+  }
+
   useEffect(() => {
     const fetchUser = async () => {
-      setIsUserLoading(false)
       const resUser = await getUserById(id)
-
-      if (resUser) {
-        setUser(resUser)
-      }
-
-      console.log(isUserLoading)
+      setUser(resUser)
+      setIsUserLoading(false)
     }
 
     fetchUser()
@@ -93,7 +98,7 @@ const AgentDetail = () => {
     <div className="ky-page-agent-detail">
       <div className="ky-page-content">
         <div className="ky-card">
-          {isUserLoading ? (
+          {!isUserLoading ? (
             user ? (
               <div className="row">
                 <div className="col-lg-2">
@@ -257,10 +262,27 @@ const AgentDetail = () => {
                 </div>
               </div>
             ) : (
-              "user not found"
+              <div className="py-20 d-flex flex-column text-center">
+                <h2 style={{ color: "var(--ky-light)" }}>
+                  Kullanıcı bulunamadı!
+                </h2>
+                <span
+                  className="fw-semibold fs-5"
+                  style={{ color: "var(--ky-light-3)" }}
+                >
+                  Bu kullanıcı silinmiş veya hiç var olmamış olabilir.
+                </span>
+                <a
+                  className="ky-button ky-button-secondary mt-10 fw-bold fs-6 px-5 mx-auto"
+                  onClick={goBack}
+                  style={{ color: "var(--ky-light)", width: "fit-content" }}
+                >
+                  Geri dön
+                </a>
+              </div>
             )
           ) : (
-            <div className="d-flex align-items-center justify-content-center text-gray-600 fw-semibold fs-7 py-20 w-100">
+            <div className="d-flex align-items-center justify-content-center fw-semibold fs-7 py-20 w-100">
               <span className="spinner-border spinner-border-lg"></span>
             </div>
           )}
