@@ -150,12 +150,6 @@ export function AsideMenuMain() {
               title="Tüm İşlemler"
               fontIcon="bi-layers"
             />
-            <AsideMenuItem
-              to=""
-              icon="black-right"
-              title="İşlem Ekle"
-              fontIcon="bi-layers"
-            />
           </AsideMenuItemWithSub>
 
           <AsideMenuItemWithSub

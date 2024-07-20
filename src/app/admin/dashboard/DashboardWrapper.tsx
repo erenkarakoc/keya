@@ -2,10 +2,7 @@
 import { useEffect, useState } from "react"
 
 import { EnableSidebar, PageTitle } from "../../../_metronic/layout/core"
-import {
-  MixedWidget13,
-  MixedWidget15,
-} from "../../../_metronic/partials/widgets"
+import { MixedWidget15 } from "../../../_metronic/partials/widgets"
 
 import { SalesProgress } from "./components/SalesProgress"
 import { DashboardAgentsTable } from "./components/DashboardAgentsTable"
@@ -20,6 +17,7 @@ import { User } from "../../modules/apps/user-management/_core/_models"
 import { Office } from "../../modules/apps/office-management/_core/_models"
 
 import { useAuth } from "../../modules/auth/core/Auth"
+import { MonthsSummary } from "./components/MonthSummary"
 
 const DashboardPage = () => {
   const [properties, setProperties] = useState<Property[]>()
@@ -52,7 +50,7 @@ const DashboardPage = () => {
       <div className="row gy-5 g-xl-10">
         {/*begin::Col*/}
         <div className="col-xl-4">
-          <MixedWidget13
+          <MonthsSummary
             className="card-xl-stretch mb-xl-10"
             backGroundColor="#F7D9E3"
             chartHeight="100px"
@@ -85,6 +83,7 @@ const DashboardPage = () => {
           className="mb-5 mb-xl-10"
           users={users}
           offices={offices}
+          properties={properties}
         />
       )}
       {properties && (

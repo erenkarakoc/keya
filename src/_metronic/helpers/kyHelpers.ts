@@ -233,6 +233,16 @@ const formatPrice = (price: string) => {
   return formattedPrice
 }
 
+const calculatePercentageChange = (oldNumber: number, newNumber: number) => {
+  if (oldNumber === 0) {
+    throw new Error("Old number cannot be zero to avoid division by zero.")
+  }
+
+  const change = ((newNumber - oldNumber) / oldNumber) * 100
+
+  return change.toFixed(0)
+}
+
 const convertToTurkishDate = (dateStr: string) => {
   const months = [
     "Oca",
@@ -383,6 +393,7 @@ export {
   urlify,
   generateRandomName,
   formatPrice,
+  calculatePercentageChange,
   convertToTurkishDate,
   timestampToTurkishDate,
   getCurrentMonthNameTurkish,

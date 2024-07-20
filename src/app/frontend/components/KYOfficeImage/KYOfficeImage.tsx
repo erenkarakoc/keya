@@ -4,14 +4,12 @@ import "./KYOfficeImage.css"
 interface KYOfficeImageProps {
   height?: number
   width?: number
-  officeId?: string
-  officeName?: string
+  officeName: string
 }
 
 const KYOfficeImage: React.FC<KYOfficeImageProps> = ({
   height,
   width,
-  officeId,
   officeName,
 }) => {
   const kyOfficeImageRef = useRef<HTMLDivElement>(null)
@@ -22,9 +20,7 @@ const KYOfficeImage: React.FC<KYOfficeImageProps> = ({
     const updateFontSize = () => {
       if (kyOfficeImageRef.current && kyOfficeImageSpanRef.current) {
         const parentWidth = kyOfficeImageRef.current.offsetWidth
-        const textLength = officeName
-          ? officeName.length
-          : officeId?.length || 0
+        const textLength = officeName.length
         const calculatedFontSize = Math.min(parentWidth / textLength) + 1.5
         setFontSize(calculatedFontSize)
       }
@@ -34,7 +30,7 @@ const KYOfficeImage: React.FC<KYOfficeImageProps> = ({
     window.addEventListener("resize", updateFontSize)
 
     return () => window.removeEventListener("resize", updateFontSize)
-  }, [officeName, officeId])
+  }, [officeName])
 
   return (
     <div
@@ -46,7 +42,7 @@ const KYOfficeImage: React.FC<KYOfficeImageProps> = ({
         {import.meta.env.VITE_APP_NAME}{" "}
       </span>
       <span ref={kyOfficeImageSpanRef} style={{ fontSize: `${fontSize}px` }}>
-        {officeName ? officeName : officeId}
+        {officeName}
       </span>
     </div>
   )

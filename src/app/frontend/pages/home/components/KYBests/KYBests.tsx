@@ -158,7 +158,7 @@ const KYBests = () => {
               <KYOfficeImage
                 height={57}
                 width={57}
-                officeId={
+                officeName={
                   bestOfficeOfTheMonth ? bestOfficeOfTheMonth.name : "Yıldız"
                 }
               />

@@ -150,6 +150,9 @@ const getTransactionsByPropertyId = async (
   }
 }
 
+const parseDateString = (dateString: string): number =>
+  new Date(dateString).getTime()
+
 const getThisMonthsTransactions = async (): Promise<Transaction[]> => {
   try {
     const allTransactions = await getAllTransactions()
@@ -168,7 +171,7 @@ const getThisMonthsTransactions = async (): Promise<Transaction[]> => {
       (24 * 60 * 60 * 1000 - 1)
 
     const thisMonthsTransactions = allTransactions.filter((transaction) => {
-      const transactionDate = Number(transaction.createdAt)
+      const transactionDate = parseDateString(transaction.createdAt)
       return transactionDate >= startOfMonth && transactionDate <= endOfMonth
     })
 
@@ -199,7 +202,7 @@ const getThisMonthsTransactionsByUserId = async (
       (24 * 60 * 60 * 1000 - 1)
 
     const thisMonthsTransactions = allTransactions.filter((transaction) => {
-      const transactionDate = Number(transaction.createdAt)
+      const transactionDate = parseDateString(transaction.createdAt)
       return (
         transaction.userIds.includes(userId) &&
         transactionDate >= startOfMonth &&
@@ -210,6 +213,64 @@ const getThisMonthsTransactionsByUserId = async (
     return thisMonthsTransactions
   } catch (error) {
     console.error("Error fetching this month's transactions by user ID:", error)
+    return []
+  }
+}
+
+const getLastMonthsTransactions = async (): Promise<Transaction[]> => {
+  try {
+    const allTransactions = await getAllTransactions()
+
+    const startOfLastMonth = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth() - 1,
+      1
+    ).getTime()
+    const endOfLastMonth =
+      new Date(new Date().getFullYear(), new Date().getMonth(), 0).getTime() +
+      (24 * 60 * 60 * 1000 - 1)
+
+    const lastMonthsTransactions = allTransactions.filter((transaction) => {
+      const transactionDate = parseDateString(transaction.createdAt)
+      return (
+        transactionDate >= startOfLastMonth && transactionDate <= endOfLastMonth
+      )
+    })
+
+    return lastMonthsTransactions
+  } catch (error) {
+    console.error("Error fetching last month's transactions:", error)
+    return []
+  }
+}
+
+const getLastMonthsTransactionsByUserId = async (
+  userId: string
+): Promise<Transaction[]> => {
+  try {
+    const allTransactions = await getAllTransactions()
+
+    const startOfLastMonth = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth() - 1,
+      1
+    ).getTime()
+    const endOfLastMonth =
+      new Date(new Date().getFullYear(), new Date().getMonth(), 0).getTime() +
+      (24 * 60 * 60 * 1000 - 1)
+
+    const lastMonthsTransactions = allTransactions.filter((transaction) => {
+      const transactionDate = parseDateString(transaction.createdAt)
+      return (
+        transaction.userIds.includes(userId) &&
+        transactionDate >= startOfLastMonth &&
+        transactionDate <= endOfLastMonth
+      )
+    })
+
+    return lastMonthsTransactions
+  } catch (error) {
+    console.error("Error fetching last month's transactions by user ID:", error)
     return []
   }
 }
@@ -271,6 +332,8 @@ export {
   getTransactionsByPropertyId,
   getThisMonthsTransactions,
   getThisMonthsTransactionsByUserId,
+  getLastMonthsTransactions,
+  getLastMonthsTransactionsByUserId,
   updateTransaction,
   deleteTransaction,
   deleteSelectedTransactions,

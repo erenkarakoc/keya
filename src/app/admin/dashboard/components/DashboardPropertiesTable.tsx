@@ -10,6 +10,7 @@ import {
   ISODateToTimestamp,
   formatPrice,
 } from "../../../../_metronic/helpers/kyHelpers"
+import { KYOfficeImage } from "../../../frontend/components/KYOfficeImage/KYOfficeImage"
 
 type Props = {
   className: string
@@ -42,7 +43,7 @@ const DashboardPropertiesTable: React.FC<Props> = ({
         <h3 className="card-title align-items-start flex-column">
           <span className="card-label fw-bold fs-3 mb-1">Yeni İlanlar</span>
           <span className="text-muted mt-1 fw-semibold fs-7">
-            Toplam {properties.length} ilan
+            Toplam {properties.length} ilandan son 10 ilan gösteriliyor
           </span>
         </h3>
         <div className="card-toolbar">
@@ -72,7 +73,7 @@ const DashboardPropertiesTable: React.FC<Props> = ({
             <tbody>
               {latestProperties &&
                 latestProperties.map((property) => (
-                  <tr>
+                  <tr key={property.id}>
                     <td>
                       <div className="d-flex align-items-center">
                         <div className="symbol symbol-50px me-5">
@@ -155,8 +156,13 @@ const DashboardPropertiesTable: React.FC<Props> = ({
                               href={`/arayuz/ofis-detayi/${office.id}/genel`}
                               target="_blank"
                               className="text-gray-900 fw-bold text-hover-primary d-block mb-1 fs-6"
+                              style={{
+                                width: "fit-content",
+                                borderRadius: "50%",
+                              }}
+                              key={office.id}
                             >
-                              {import.meta.env.VITE_APP_NAME} {office.name}
+                              <KYOfficeImage officeName={office.name} />
                             </a>
                           ))}
                       </td>
