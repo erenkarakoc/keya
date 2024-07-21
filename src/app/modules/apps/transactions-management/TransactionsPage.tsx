@@ -5,6 +5,12 @@ import { deleteTransaction, getAllTransactions } from "./_core/_requests"
 import { Button, Modal } from "react-bootstrap"
 import { KTIcon } from "../../../../_metronic/helpers"
 import toast from "react-hot-toast"
+import {
+  convertToTurkishDate,
+  formatPrice,
+} from "../../../../_metronic/helpers/kyHelpers"
+import { User } from "../user-management/_core/_models"
+import { getAllUsers } from "../user-management/_core/_requests"
 
 const franchiseBreadcrumbs: Array<PageLink> = [
   {
@@ -22,6 +28,8 @@ const FranchisePage = () => {
 
   const [transactionsLoaded, setTransactionsLoaded] = useState(false)
   const [transactions, setTransactions] = useState<Transaction[]>()
+
+  const [users, setUsers] = useState<User[]>()
 
   const [currentTransaction, setCurrentTransaction] = useState<Transaction>()
 
@@ -56,13 +64,21 @@ const FranchisePage = () => {
     fetchApplications()
   }, [])
 
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setUsers(await getAllUsers())
+    }
+
+    fetchUsers()
+  }, [])
+
   return (
     <div>
-      <PageTitle breadcrumbs={franchiseBreadcrumbs}>Başvurular</PageTitle>
+      <PageTitle breadcrumbs={franchiseBreadcrumbs}>İşlemler</PageTitle>
 
       <div className="card">
         <div className="card-header">
-          <div className="card-title">Başvuruları Gözden Geçir</div>
+          <div className="card-title">İşlemleri Gözden Geçir</div>
 
           <div className="card-toolbar">
             <div
@@ -139,25 +155,76 @@ const FranchisePage = () => {
         </div>
         <div className="card-body py-10">
           <div className="d-flex flex-column gap-3">
+            <div className="row align-items-center bg-gray-100 rounded py-5 pe-5">
+              <div className="col-lg-3 ps-5 text-gray-500 fs-7 fw-bold">
+                İşlem Sahibi
+              </div>
+              <div className="col-lg-3 ps-5 text-gray-500 fs-7 fw-bold">
+                İşlem Tarihi
+              </div>
+              <div className="col-lg-3 ps-5 text-gray-500 fs-7 fw-bold">
+                İşlem Miktarı
+              </div>
+            </div>
             {transactionsLoaded
               ? visibleTransactions?.length
                 ? visibleTransactions.map((transaction) => (
                     <div
                       key={transaction.id}
-                      className="d-flex justify-content-between align-items-center bg-gray-100 rounded py-5 pe-5"
+                      className="row align-items-center bg-gray-100 rounded py-5 pe-5"
                     >
-                      <div className="ps-5 text-gray-800 fs-6 fw-bold">asd</div>
-                      <Button
-                        type="button"
-                        className="ms-5"
-                        onClick={() => {
-                          setCurrentTransaction(transaction)
+                      <div className="col-lg-3 ps-5 text-gray-700 fs-6 fw-bold">
+                        {users &&
+                          users
+                            .filter((user) =>
+                              transaction.userIds.includes(user.id)
+                            )
+                            .map((user, i) => (
+                              <div className="position-relative" key={i}>
+                                <a
+                                  href={`/arayuz/kullanici-detayi/${user.id}/genel`}
+                                  target="_blank"
+                                  key={user.id}
+                                  className="symbol symbol-circle symbol-30px with-tooltip overflow-hidden"
+                                  style={{
+                                    marginRight: -20,
+                                    border: "2px solid #fff",
+                                  }}
+                                >
+                                  <div className="symbol-label">
+                                    <img
+                                      src={`${user.photoURL}`}
+                                      alt={user.firstName}
+                                      className="w-100"
+                                    />
+                                  </div>
+                                </a>
+                                <span className="symbol-tooltip">
+                                  {`${user.firstName} ${user.lastName}`}
+                                </span>
+                              </div>
+                            ))}
+                      </div>
+                      <div className="col-lg-3 ps-5 text-gray-700 fs-6 fw-bold">
+                        {convertToTurkishDate(transaction.createdAt)}
+                      </div>
 
-                          setShow(true)
-                        }}
-                      >
-                        İncele
-                      </Button>
+                      <div className="col-lg-3 ps-5 text-gray-700 fs-6 fw-bold">
+                        {formatPrice(transaction.totalProfit)}
+                      </div>
+
+                      <div className="col-lg-3 d-flex justify-content-end">
+                        <Button
+                          type="button"
+                          onClick={() => {
+                            setCurrentTransaction(transaction)
+
+                            setShow(true)
+                          }}
+                        >
+                          İncele
+                        </Button>
+                      </div>
                     </div>
                   ))
                 : "Bulunamadı"

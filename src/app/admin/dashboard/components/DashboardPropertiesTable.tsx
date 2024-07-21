@@ -8,6 +8,7 @@ import { User } from "../../../modules/apps/user-management/_core/_models"
 import { Office } from "../../../modules/apps/office-management/_core/_models"
 import {
   ISODateToTimestamp,
+  convertToTurkishDate,
   formatPrice,
 } from "../../../../_metronic/helpers/kyHelpers"
 import { KYOfficeImage } from "../../../frontend/components/KYOfficeImage/KYOfficeImage"
@@ -66,7 +67,7 @@ const DashboardPropertiesTable: React.FC<Props> = ({
                 {offices && <th className="min-w-150px">Ofis</th>}
                 <th className="min-w-125px">Fiyat</th>
                 <th className="pe-4 min-w-200px text-end rounded-end">
-                  Yayında
+                  Yetki Bitiş Tarihi
                 </th>
               </tr>
             </thead>
@@ -178,7 +179,11 @@ const DashboardPropertiesTable: React.FC<Props> = ({
                           property.saleDetails?.active ? "success" : "danger"
                         } fs-7 fw-semibold`}
                       >
-                        {property.saleDetails?.active ? "Evet" : "Hayır"}
+                        {property.ownerDetails?.permitUntilDate === "limitless"
+                          ? "Süresiz"
+                          : convertToTurkishDate(
+                              property.ownerDetails?.permitUntilDate ?? ""
+                            )}
                       </span>
                     </td>
                   </tr>
