@@ -63,7 +63,7 @@ const ProfileHeader: React.FC<Props> = ({ property }) => {
       <div className="card-body pt-9 pb-0">
         <div className="row">
           <div className="col-md-6 col-lg-4 mb-6 mb-md-0">
-            {property.propertyDetails.photoURLs.length > 1 ? (
+            {property.propertyDetails.photoURLs.length > 0 ? (
               <>
                 <Swiper
                   style={
@@ -122,7 +122,7 @@ const ProfileHeader: React.FC<Props> = ({ property }) => {
 
           <div className="col-md-6 col-lg-8">
             <div className="flex-grow-1">
-              <div className="d-flex justify-content-between align-items-start flex-wrap mb-2">
+              <div className="d-flex justify-content-between align-items-start mb-2">
                 <div className="d-flex flex-column">
                   <div className="d-flex align-items-center mb-2">
                     <span className="text-gray-800 fs-2 fw-bolder me-1">

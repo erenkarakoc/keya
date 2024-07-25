@@ -48,9 +48,6 @@ const DashboardAgentsTable: React.FC<Props> = ({
         return total + Number(transaction.agentProfit)
       }, 0)
 
-      if (userId === "f5DynkgPiedUAOaGPK8YqUJj4qC3")
-        console.log(userTransactions)
-
       return totalAgentProfit
     }
     return 0
@@ -149,7 +146,8 @@ const DashboardAgentsTable: React.FC<Props> = ({
               </span>
               {sortedUsers ? (
                 <span className="text-muted mt-1 fw-semibold fs-7">
-                  Toplam {users.length} / {sortedUsers.length} danışman gösteriliyor
+                  Toplam {users.length} / {sortedUsers.length} danışman
+                  gösteriliyor
                 </span>
               ) : (
                 ""
@@ -200,7 +198,7 @@ const DashboardAgentsTable: React.FC<Props> = ({
                       className="min-w-100px text-end cursor-pointer user-select-none"
                       onClick={() => sortUsers("propertyCount")}
                     >
-                      Portföy Sayısı
+                      Toplam Portföy
                       {sortField === "propertyCount" &&
                         (sortOrder === "asc" ? " ↑" : " ↓")}
                     </th>

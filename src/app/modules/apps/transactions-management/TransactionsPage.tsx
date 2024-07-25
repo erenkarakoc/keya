@@ -166,69 +166,77 @@ const FranchisePage = () => {
                 İşlem Miktarı
               </div>
             </div>
-            {transactionsLoaded
-              ? visibleTransactions?.length
-                ? visibleTransactions.map((transaction) => (
-                    <div
-                      key={transaction.id}
-                      className="row align-items-center bg-gray-100 rounded py-5 pe-5"
-                    >
-                      <div className="col-lg-3 ps-5 text-gray-700 fs-6 fw-bold">
-                        {users &&
-                          users
-                            .filter((user) =>
-                              transaction.userIds.includes(user.id)
-                            )
-                            .map((user, i) => (
-                              <div className="position-relative" key={i}>
-                                <a
-                                  href={`/arayuz/kullanici-detayi/${user.id}/genel`}
-                                  target="_blank"
-                                  key={user.id}
-                                  className="symbol symbol-circle symbol-30px with-tooltip overflow-hidden"
-                                  style={{
-                                    marginRight: -20,
-                                    border: "2px solid #fff",
-                                  }}
-                                >
-                                  <div className="symbol-label">
-                                    <img
-                                      src={`${user.photoURL}`}
-                                      alt={user.firstName}
-                                      className="w-100"
-                                    />
-                                  </div>
-                                </a>
-                                <span className="symbol-tooltip">
-                                  {`${user.firstName} ${user.lastName}`}
-                                </span>
-                              </div>
-                            ))}
-                      </div>
-                      <div className="col-lg-3 ps-5 text-gray-700 fs-6 fw-bold">
-                        {convertToTurkishDate(transaction.createdAt)}
-                      </div>
-
-                      <div className="col-lg-3 ps-5 text-gray-700 fs-6 fw-bold">
-                        {formatPrice(transaction.totalProfit)}
-                      </div>
-
-                      <div className="col-lg-3 d-flex justify-content-end">
-                        <Button
-                          type="button"
-                          onClick={() => {
-                            setCurrentTransaction(transaction)
-
-                            setShow(true)
-                          }}
-                        >
-                          İncele
-                        </Button>
-                      </div>
+            {transactionsLoaded ? (
+              visibleTransactions?.length ? (
+                visibleTransactions.map((transaction) => (
+                  <div
+                    key={transaction.id}
+                    className="row align-items-center bg-gray-100 rounded py-5 pe-5"
+                  >
+                    <div className="col-lg-3 ps-5 text-gray-700 fs-6 fw-bold">
+                      {users &&
+                        users
+                          .filter((user) =>
+                            transaction.userIds.includes(user.id)
+                          )
+                          .map((user, i) => (
+                            <div className="position-relative" key={i}>
+                              <a
+                                href={`/arayuz/kullanici-detayi/${user.id}/genel`}
+                                target="_blank"
+                                key={user.id}
+                                className="symbol symbol-circle symbol-30px with-tooltip overflow-hidden"
+                                style={{
+                                  marginRight: -20,
+                                  border: "2px solid #fff",
+                                }}
+                              >
+                                <div className="symbol-label">
+                                  <img
+                                    src={`${user.photoURL}`}
+                                    alt={user.firstName}
+                                    className="w-100"
+                                  />
+                                </div>
+                              </a>
+                              <span className="symbol-tooltip">
+                                {`${user.firstName} ${user.lastName}`}
+                              </span>
+                            </div>
+                          ))}
                     </div>
-                  ))
-                : "Bulunamadı"
-              : "Loading..."}
+                    <div className="col-lg-3 ps-5 text-gray-700 fs-6 fw-bold">
+                      {convertToTurkishDate(transaction.createdAt)}
+                    </div>
+
+                    <div className="col-lg-3 ps-5 text-gray-700 fs-6 fw-bold">
+                      {formatPrice(transaction.totalProfit)}
+                    </div>
+
+                    <div className="col-lg-3 d-flex justify-content-end">
+                      <Button
+                        type="button"
+                        onClick={() => {
+                          setCurrentTransaction(transaction)
+
+                          setShow(true)
+                        }}
+                      >
+                        İncele
+                      </Button>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <span className="text-muted text-center p-10 fw-bold">
+                  Bu filtrelere uygun bir işlem bulunamadı.
+                </span>
+              )
+            ) : (
+              <div className="d-flex align-items-center justify-content-center text-gray-600 fw-semibold fs-7 py-20 w-100">
+                <span className="spinner-border spinner-border-lg"></span>
+              </div>
+            )}
           </div>
 
           <div className="d-flex justify-content-center">
@@ -329,7 +337,7 @@ const FranchisePage = () => {
                 Kapat
               </button>
               <a className="btn btn-success ms-3" href={`#`}>
-                Transaction
+                İşlem
               </a>
             </div>
           </Modal.Footer>

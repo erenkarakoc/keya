@@ -3,7 +3,6 @@ import ApexCharts, { ApexOptions } from "apexcharts"
 import { getCSSVariableValue } from "../../../../_metronic/assets/ts/_utils"
 import { useThemeMode } from "../../../../_metronic/partials/layout/theme-mode/ThemeModeProvider"
 import { Transaction } from "../../../modules/apps/transactions-management/_core/_models"
-import { getAllTransactions } from "../../../modules/apps/transactions-management/_core/_requests"
 import {
   calculatePercentageChange,
   formatPrice,
@@ -13,9 +12,11 @@ type Props = {
   className: string
   chartHeight: string
   backGroundColor: string
+  transactions: Transaction[] | undefined
 }
 
 const MonthsSummary: FC<Props> = ({
+  transactions,
   className,
   backGroundColor,
   chartHeight,
@@ -25,15 +26,32 @@ const MonthsSummary: FC<Props> = ({
   const [thisMonthsTotalIncome, setThisMonthsTotalIncome] = useState(0)
   const [lastMonthsTotalIncome, setLastMonthsTotalIncome] = useState(0)
 
-  const [transactions, setTransactions] = useState<Transaction[]>()
-  const [thisMonthsTransactions, setThisMonthsTransactions] =
-    useState<Transaction[]>()
-  const [lastMonthsTransactions, setLastMonthsTransactions] =
-    useState<Transaction[]>()
+  const [thisMonthsTransactions, setThisMonthsTransactions] = useState<
+    Transaction[]
+  >([])
+  const [lastMonthsTransactions, setLastMonthsTransactions] = useState<
+    Transaction[]
+  >([])
 
   const [last6MonthsProfits, setLast6MonthsProfits] = useState([
     0, 0, 0, 0, 0, 0,
   ])
+
+  const chartRef = useRef<HTMLDivElement | null>(null)
+  const { mode } = useThemeMode()
+
+  const refreshChart = () => {
+    if (!chartRef.current) {
+      return
+    }
+
+    const chart = new ApexCharts(chartRef.current, chartOptions(chartHeight))
+    if (chart) {
+      chart.render()
+    }
+
+    return chart
+  }
 
   const chartOptions = (chartHeight: string): ApexOptions => {
     const labelColor = getCSSVariableValue("--bs-gray-800")
@@ -104,7 +122,7 @@ const MonthsSummary: FC<Props> = ({
         gradient: {
           opacityFrom: 0.4,
           opacityTo: 0,
-          stops: [20, 120, 120, 120],
+          stops: [0, 0, 0, 0, 0, 0],
         },
       },
       stroke: {
@@ -148,7 +166,7 @@ const MonthsSummary: FC<Props> = ({
       },
       yaxis: {
         min: 0,
-        max: 60,
+        max: Math.max(...last6MonthsProfits),
         labels: {
           show: false,
           style: {
@@ -197,64 +215,103 @@ const MonthsSummary: FC<Props> = ({
     }
   }
 
-  const chartRef = useRef<HTMLDivElement | null>(null)
-  const { mode } = useThemeMode()
+  const calculateLast6MonthsProfits = (transactions: Transaction[]) => {
+    const profitsByMonth: Record<string, number> = {}
 
-  const calculateLast6MonthsProfits = () => {
-    if (transactions) {
-      const profitsByMonth: Record<string, number> = {}
+    const now = new Date()
+    const currentYear = now.getFullYear()
+    const currentMonth = now.getMonth()
 
-      const now = new Date()
-      const currentYear = now.getFullYear()
-      const currentMonth = now.getMonth()
+    transactions.forEach((transaction) => {
+      const { createdAt, totalProfit } = transaction
+      const [year, month] = createdAt.split("-").map(Number)
 
-      transactions.forEach((transaction) => {
-        const { createdAt, totalProfit } = transaction
-        const [year, month] = createdAt.split("-").map(Number)
+      // Only consider the last 6 months
+      const isRecent =
+        (year === currentYear && month > currentMonth - 6) ||
+        (year === currentYear - 1 && month > 12 - (6 - currentMonth))
 
-        // Only consider the last 6 months
-        const isRecent =
-          (year === currentYear && month > currentMonth - 6) ||
-          (year === currentYear - 1 && month > 12 - (6 - currentMonth))
-
-        if (isRecent) {
-          const key = `${year}-${month.toString().padStart(2, "0")}`
-          profitsByMonth[key] =
-            (profitsByMonth[key] || 0) + parseFloat(totalProfit)
-        }
-      })
-
-      const result: number[] = []
-      for (let i = 0; i < 6; i++) {
-        const month = currentMonth - i
-        const year = month < 0 ? currentYear - 1 : currentYear
-        const actualMonth = (month + 12) % 12
-        const key = `${year}-${(actualMonth + 1).toString().padStart(2, "0")}`
-        result.unshift(profitsByMonth[key] || 0)
+      if (isRecent) {
+        const key = `${year}-${month.toString().padStart(2, "0")}`
+        profitsByMonth[key] =
+          (profitsByMonth[key] || 0) + parseFloat(totalProfit)
       }
+    })
 
-      setLast6MonthsProfits(result)
+    const result: number[] = []
+    for (let i = 0; i < 6; i++) {
+      const month = currentMonth - i
+      const year = month < 0 ? currentYear - 1 : currentYear
+      const actualMonth = (month + 12) % 12
+      const key = `${year}-${(actualMonth + 1).toString().padStart(2, "0")}`
+      result.unshift(profitsByMonth[key] || 0)
     }
+
+    setLast6MonthsProfits(result)
   }
 
-  const calculateLastMonthsTotalIncome = () => {
+  const calculateLastMonthsTotalIncome = (transactions: Transaction[]) => {
     const income =
-      lastMonthsTransactions?.reduce(
+      transactions?.reduce(
         (acc, transaction) => acc + Number(transaction.totalProfit),
         0
       ) || 0
     setLastMonthsTotalIncome(income)
   }
 
-  const calculateThisMonthsTotalIncome = () => {
+  const calculateThisMonthsTotalIncome = (transactions: Transaction[]) => {
     const income =
-      thisMonthsTransactions?.reduce(
+      transactions?.reduce(
         (acc, transaction) => acc + Number(transaction.totalProfit),
         0
       ) || 0
 
     setThisMonthsTotalIncome(income)
   }
+
+  useEffect(() => {
+    if (transactions) {
+      const calculateTransactions = async () => {
+        const now = new Date()
+        const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1)
+        const lastMonthStart = new Date(
+          now.getFullYear(),
+          now.getMonth() - 1,
+          1
+        )
+        const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0)
+
+        const parseDate = (dateString: string) => new Date(dateString)
+
+        const thisMonthTransactions = transactions.filter((transaction) => {
+          const transactionDate = parseDate(transaction.createdAt)
+          return transactionDate >= thisMonthStart && transactionDate < now
+        })
+
+        const lastMonthTransactions = transactions.filter((transaction) => {
+          const transactionDate = parseDate(transaction.createdAt)
+          return (
+            transactionDate >= lastMonthStart && transactionDate <= lastMonthEnd
+          )
+        })
+
+        setThisMonthsTransactions(thisMonthTransactions)
+        setLastMonthsTransactions(lastMonthTransactions)
+        calculateLast6MonthsProfits(transactions)
+      }
+
+      calculateTransactions()
+      setLoading(false)
+    }
+  }, [transactions])
+
+  useEffect(() => {
+    calculateLastMonthsTotalIncome(lastMonthsTransactions)
+  }, [lastMonthsTransactions])
+
+  useEffect(() => {
+    calculateThisMonthsTotalIncome(thisMonthsTransactions)
+  }, [thisMonthsTransactions])
 
   useEffect(() => {
     const chart = refreshChart()
@@ -265,64 +322,7 @@ const MonthsSummary: FC<Props> = ({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chartRef, mode])
-
-  useEffect(() => {
-    const fetchAllTransactions = async () => {
-      const allTransactions = await getAllTransactions()
-      setTransactions(allTransactions)
-
-      const now = new Date()
-      const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1)
-      const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1)
-      const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0)
-
-      const parseDate = (dateString: string) => new Date(dateString)
-
-      const thisMonthTransactions = allTransactions.filter((transaction) => {
-        const transactionDate = parseDate(transaction.createdAt)
-        return transactionDate >= thisMonthStart && transactionDate < now
-      })
-
-      const lastMonthTransactions = allTransactions.filter((transaction) => {
-        const transactionDate = parseDate(transaction.createdAt)
-        return (
-          transactionDate >= lastMonthStart && transactionDate <= lastMonthEnd
-        )
-      })
-
-      setThisMonthsTransactions(thisMonthTransactions)
-      setLastMonthsTransactions(lastMonthTransactions)
-    }
-
-    fetchAllTransactions()
-    calculateLast6MonthsProfits()
-    setLoading(false)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    calculateLastMonthsTotalIncome()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lastMonthsTotalIncome])
-
-  useEffect(() => {
-    calculateThisMonthsTotalIncome()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [thisMonthsTransactions])
-
-  const refreshChart = () => {
-    if (!chartRef.current) {
-      return
-    }
-
-    const chart = new ApexCharts(chartRef.current, chartOptions(chartHeight))
-    if (chart) {
-      chart.render()
-    }
-
-    return chart
-  }
+  }, [chartRef, mode, last6MonthsProfits])
 
   return (
     <div
@@ -330,17 +330,15 @@ const MonthsSummary: FC<Props> = ({
       style={{ backgroundColor: backGroundColor }}
     >
       {loading ? (
-        "loading"
+        ""
       ) : (
         <div className="card-body d-flex flex-column">
           <div className="d-flex flex-column flex-grow-1">
-            <h4 className="text-gray-900 fw-bolder fs-3">
-              Ayın Özeti
-            </h4>
+            <h4 className="text-gray-900 fw-bolder fs-3">Son 6 Ay</h4>
 
             <div
               ref={chartRef}
-              className="mixed-widget-13-chart"
+              className="mixed-widget-13-chart mb-10"
               style={{ height: chartHeight, minHeight: chartHeight }}
             ></div>
           </div>

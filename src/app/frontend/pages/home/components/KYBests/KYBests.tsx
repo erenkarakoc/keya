@@ -7,7 +7,7 @@ import { motion } from "framer-motion"
 
 import { toAbsoluteUrl } from "../../../../../../_metronic/helpers"
 import { KYOfficeImage } from "../../../../components/KYOfficeImage/KYOfficeImage"
-import { getCurrentMonthNameTurkish } from "../../../../../../_metronic/helpers/kyHelpers"
+import { getCurrentMonthTurkishName } from "../../../../../../_metronic/helpers/kyHelpers"
 
 import { User } from "../../../../../modules/apps/user-management/_core/_models"
 import { Transaction } from "../../../../../modules/apps/transactions-management/_core/_models"
@@ -117,7 +117,7 @@ const KYBests = () => {
     }
   }
   useEffect(() => {
-    setCurrentMonth(getCurrentMonthNameTurkish(new Date()))
+    setCurrentMonth(getCurrentMonthTurkishName())
 
     const fetchTransactions = async () => {
       setTransactions(await getAllTransactions())

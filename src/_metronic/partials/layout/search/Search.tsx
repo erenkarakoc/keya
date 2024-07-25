@@ -256,8 +256,8 @@ const Search: FC<Props> = ({ className = "", mobileToggleBtnClass = "" }) => {
                             {import.meta.env.VITE_APP_NAME} {office.name}
                           </span>
                           <span className="fs-7 fw-bold text-muted">
-                            {office.address.country?.split("|")[0]},{" "}
-                            {office.address.state?.split("|")[0]}
+                            {office.address.state?.split("|")[0]},{" "}
+                            {office.address.country?.split("|")[0]}
                           </span>
                         </div>
                       </a>
@@ -301,6 +301,7 @@ const Search: FC<Props> = ({ className = "", mobileToggleBtnClass = "" }) => {
                               whiteSpace: "nowrap",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
+                              width: 220,
                             }}
                           >
                             {property.title}
@@ -311,6 +312,7 @@ const Search: FC<Props> = ({ className = "", mobileToggleBtnClass = "" }) => {
                               whiteSpace: "nowrap",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
+                              width: 220,
                             }}
                           >
                             {property.propertyDetails.address.label}

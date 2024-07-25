@@ -233,14 +233,27 @@ const formatPrice = (price: string) => {
   return formattedPrice
 }
 
+const formatPriceToShort = (price: string) => {
+  const value = Number(price)
+
+  if (value >= 1000000) {
+    return `₺${(value / 1000000).toFixed(1)}M`
+  } else if (value >= 1000) {
+    return `₺${(value / 1000).toFixed(1)}K`
+  } else {
+    return `₺${value}`
+  }
+}
+
 const calculatePercentageChange = (oldNumber: number, newNumber: number) => {
   if (oldNumber === 0) {
-    throw new Error("Old number cannot be zero to avoid division by zero.")
+    return newNumber > 0 ? "∞%" : "0%"
   }
 
-  const change = ((newNumber - oldNumber) / oldNumber) * 100
+  const increase = newNumber - oldNumber
+  const percentageIncrease = (increase / oldNumber) * 100
 
-  return change.toFixed(0)
+  return percentageIncrease.toFixed(0)
 }
 
 const convertToTurkishDate = (dateStr: string) => {
@@ -292,7 +305,8 @@ const timestampToTurkishDate = (timestamp: string) => {
   return `${day} ${monthName} ${year}`
 }
 
-const getCurrentMonthNameTurkish = (currentDate: Date) => {
+const getCurrentMonthTurkishName = () => {
+  const currentDate = new Date()
   const months = [
     "Ocak",
     "Şubat",
@@ -393,10 +407,11 @@ export {
   urlify,
   generateRandomName,
   formatPrice,
+  formatPriceToShort,
   calculatePercentageChange,
   convertToTurkishDate,
   timestampToTurkishDate,
-  getCurrentMonthNameTurkish,
+  getCurrentMonthTurkishName,
   timestampToISODate,
   ISODateToTimestamp,
   convertPropertyForText,

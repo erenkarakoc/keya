@@ -89,38 +89,24 @@ export function AsideMenuMain() {
           <div className="menu-item">
             <div className="menu-content pt-8 pb-2">
               <span className="menu-section text-muted text-uppercase fs-8 ls-1">
-                İnsan Kaynakları
+                Başvurular
               </span>
             </div>
           </div>
 
-          <AsideMenuItemWithSub
+          <AsideMenuItem
             to=""
-            title="Danışmanlar"
-            fontIcon="bi-sticky"
             icon="black-right"
-          >
-            <AsideMenuItem
-              to=""
-              icon="black-right"
-              title="Başvurular"
-              fontIcon="bi-layers"
-            />
-          </AsideMenuItemWithSub>
+            title="Danışman"
+            fontIcon="bi-layers"
+          />
 
-          <AsideMenuItemWithSub
-            to=""
-            title="Franchise"
-            fontIcon="bi-sticky"
+          <AsideMenuItem
+            to="franchise-yonetimi"
             icon="black-right"
-          >
-            <AsideMenuItem
-              to="franchise-yonetimi"
-              icon="black-right"
-              title="Başvurular"
-              fontIcon="bi-layers"
-            />
-          </AsideMenuItemWithSub>
+            title="Franchise"
+            fontIcon="bi-layers"
+          />
         </>
       ) : (
         ""

@@ -149,45 +149,53 @@ const FranchisePage = () => {
         </div>
         <div className="card-body py-10">
           <div className="d-flex flex-column gap-3">
-            {applicationsLoaded
-              ? visibleApplications?.length
-                ? visibleApplications.map((application) => (
-                    <div
-                      key={application.id}
-                      className="d-flex justify-content-between align-items-center bg-gray-100 rounded py-5 pe-5"
-                    >
-                      <div className="ps-5 text-gray-800 fs-6 fw-bold">
-                        {application.firstName} {application.lastName}
-                      </div>
-                      <Button
-                        type="button"
-                        className="ms-5"
-                        onClick={() => {
-                          setCurrentApplication(application)
-                          const setCurrentAddress = async () => {
-                            if (application.address.country) {
-                              const country = await getCountryById(
-                                application.address.country
-                              )
-                              setCurrentCountry(country?.translations.tr ?? "")
-                            }
-                            if (application.address.state) {
-                              const state = await getStateById(
-                                application.address.state
-                              )
-                              setCurrentState(state?.name ?? "")
-                            }
-                          }
-                          setCurrentAddress()
-                          setShow(true)
-                        }}
-                      >
-                        İncele
-                      </Button>
+            {applicationsLoaded ? (
+              visibleApplications?.length ? (
+                visibleApplications.map((application) => (
+                  <div
+                    key={application.id}
+                    className="d-flex justify-content-between align-items-center bg-gray-100 rounded py-5 pe-5"
+                  >
+                    <div className="ps-5 text-gray-800 fs-6 fw-bold">
+                      {application.firstName} {application.lastName}
                     </div>
-                  ))
-                : "Bulunamadı"
-              : "Loading..."}
+                    <Button
+                      type="button"
+                      className="ms-5"
+                      onClick={() => {
+                        setCurrentApplication(application)
+                        const setCurrentAddress = async () => {
+                          if (application.address.country) {
+                            const country = await getCountryById(
+                              application.address.country
+                            )
+                            setCurrentCountry(country?.translations.tr ?? "")
+                          }
+                          if (application.address.state) {
+                            const state = await getStateById(
+                              application.address.state
+                            )
+                            setCurrentState(state?.name ?? "")
+                          }
+                        }
+                        setCurrentAddress()
+                        setShow(true)
+                      }}
+                    >
+                      İncele
+                    </Button>
+                  </div>
+                ))
+              ) : (
+                <span className="text-muted text-center p-10 fw-bold">
+                  Bu filtrelere uygun bir başvuru bulunamadı.
+                </span>
+              )
+            ) : (
+              <div className="d-flex align-items-center justify-content-center text-gray-600 fw-semibold fs-7 py-20 w-100">
+                <span className="spinner-border spinner-border-lg"></span>
+              </div>
+            )}
           </div>
 
           <div className="d-flex justify-content-center">
