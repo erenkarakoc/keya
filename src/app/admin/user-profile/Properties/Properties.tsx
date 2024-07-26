@@ -171,9 +171,13 @@ export function Properties() {
 
                         <div className="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 mb-3">
                           <div className="fs-6 text-gray-800 fw-bolder">
-                            {convertToTurkishDate(
-                              property.ownerDetails?.permitUntilDate ?? ""
-                            )}
+                            {property.ownerDetails?.permitUntilDate &&
+                              (property.ownerDetails?.permitUntilDate ===
+                              "limitless"
+                                ? "Süresiz"
+                                : convertToTurkishDate(
+                                    property.ownerDetails?.permitUntilDate
+                                  ))}
                           </div>
                           <div className="fw-bold text-gray-500">
                             Yetki Bitiş Tarihi

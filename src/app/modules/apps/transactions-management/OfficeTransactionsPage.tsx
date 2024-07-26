@@ -1,22 +1,21 @@
 import { useEffect, useState } from "react"
 import { PageLink, PageTitle } from "../../../../_metronic/layout/core"
-import { FranchiseApplication } from "./_core/_models"
-import {
-  deleteFranchiseApplication,
-  getAllFranchiseApplications,
-} from "./_core/_requests"
+import { Transaction } from "./_core/_models"
+import { deleteTransaction, getAllTransactions } from "./_core/_requests"
 import { Button, Modal } from "react-bootstrap"
 import { KTIcon } from "../../../../_metronic/helpers"
 import toast from "react-hot-toast"
 import {
-  getCountryById,
-  getStateById,
+  convertToTurkishDate,
+  formatPrice,
 } from "../../../../_metronic/helpers/kyHelpers"
+import { User } from "../user-management/_core/_models"
+import { getAllUsers } from "../user-management/_core/_requests"
 
 const franchiseBreadcrumbs: Array<PageLink> = [
   {
-    title: "Başvurular",
-    path: "franchise-yonetimi",
+    title: "İşlem Yönetimi",
+    path: "islem-yonetimi",
     isSeparator: false,
     isActive: false,
   },
@@ -27,13 +26,12 @@ const PAGE_SIZE = 10
 const FranchisePage = () => {
   const [show, setShow] = useState(false)
 
-  const [applicationsLoaded, setApplicationsLoaded] = useState(false)
-  const [applications, setApplications] = useState<FranchiseApplication[]>()
+  const [transactionsLoaded, setTransactionsLoaded] = useState(false)
+  const [transactions, setTransactions] = useState<Transaction[]>()
 
-  const [currentApplication, setCurrentApplication] =
-    useState<FranchiseApplication>()
-  const [currentCountry, setCurrentCountry] = useState("")
-  const [currentState, setCurrentState] = useState("")
+  const [users, setUsers] = useState<User[]>()
+
+  const [currentTransaction, setCurrentTransaction] = useState<Transaction>()
 
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(0)
@@ -50,15 +48,15 @@ const FranchisePage = () => {
     }
   }
 
-  const visibleApplications = applications?.slice(
+  const visibleTransactions = transactions?.slice(
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE
   )
 
   const fetchApplications = async () => {
-    const allApplications = await getAllFranchiseApplications()
-    setApplications(allApplications)
-    setApplicationsLoaded(true)
+    const allApplications = await getAllTransactions()
+    setTransactions(allApplications)
+    setTransactionsLoaded(true)
     setTotalPages(Math.ceil(allApplications.length / PAGE_SIZE))
   }
 
@@ -66,15 +64,21 @@ const FranchisePage = () => {
     fetchApplications()
   }, [])
 
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setUsers(await getAllUsers())
+    }
+
+    fetchUsers()
+  }, [])
+
   return (
     <div>
-      <PageTitle breadcrumbs={franchiseBreadcrumbs}>
-        Franchise Başvuruları
-      </PageTitle>
+      <PageTitle breadcrumbs={franchiseBreadcrumbs}>İşlemler</PageTitle>
 
       <div className="card">
         <div className="card-header">
-          <div className="card-title">Başvuruları Gözden Geçir</div>
+          <div className="card-title">İşlemleri Gözden Geçir</div>
 
           <div className="card-toolbar">
             <div
@@ -149,59 +153,73 @@ const FranchisePage = () => {
             </div>
           </div>
         </div>
-
         <div className="card-body py-10">
           <div className="d-flex flex-column gap-3">
             <div className="row align-items-center bg-gray-100 rounded py-5 pe-5">
               <div className="col-lg-3 ps-5 text-gray-500 fs-7 fw-bold">
-                Adı Soyadı
+                İşlem Sahibi
               </div>
               <div className="col-lg-3 ps-5 text-gray-500 fs-7 fw-bold">
-                Mesleği
+                İşlem Tarihi
+              </div>
+              <div className="col-lg-3 ps-5 text-gray-500 fs-7 fw-bold">
+                İşlem Miktarı
               </div>
             </div>
-
-            {applicationsLoaded ? (
-              visibleApplications?.length ? (
-                visibleApplications.map((application) => (
+            {transactionsLoaded ? (
+              visibleTransactions?.length ? (
+                visibleTransactions.map((transaction) => (
                   <div
-                    key={application.id}
+                    key={transaction.id}
                     className="row align-items-center bg-gray-100 rounded py-5 pe-5"
                   >
                     <div className="col-lg-3 ps-5 text-gray-700 fs-6 fw-bold">
-                      {application.firstName} {application.lastName}
+                      {users &&
+                        users
+                          .filter((user) =>
+                            transaction.userIds.includes(user.id)
+                          )
+                          .map((user, i) => (
+                            <div className="position-relative" key={i}>
+                              <a
+                                href={`/arayuz/kullanici-detayi/${user.id}/genel`}
+                                target="_blank"
+                                key={user.id}
+                                className="symbol symbol-circle symbol-30px with-tooltip overflow-hidden"
+                                style={{
+                                  marginRight: -20,
+                                  border: "2px solid #fff",
+                                }}
+                              >
+                                <div className="symbol-label">
+                                  <img
+                                    src={`${user.photoURL}`}
+                                    alt={user.firstName}
+                                    className="w-100"
+                                  />
+                                </div>
+                              </a>
+                              <span className="symbol-tooltip">
+                                {`${user.firstName} ${user.lastName}`}
+                              </span>
+                            </div>
+                          ))}
+                    </div>
+                    <div className="col-lg-3 ps-5 text-gray-700 fs-6 fw-bold">
+                      {convertToTurkishDate(transaction.createdAt)}
                     </div>
 
                     <div className="col-lg-3 ps-5 text-gray-700 fs-6 fw-bold">
-                      {application.occupation}
+                      {formatPrice(transaction.totalProfit)}
                     </div>
 
-                    <div className="col-lg-6 ps-5 text-gray-700 fs-6 fw-bold d-flex flex-end">
+                    <div className="col-lg-3 d-flex justify-content-end">
                       <Button
                         type="button"
-                        className="ms-5"
                         onClick={() => {
-                          setCurrentApplication(application)
-                          setCurrentCountry("")
-                          setCurrentState("")
+                          setCurrentTransaction(transaction)
 
-                          const setCurrentAddress = async () => {
-                            if (application.address.country) {
-                              const country = await getCountryById(
-                                application.address.country
-                              )
-                              setCurrentCountry(country?.translations.tr ?? "")
-                            }
-                            if (application.address.state) {
-                              const state = await getStateById(
-                                application.address.state
-                              )
-                              setCurrentState(state?.name ?? "")
-                            }
-                          }
-
-                          setCurrentAddress()
-                          setTimeout(() => setShow(true), 100)
+                          setShow(true)
                         }}
                       >
                         İncele
@@ -211,7 +229,7 @@ const FranchisePage = () => {
                 ))
               ) : (
                 <span className="text-muted text-center p-10 fw-bold">
-                  Bu filtrelere uygun bir başvuru bulunamadı.
+                  Bu filtrelere uygun bir işlem bulunamadı.
                 </span>
               )
             ) : (
@@ -287,61 +305,10 @@ const FranchisePage = () => {
                   className="fw-bolder fs-7 mb-2 text-gray-600 text-uppercase spacing"
                   style={{ letterSpacing: "1px" }}
                 >
-                  Ad Soyad
+                  test
                 </label>
-                <div className="fw-normal fs-6 mb-2">
-                  {currentApplication?.firstName} {currentApplication?.lastName}
-                </div>
+                <div className="fw-normal fs-6 mb-2">test</div>
               </div>
-
-              {currentApplication?.occupation && (
-                <div className="col-6 mb-3">
-                  <label
-                    className="fw-bolder fs-7 mb-2 text-gray-600 text-uppercase spacing"
-                    style={{ letterSpacing: "1px" }}
-                  >
-                    Meslek
-                  </label>
-                  <div className="fw-normal fs-6 mb-2">
-                    {currentApplication.occupation}
-                  </div>
-                </div>
-              )}
-              {currentCountry && (
-                <div className="col-6 mb-3">
-                  <label
-                    className="fw-bolder fs-7 mb-2 text-gray-600 text-uppercase spacing"
-                    style={{ letterSpacing: "1px" }}
-                  >
-                    Ülke
-                  </label>
-                  <div className="fw-normal fs-6 mb-2">{currentCountry}</div>
-                </div>
-              )}
-              {currentState && (
-                <div className="col-6 mb-3">
-                  <label
-                    className="fw-bolder fs-7 mb-2 text-gray-600 text-uppercase spacing"
-                    style={{ letterSpacing: "1px" }}
-                  >
-                    Şehir
-                  </label>
-                  <div className="fw-normal fs-6 mb-2">{currentState}</div>
-                </div>
-              )}
-              {currentApplication?.phoneNumber && (
-                <div className="col-6 mb-3">
-                  <label
-                    className="fw-bolder fs-7 mb-2 text-gray-600 text-uppercase spacing"
-                    style={{ letterSpacing: "1px" }}
-                  >
-                    Telefon Numarası
-                  </label>
-                  <div className="fw-normal fs-6 mb-2">
-                    {currentApplication.phoneNumber}
-                  </div>
-                </div>
-              )}
             </div>
           </div>
 
@@ -351,8 +318,8 @@ const FranchisePage = () => {
                 type="button"
                 className="btn btn-danger me-3"
                 onClick={async () => {
-                  if (currentApplication?.id) {
-                    await deleteFranchiseApplication(currentApplication.id)
+                  if (currentTransaction?.id) {
+                    await deleteTransaction(currentTransaction.id)
                   }
                   setShow(false)
                   toast.success("Başvuru silindi.")
@@ -369,11 +336,8 @@ const FranchisePage = () => {
               >
                 Kapat
               </button>
-              <a
-                className="btn btn-success ms-3"
-                href={`tel:${currentApplication?.phoneNumber}`}
-              >
-                Başvuranı Ara
+              <a className="btn btn-success ms-3" href={`#`}>
+                İşlem
               </a>
             </div>
           </Modal.Footer>

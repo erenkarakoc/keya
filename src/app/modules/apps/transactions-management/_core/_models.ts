@@ -18,4 +18,23 @@ export type Transaction = {
   createdAt: string
 }
 
+export type EmployerTransaction = {
+  id?: string
+  title: string
+  userId: string[]
+  officeId: string
+  amount: string
+  payout: boolean
+  createdAt: string
+}
+
+export type OfficeTransaction = {
+  id?: string
+  title: string
+  officeId: string
+  amount: string
+  payout: boolean
+  createdAt: string
+}
+
 export type TransactionsQueryResponse = Response<Array<Transaction>>

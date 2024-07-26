@@ -126,34 +126,14 @@ export function AsideMenuMain() {
 
           <AsideMenuItemWithSub
             to=""
-            title="İşlemler"
-            fontIcon="bi-sticky"
-            icon="black-right"
-          >
-            <AsideMenuItem
-              to="islem-yonetimi"
-              icon="black-right"
-              title="Tüm İşlemler"
-              fontIcon="bi-layers"
-            />
-          </AsideMenuItemWithSub>
-
-          <AsideMenuItemWithSub
-            to=""
             title="Ofis Muhasebesi"
             fontIcon="bi-sticky"
             icon="black-right"
           >
             <AsideMenuItem
-              to=""
+              to="ofis-islemleri"
               icon="black-right"
-              title="Ofis Gelir/Gideri"
-              fontIcon="bi-layers"
-            />
-            <AsideMenuItem
-              to=""
-              icon="black-right"
-              title="İşlem Gelir/Gideri"
+              title="Ofis İşlemleri"
               fontIcon="bi-layers"
             />
           </AsideMenuItemWithSub>
@@ -165,15 +145,15 @@ export function AsideMenuMain() {
             icon="black-right"
           >
             <AsideMenuItem
-              to=""
+              to="danisman-islemleri"
               icon="black-right"
-              title="Danışman"
+              title="Danışman İşlemleri"
               fontIcon="bi-layers"
             />
             <AsideMenuItem
-              to=""
+              to="idari-kadro-islemleri"
               icon="black-right"
-              title="İdari Kadro"
+              title="İdari Kadro İşlemleri"
               fontIcon="bi-layers"
             />
           </AsideMenuItemWithSub>

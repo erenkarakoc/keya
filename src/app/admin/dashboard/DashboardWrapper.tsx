@@ -16,8 +16,8 @@ import { User } from "../../modules/apps/user-management/_core/_models"
 import { Office } from "../../modules/apps/office-management/_core/_models"
 import { Transaction } from "../../modules/apps/transactions-management/_core/_models"
 
-import { IncomeSummary } from "./components/IncomeSummary"
-import { MonthsSummary } from "./components/MonthSummary"
+import { ThisMonth } from "./components/ThisMonth"
+import { Last6Months } from "./components/Last6Months"
 import { Summary } from "./components/Summary"
 
 const DashboardPage = () => {
@@ -57,17 +57,17 @@ const DashboardPage = () => {
     <>
       <div className="row gy-5 g-xl-10">
         <div className="col-xl-4">
-          <IncomeSummary
+          <Last6Months
             className="card-xl-stretch mb-xl-10"
+            backgroundColor="#F7D9E3"
+            chartHeight="100px"
             transactions={transactions}
           />
         </div>
 
         <div className="col-xl-4">
-          <MonthsSummary
+          <ThisMonth
             className="card-xl-stretch mb-xl-10"
-            backGroundColor="#F7D9E3"
-            chartHeight="100px"
             transactions={transactions}
           />
         </div>
@@ -76,29 +76,26 @@ const DashboardPage = () => {
           <Summary
             className="card-xl-stretch mb-xl-10"
             backGroundColor="#CBD4F4"
-            transactions={transactions}
+            transactionsLength={transactions?.length}
             propertiesLength={properties?.length}
             usersLength={users?.filter((user) => user.role === "agent").length}
+            officesLength={offices?.length}
           />
         </div>
       </div>
 
-      {users && (
-        <DashboardAgentsTable
-          className="mb-5 mb-xl-10"
-          users={users}
-          offices={offices}
-          properties={properties}
-        />
-      )}
-      {properties && (
-        <DashboardPropertiesTable
-          className="mb-5 mb-xl-10"
-          properties={properties}
-          users={users}
-          offices={offices}
-        />
-      )}
+      <DashboardAgentsTable
+        className="mb-5 mb-xl-10"
+        users={users}
+        offices={offices}
+        properties={properties}
+      />
+      <DashboardPropertiesTable
+        className="mb-5 mb-xl-10"
+        properties={properties}
+        users={users}
+        offices={offices}
+      />
     </>
   )
 }

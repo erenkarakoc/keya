@@ -6,25 +6,25 @@ import { Transaction } from "../../../modules/apps/transactions-management/_core
 import {
   calculatePercentageChange,
   formatPrice,
+  formatPriceToShort,
 } from "../../../../_metronic/helpers/kyHelpers"
 
 type Props = {
   className: string
   chartHeight: string
-  backGroundColor: string
+  backgroundColor: string
   transactions: Transaction[] | undefined
 }
 
-const MonthsSummary: FC<Props> = ({
+const Last6Months: FC<Props> = ({
   transactions,
   className,
-  backGroundColor,
+  backgroundColor,
   chartHeight,
 }) => {
-  const [loading, setLoading] = useState(true)
-
   const [thisMonthsTotalIncome, setThisMonthsTotalIncome] = useState(0)
   const [lastMonthsTotalIncome, setLastMonthsTotalIncome] = useState(0)
+  const [last6MonthsTotalIncome, setLast6MonthsTotalIncome] = useState(0)
 
   const [thisMonthsTransactions, setThisMonthsTransactions] = useState<
     Transaction[]
@@ -226,7 +226,6 @@ const MonthsSummary: FC<Props> = ({
       const { createdAt, totalProfit } = transaction
       const [year, month] = createdAt.split("-").map(Number)
 
-      // Only consider the last 6 months
       const isRecent =
         (year === currentYear && month > currentMonth - 6) ||
         (year === currentYear - 1 && month > 12 - (6 - currentMonth))
@@ -239,6 +238,7 @@ const MonthsSummary: FC<Props> = ({
     })
 
     const result: number[] = []
+
     for (let i = 0; i < 6; i++) {
       const month = currentMonth - i
       const year = month < 0 ? currentYear - 1 : currentYear
@@ -248,6 +248,7 @@ const MonthsSummary: FC<Props> = ({
     }
 
     setLast6MonthsProfits(result)
+    setLast6MonthsTotalIncome(result.reduce((acc, val) => acc + val, 0))
   }
 
   const calculateLastMonthsTotalIncome = (transactions: Transaction[]) => {
@@ -301,7 +302,6 @@ const MonthsSummary: FC<Props> = ({
       }
 
       calculateTransactions()
-      setLoading(false)
     }
   }, [transactions])
 
@@ -327,47 +327,44 @@ const MonthsSummary: FC<Props> = ({
   return (
     <div
       className={`card ${className} theme-dark-bg-body`}
-      style={{ backgroundColor: backGroundColor }}
+      style={{ backgroundColor }}
     >
-      {loading ? (
-        ""
-      ) : (
-        <div className="card-body d-flex flex-column">
-          <div className="d-flex flex-column flex-grow-1">
-            <h4 className="text-gray-900 fw-bolder fs-3">Son 6 Ay</h4>
+      <div className="card-body d-flex flex-column">
+        <div className="d-flex flex-column flex-grow-1">
+          <h4 className="text-gray-900 fw-bolder fs-3">Son 6 Ay</h4>
 
-            <div
-              ref={chartRef}
-              className="mixed-widget-13-chart mb-10"
-              style={{ height: chartHeight, minHeight: chartHeight }}
-            ></div>
-          </div>
-
-          <div className="pt-5">
-            <span className="text-gray-900 fw-bolder fs-2x lh-0">₺</span>
-
-            <span className="text-gray-900 fw-bolder fs-3x me-2 lh-0">
-              {formatPrice(thisMonthsTotalIncome.toString()).replace("₺", "")}
-            </span>
-
-            <span className="text-gray-900 fw-bolder fs-6 lh-0">
-              {lastMonthsTotalIncome > thisMonthsTotalIncome ? "-" : "+"}
-              {lastMonthsTotalIncome === 0
-                ? "100"
-                : calculatePercentageChange(
-                    lastMonthsTotalIncome,
-                    thisMonthsTotalIncome
-                  ).replace("-", "")}
-              %{" "}
-              {lastMonthsTotalIncome > thisMonthsTotalIncome
-                ? "düşüş"
-                : "artış"}
-            </span>
-          </div>
+          <div
+            ref={chartRef}
+            className="mixed-widget-13-chart mb-5"
+            style={{ height: chartHeight, minHeight: chartHeight }}
+          ></div>
         </div>
-      )}
+
+        <div>
+          <span className="text-gray-900 fw-bolder fs-2x">₺</span>
+
+          <span className="text-gray-900 fw-bolder fs-3x me-2">
+            {formatPriceToShort(last6MonthsTotalIncome.toString()).replace(
+              "₺",
+              ""
+            )}
+          </span>
+        </div>
+
+        <span className="text-muted fw-bold fs-6">
+          Geçen aya göre{" "}
+          {lastMonthsTotalIncome > thisMonthsTotalIncome ? "-" : "+"}
+          {lastMonthsTotalIncome === 0
+            ? "100"
+            : calculatePercentageChange(
+                lastMonthsTotalIncome,
+                thisMonthsTotalIncome
+              ).replace("-", "")}
+          % {lastMonthsTotalIncome > thisMonthsTotalIncome ? "düşüş" : "artış"}
+        </span>
+      </div>
     </div>
   )
 }
 
-export { MonthsSummary }
+export { Last6Months }

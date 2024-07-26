@@ -237,9 +237,9 @@ const formatPriceToShort = (price: string) => {
   const value = Number(price)
 
   if (value >= 1000000) {
-    return `₺${(value / 1000000).toFixed(1)}M`
+    return `₺${(value / 1000000).toFixed(1)} milyon`
   } else if (value >= 1000) {
-    return `₺${(value / 1000).toFixed(1)}K`
+    return `₺${(value / 1000).toFixed(0)} bin`
   } else {
     return `₺${value}`
   }
