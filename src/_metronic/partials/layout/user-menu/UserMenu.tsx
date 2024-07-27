@@ -62,11 +62,6 @@ const UserMenu = () => {
           className="menu-link px-5"
         >
           <span className="menu-text">Portföylerim</span>
-          <span className="menu-badge">
-            <span className="badge badge-light-danger badge-circle fw-bolder fs-7">
-              {}
-            </span>
-          </span>
         </a>
       </div>
       {/* end::Menu item */}

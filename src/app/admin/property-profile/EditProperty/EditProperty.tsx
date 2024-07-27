@@ -554,7 +554,7 @@ const EditProperty: React.FC<Props> = ({ property, setProperty }) => {
       enableReinitialize={true}
       noValidate
     >
-      {({ values, setFieldValue, dirty }) => (
+      {({ values, setFieldValue }) => (
         <div className="card">
           {submittingForm ? (
             <div className="d-flex justify-content-center p-20 w-100">
@@ -2255,7 +2255,6 @@ const EditProperty: React.FC<Props> = ({ property, setProperty }) => {
                       type="button"
                       className="btn btn-primary"
                       onClick={() => handleSubmit(values)}
-                      disabled={!dirty}
                     >
                       {submittingForm ? (
                         <span className="indicator-label">

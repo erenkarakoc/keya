@@ -144,17 +144,37 @@ export function Properties() {
             {filteredProperties.map((property, i) => (
               <div className="col-md-6 col-xl-4" key={i}>
                 <div className="card border border-2 border-gray-300 border-hover overflow-hidden h-100">
-                  <div className="card-header border-0 p-0 pb-0">
-                    <img
-                      src={property.propertyDetails.photoURLs[0]}
-                      alt={property.title}
-                      style={{
-                        aspectRatio: "1 / 0.7",
-                        width: "100%",
-                        objectFit: "cover",
-                        overflow: "hidden",
-                      }}
-                    />
+                  <div className="card-header border-0 p-0 pb-0 h-100">
+                    {property.propertyDetails.photoURLs.length ? (
+                      <img
+                        src={property.propertyDetails.photoURLs[0]}
+                        alt={property.title}
+                        style={{
+                          aspectRatio: "1 / 0.7",
+                          width: "100%",
+                          objectFit: "cover",
+                          overflow: "hidden",
+                        }}
+                      />
+                    ) : (
+                      <div className="d-flex flex-column justify-content-center align-items-center text-center text-gray-500 h-100 w-100 p-20">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="32"
+                          height="32"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            fill="currentColor"
+                            d="m20.475 23.3l-2.3-2.3H5q-.825 0-1.413-.588T3 19V5.825L.7 3.5l1.4-1.4l19.8 19.8l-1.425 1.4ZM5 19h11.175l-2-2H6l3-4l2 2.725l.85-1.05L5 7.825V19Zm16-.825l-2-2V5H7.825l-2-2H19q.825 0 1.413.588T21 5v13.175Zm-7.525-7.525ZM10.6 13.425Z"
+                          />
+                        </svg>
+                        <span className="mt-3">
+                          Lütfen daha iyi bir kullanıcı deneyimi için ilana ait
+                          görselleri ekleyin.
+                        </span>
+                      </div>
+                    )}
 
                     <div className="card-toolbar">
                       <span

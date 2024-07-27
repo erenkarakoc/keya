@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { PageLink, PageTitle } from "../../../../_metronic/layout/core"
-import { Transaction } from "./_core/_models"
-import { deleteTransaction, getAllTransactions } from "./_core/_requests"
+import { OfficeTransaction } from "./_core/_models"
+import { deleteTransaction, getAllOfficeTransactions } from "./_core/_requests"
 import { Button, Modal } from "react-bootstrap"
 import { KTIcon } from "../../../../_metronic/helpers"
 import toast from "react-hot-toast"
@@ -9,12 +9,13 @@ import {
   convertToTurkishDate,
   formatPrice,
 } from "../../../../_metronic/helpers/kyHelpers"
-import { User } from "../user-management/_core/_models"
-import { getAllUsers } from "../user-management/_core/_requests"
+import { getAllOffices } from "../office-management/_core/_requests"
+import { Office } from "../office-management/_core/_models"
+import { KYOfficeImage } from "../../../frontend/components/KYOfficeImage/KYOfficeImage"
 
 const franchiseBreadcrumbs: Array<PageLink> = [
   {
-    title: "İşlem Yönetimi",
+    title: "Ofis Muhasebesi",
     path: "islem-yonetimi",
     isSeparator: false,
     isActive: false,
@@ -23,15 +24,18 @@ const franchiseBreadcrumbs: Array<PageLink> = [
 
 const PAGE_SIZE = 10
 
-const FranchisePage = () => {
+const OfficeTransactionsPage = () => {
   const [show, setShow] = useState(false)
 
-  const [transactionsLoaded, setTransactionsLoaded] = useState(false)
-  const [transactions, setTransactions] = useState<Transaction[]>()
+  const [officeTransactionsLoaded, setOfficeTransactionsLoaded] =
+    useState(false)
+  const [officeTransactions, setOfficeTransactions] =
+    useState<OfficeTransaction[]>()
 
-  const [users, setUsers] = useState<User[]>()
+  const [currentOfficeTransaction, setCurrentOfficeTransaction] =
+    useState<OfficeTransaction>()
 
-  const [currentTransaction, setCurrentTransaction] = useState<Transaction>()
+  const [offices, setOffices] = useState<Office[]>()
 
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(0)
@@ -48,33 +52,33 @@ const FranchisePage = () => {
     }
   }
 
-  const visibleTransactions = transactions?.slice(
+  const visibleTransactions = officeTransactions?.slice(
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE
   )
 
-  const fetchApplications = async () => {
-    const allApplications = await getAllTransactions()
-    setTransactions(allApplications)
-    setTransactionsLoaded(true)
-    setTotalPages(Math.ceil(allApplications.length / PAGE_SIZE))
+  const fetchOfficeTransactions = async () => {
+    const allOfficeTransactions = await getAllOfficeTransactions()
+    setOfficeTransactions(allOfficeTransactions)
+    setOfficeTransactionsLoaded(true)
+    setTotalPages(Math.ceil(allOfficeTransactions.length / PAGE_SIZE))
   }
 
   useEffect(() => {
-    fetchApplications()
+    fetchOfficeTransactions()
   }, [])
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      setUsers(await getAllUsers())
+    const fetchOffices = async () => {
+      setOffices(await getAllOffices())
     }
 
-    fetchUsers()
+    fetchOffices()
   }, [])
 
   return (
     <div>
-      <PageTitle breadcrumbs={franchiseBreadcrumbs}>İşlemler</PageTitle>
+      <PageTitle breadcrumbs={franchiseBreadcrumbs}>Ofis İşlemleri</PageTitle>
 
       <div className="card">
         <div className="card-header">
@@ -150,6 +154,11 @@ const FranchisePage = () => {
                 <KTIcon iconName="exit-up" className="fs-2" />
                 Dışa Aktar
               </button>
+
+              <button type="button" className="btn btn-light-primary me-3">
+                <KTIcon iconName="plus" className="fs-2" />
+                Oluştur
+              </button>
             </div>
           </div>
         </div>
@@ -166,25 +175,25 @@ const FranchisePage = () => {
                 İşlem Miktarı
               </div>
             </div>
-            {transactionsLoaded ? (
+            {officeTransactionsLoaded ? (
               visibleTransactions?.length ? (
-                visibleTransactions.map((transaction) => (
+                visibleTransactions.map((officeTransaction) => (
                   <div
-                    key={transaction.id}
+                    key={officeTransaction.id}
                     className="row align-items-center bg-gray-100 rounded py-5 pe-5"
                   >
                     <div className="col-lg-3 ps-5 text-gray-700 fs-6 fw-bold">
-                      {users &&
-                        users
-                          .filter((user) =>
-                            transaction.userIds.includes(user.id)
+                      {offices &&
+                        offices
+                          .filter((office) =>
+                            officeTransaction.officeId.includes(office.id)
                           )
-                          .map((user, i) => (
+                          .map((office, i) => (
                             <div className="position-relative" key={i}>
                               <a
-                                href={`/arayuz/kullanici-detayi/${user.id}/genel`}
+                                href={`/arayuz/ofis-detayi/${office.id}/genel`}
                                 target="_blank"
-                                key={user.id}
+                                key={office.id}
                                 className="symbol symbol-circle symbol-30px with-tooltip overflow-hidden"
                                 style={{
                                   marginRight: -20,
@@ -192,32 +201,30 @@ const FranchisePage = () => {
                                 }}
                               >
                                 <div className="symbol-label">
-                                  <img
-                                    src={`${user.photoURL}`}
-                                    alt={user.firstName}
-                                    className="w-100"
-                                  />
+                                  <KYOfficeImage officeName={office.name} />
                                 </div>
                               </a>
                               <span className="symbol-tooltip">
-                                {`${user.firstName} ${user.lastName}`}
+                                {`${import.meta.env.VITE_APP_NAME} ${
+                                  office.name
+                                }`}
                               </span>
                             </div>
                           ))}
                     </div>
                     <div className="col-lg-3 ps-5 text-gray-700 fs-6 fw-bold">
-                      {convertToTurkishDate(transaction.createdAt)}
+                      {convertToTurkishDate(officeTransaction.createdAt)}
                     </div>
 
                     <div className="col-lg-3 ps-5 text-gray-700 fs-6 fw-bold">
-                      {formatPrice(transaction.totalProfit)}
+                      {formatPrice(officeTransaction.amount)}
                     </div>
 
                     <div className="col-lg-3 d-flex justify-content-end">
                       <Button
                         type="button"
                         onClick={() => {
-                          setCurrentTransaction(transaction)
+                          setCurrentOfficeTransaction(officeTransaction)
 
                           setShow(true)
                         }}
@@ -229,7 +236,9 @@ const FranchisePage = () => {
                 ))
               ) : (
                 <span className="text-muted text-center p-10 fw-bold">
-                  Bu filtrelere uygun bir işlem bulunamadı.
+                  {officeTransactions?.length
+                    ? "İdari kadro işlemi bulunamadı."
+                    : "Bu filtrelere uygun bir işlem bulunamadı."}
                 </span>
               )
             ) : (
@@ -318,15 +327,15 @@ const FranchisePage = () => {
                 type="button"
                 className="btn btn-danger me-3"
                 onClick={async () => {
-                  if (currentTransaction?.id) {
-                    await deleteTransaction(currentTransaction.id)
+                  if (currentOfficeTransaction?.id) {
+                    await deleteTransaction(currentOfficeTransaction.id)
                   }
                   setShow(false)
-                  toast.success("Başvuru silindi.")
-                  fetchApplications()
+                  toast.success("İşlem silindi.")
+                  fetchOfficeTransactions()
                 }}
               >
-                Başvuruyu Sil
+                İşlemi Sil
               </button>
               <button
                 type="button"
@@ -347,4 +356,4 @@ const FranchisePage = () => {
   )
 }
 
-export default FranchisePage
+export default OfficeTransactionsPage

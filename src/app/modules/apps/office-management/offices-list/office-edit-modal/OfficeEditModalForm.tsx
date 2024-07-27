@@ -353,14 +353,18 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
       setCountries(data)
 
       if (office.address.country) {
-        const statesArr = await getStatesByCountry(office.address.country)
+        const statesArr = await getStatesByCountry(
+          office.address.country.split("|")[1]
+        )
         setStates(statesArr || [])
         setCurrentCountry(office.address.country)
         setCountrySelected(true)
       }
 
       if (office.address.state) {
-        const citiesArr = await getCitiesByState(office.address.state)
+        const citiesArr = await getCitiesByState(
+          office.address.state.split("|")[1]
+        )
         setCities(citiesArr || [])
         setCurrentState(office.address.state)
         setStateSelected(true)
@@ -696,7 +700,6 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                     ? states.map((state) => (
                         <option
                           value={state.name + "|" + state.id}
-                          state-id={state.id}
                           key={state.id}
                         >
                           {state.name}
@@ -723,11 +726,7 @@ const OfficeEditModalForm: FC<Props> = ({ office, isOfficeLoading }) => {
                   <option></option>
                   {countrySelected && stateSelected
                     ? cities.map((city) => (
-                        <option
-                          value={city.name + "|" + city.id}
-                          city-id={city.id}
-                          key={city.id}
-                        >
+                        <option value={city.name + "|" + city.id} key={city.id}>
                           {city.name}
                         </option>
                       ))

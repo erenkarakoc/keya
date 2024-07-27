@@ -3,8 +3,8 @@ import { Link, useLocation } from "react-router-dom"
 
 import { Property } from "../../modules/apps/property-management/_core/_models"
 import {
+  convertToTurkishDate,
   formatPrice,
-  timestampToTurkishDate,
 } from "../../../_metronic/helpers/kyHelpers"
 
 import { Swiper, SwiperSlide } from "swiper/react"
@@ -178,12 +178,13 @@ const ProfileHeader: React.FC<Props> = ({ property }) => {
                     <div className="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
                       <div className="d-flex align-items-center">
                         <div className="fs-2 fw-bolder">
-                          {property.ownerDetails?.permitUntilDate ===
-                          "limitless"
-                            ? "Süresiz"
-                            : timestampToTurkishDate(
-                                property.ownerDetails?.permitUntilDate ?? ""
-                              )}
+                          {property.ownerDetails?.permitUntilDate &&
+                            (property.ownerDetails?.permitUntilDate ===
+                            "limitless"
+                              ? "Süresiz"
+                              : convertToTurkishDate(
+                                  property.ownerDetails?.permitUntilDate
+                                ))}
                         </div>
                       </div>
 
@@ -202,7 +203,6 @@ const ProfileHeader: React.FC<Props> = ({ property }) => {
                         <div className="position-relative" key={i}>
                           <a
                             href={`/arayuz/kullanici-detayi/${user.id}/genel`}
-                            target="_blank"
                             key={user.id}
                             className="symbol symbol-circle symbol-60px with-tooltip overflow-hidden"
                             style={{

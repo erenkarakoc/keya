@@ -30,6 +30,7 @@ const ProfileHeader: React.FC<Props> = ({ office }) => {
   useEffect(() => {
     const fetchAddress = async () => {
       if (office.address.country) {
+        console.log(office.address)
         const countryName = await getCountryById(office.address.country)
         setCurrentCountry(countryName?.translations.tr ?? "")
       }

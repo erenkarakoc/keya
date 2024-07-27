@@ -53,32 +53,33 @@ const UsersList: FC<Props> = ({ property, currentUserId }) => {
 
         <div className="d-flex gap-1">
           {otherUsers.map((user, i) => {
-            return (
-              <div className="position-relative" key={i}>
-                <a
-                  href={`/arayuz/kullanici-detayi/${user.id}/genel`}
-                  target="_blank"
-                  key={user.id}
-                  className="symbol symbol-circle symbol-30px with-tooltip overflow-hidden"
-                  style={{
-                    border: "2px solid #fff",
-                  }}
-                >
-                  <div className="symbol-label">
-                    {user.avatar ? (
-                      <img
-                        src={user.avatar}
-                        alt={user.name}
-                        className="w-100"
-                      />
-                    ) : (
-                      <div className="symbol-label fs-3">{user.initials}</div>
-                    )}
-                  </div>
-                </a>
-                <span className="symbol-tooltip">{user.name}</span>
-              </div>
-            )
+            if (user)
+              return (
+                <div className="position-relative" key={i}>
+                  <a
+                    href={`/arayuz/kullanici-detayi/${user.id}/genel`}
+                    target="_blank"
+                    key={user.id}
+                    className="symbol symbol-circle symbol-30px with-tooltip overflow-hidden"
+                    style={{
+                      border: "2px solid #fff",
+                    }}
+                  >
+                    <div className="symbol-label">
+                      {user.avatar ? (
+                        <img
+                          src={user.avatar}
+                          alt={user.name}
+                          className="w-100"
+                        />
+                      ) : (
+                        <div className="symbol-label fs-3">{user.initials}</div>
+                      )}
+                    </div>
+                  </a>
+                  <span className="symbol-tooltip">{user.name}</span>
+                </div>
+              )
           })}
         </div>
       </div>

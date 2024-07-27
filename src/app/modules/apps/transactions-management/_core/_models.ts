@@ -24,7 +24,7 @@ export type EmployerTransaction = {
   userId: string[]
   officeId: string
   amount: string
-  payout: boolean
+  payout: string
   createdAt: string
 }
 
@@ -33,7 +33,7 @@ export type OfficeTransaction = {
   title: string
   officeId: string
   amount: string
-  payout: boolean
+  payout: string
   createdAt: string
 }
 

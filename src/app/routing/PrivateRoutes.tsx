@@ -25,10 +25,12 @@ const PrivateRoutes = () => {
     () => import("../modules/apps/franchise-management/FranchisePage")
   )
   const EmployerTransactionsPage = lazy(
-    () => import("../modules/apps/transactions-management/EmployerTransactionsPage")
+    () =>
+      import("../modules/apps/transactions-management/EmployerTransactionsPage")
   )
   const OfficeTransactionsPage = lazy(
-    () => import("../modules/apps/transactions-management/OfficeTransactionsPage")
+    () =>
+      import("../modules/apps/transactions-management/OfficeTransactionsPage")
   )
   const TransactionsPage = lazy(
     () => import("../modules/apps/transactions-management/TransactionsPage")
@@ -118,30 +120,30 @@ const PrivateRoutes = () => {
         />
 
         {/* Transaction Pages */}
-          <Route
-            path="idari-kadro-islemleri"
-            element={
-              <SuspensedView>
-                <EmployerTransactionsPage />
-              </SuspensedView>
-            }
-          />
-          <Route
-            path="ofis-islemleri"
-            element={
-              <SuspensedView>
-                <OfficeTransactionsPage />
-              </SuspensedView>
-            }
-          />
-          <Route
-            path="danisman-islemleri"
-            element={
-              <SuspensedView>
-                <TransactionsPage />
-              </SuspensedView>
-            }
-          />
+        <Route
+          path="idari-kadro-islemleri"
+          element={
+            <SuspensedView>
+              <EmployerTransactionsPage />
+            </SuspensedView>
+          }
+        />
+        <Route
+          path="ofis-islemleri"
+          element={
+            <SuspensedView>
+              <OfficeTransactionsPage />
+            </SuspensedView>
+          }
+        />
+        <Route
+          path="danisman-islemleri"
+          element={
+            <SuspensedView>
+              <TransactionsPage />
+            </SuspensedView>
+          }
+        />
 
         {/* Detail Pages */}
         <Route

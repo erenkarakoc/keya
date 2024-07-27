@@ -211,7 +211,7 @@ const EditUser: React.FC<Props> = ({ user, setUser }) => {
 
     if (e.target.value) {
       const citiesArr = await getCitiesByState(
-        e.target.getAttribute("state-id") ?? ""
+        e.target.value.split("|")[1] ?? ""
       )
       setCities(citiesArr || [])
       setStateSelected(true)
@@ -301,14 +301,16 @@ const EditUser: React.FC<Props> = ({ user, setUser }) => {
       }
 
       if (user.address?.state) {
-        const citiesArr = await getCitiesByState(user.address.state)
+        const citiesArr = await getCitiesByState(
+          user.address.state.split("|")[1]
+        )
         setCities(citiesArr || [])
-        setCurrentState(user.address.state)
+        setCurrentState(user.address.state.split("|")[0])
         setStateSelected(true)
       }
 
       if (user.address?.city) {
-        setCurrentCity(user.address.city)
+        setCurrentCity(user.address.city.split("|")[0])
       }
     }
 
@@ -589,9 +591,9 @@ const EditUser: React.FC<Props> = ({ user, setUser }) => {
                       <Field
                         as="select"
                         className="form-select form-select-lg form-select-solid"
-                        onChange={(e: any) =>
+                        onChange={(e: any) => {
                           handleCountryChange(e, setFieldValue)
-                        }
+                        }}
                         name="address.country"
                         value={currentCountry}
                       >
@@ -600,7 +602,7 @@ const EditUser: React.FC<Props> = ({ user, setUser }) => {
                           countries.map((country) => (
                             <option
                               value={
-                                country.translations.tr ||
+                                country.translations.tr + "|" + country.id ||
                                 country.name + "|" + country.id
                               }
                               key={country.id}
@@ -636,7 +638,6 @@ const EditUser: React.FC<Props> = ({ user, setUser }) => {
                           ? states.map((state) => (
                               <option
                                 value={state.name + "|" + state.id}
-                                state-id={state.id}
                                 key={state.id}
                               >
                                 {state.name}

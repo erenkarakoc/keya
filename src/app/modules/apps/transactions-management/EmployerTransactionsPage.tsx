@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react"
 import { PageLink, PageTitle } from "../../../../_metronic/layout/core"
-import { Transaction } from "./_core/_models"
-import { deleteTransaction, getAllTransactions } from "./_core/_requests"
+import { EmployerTransaction } from "./_core/_models"
+import {
+  deleteTransaction,
+  getAllEmployerTransactions,
+} from "./_core/_requests"
 import { Button, Modal } from "react-bootstrap"
 import { KTIcon } from "../../../../_metronic/helpers"
 import toast from "react-hot-toast"
@@ -14,7 +17,7 @@ import { getAllUsers } from "../user-management/_core/_requests"
 
 const franchiseBreadcrumbs: Array<PageLink> = [
   {
-    title: "İşlem Yönetimi",
+    title: "Kullanıcı Muhasebesi",
     path: "islem-yonetimi",
     isSeparator: false,
     isActive: false,
@@ -23,15 +26,18 @@ const franchiseBreadcrumbs: Array<PageLink> = [
 
 const PAGE_SIZE = 10
 
-const FranchisePage = () => {
+const EmployerTransactionsPage = () => {
   const [show, setShow] = useState(false)
 
-  const [transactionsLoaded, setTransactionsLoaded] = useState(false)
-  const [transactions, setTransactions] = useState<Transaction[]>()
+  const [employerTransactionsLoaded, setEmployerTransactionsLoaded] =
+    useState(false)
+  const [employerTransactions, setEmployerTransactions] =
+    useState<EmployerTransaction[]>()
+
+  const [currentEmployerTransaction, setCurrentEmployerTransaction] =
+    useState<EmployerTransaction>()
 
   const [users, setUsers] = useState<User[]>()
-
-  const [currentTransaction, setCurrentTransaction] = useState<Transaction>()
 
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(0)
@@ -48,20 +54,20 @@ const FranchisePage = () => {
     }
   }
 
-  const visibleTransactions = transactions?.slice(
+  const visibleTransactions = employerTransactions?.slice(
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE
   )
 
-  const fetchApplications = async () => {
-    const allApplications = await getAllTransactions()
-    setTransactions(allApplications)
-    setTransactionsLoaded(true)
-    setTotalPages(Math.ceil(allApplications.length / PAGE_SIZE))
+  const fetchEmployerTransactions = async () => {
+    const allEmployerTransactions = await getAllEmployerTransactions()
+    setEmployerTransactions(allEmployerTransactions)
+    setEmployerTransactionsLoaded(true)
+    setTotalPages(Math.ceil(allEmployerTransactions.length / PAGE_SIZE))
   }
 
   useEffect(() => {
-    fetchApplications()
+    fetchEmployerTransactions()
   }, [])
 
   useEffect(() => {
@@ -74,7 +80,9 @@ const FranchisePage = () => {
 
   return (
     <div>
-      <PageTitle breadcrumbs={franchiseBreadcrumbs}>İşlemler</PageTitle>
+      <PageTitle breadcrumbs={franchiseBreadcrumbs}>
+        İdari Kadro İşlemleri
+      </PageTitle>
 
       <div className="card">
         <div className="card-header">
@@ -150,6 +158,11 @@ const FranchisePage = () => {
                 <KTIcon iconName="exit-up" className="fs-2" />
                 Dışa Aktar
               </button>
+
+              <button type="button" className="btn btn-light-primary me-3">
+                <KTIcon iconName="plus" className="fs-2" />
+                Oluştur
+              </button>
             </div>
           </div>
         </div>
@@ -166,18 +179,18 @@ const FranchisePage = () => {
                 İşlem Miktarı
               </div>
             </div>
-            {transactionsLoaded ? (
+            {employerTransactionsLoaded ? (
               visibleTransactions?.length ? (
-                visibleTransactions.map((transaction) => (
+                visibleTransactions.map((employerTransaction) => (
                   <div
-                    key={transaction.id}
+                    key={employerTransaction.id}
                     className="row align-items-center bg-gray-100 rounded py-5 pe-5"
                   >
                     <div className="col-lg-3 ps-5 text-gray-700 fs-6 fw-bold">
                       {users &&
                         users
                           .filter((user) =>
-                            transaction.userIds.includes(user.id)
+                            employerTransaction.userId.includes(user.id)
                           )
                           .map((user, i) => (
                             <div className="position-relative" key={i}>
@@ -206,18 +219,18 @@ const FranchisePage = () => {
                           ))}
                     </div>
                     <div className="col-lg-3 ps-5 text-gray-700 fs-6 fw-bold">
-                      {convertToTurkishDate(transaction.createdAt)}
+                      {convertToTurkishDate(employerTransaction.createdAt)}
                     </div>
 
                     <div className="col-lg-3 ps-5 text-gray-700 fs-6 fw-bold">
-                      {formatPrice(transaction.totalProfit)}
+                      {formatPrice(employerTransaction.amount)}
                     </div>
 
                     <div className="col-lg-3 d-flex justify-content-end">
                       <Button
                         type="button"
                         onClick={() => {
-                          setCurrentTransaction(transaction)
+                          setCurrentEmployerTransaction(employerTransaction)
 
                           setShow(true)
                         }}
@@ -229,7 +242,9 @@ const FranchisePage = () => {
                 ))
               ) : (
                 <span className="text-muted text-center p-10 fw-bold">
-                  Bu filtrelere uygun bir işlem bulunamadı.
+                  {employerTransactions?.length
+                    ? "İdari kadro işlemi bulunamadı."
+                    : "Bu filtrelere uygun bir işlem bulunamadı."}
                 </span>
               )
             ) : (
@@ -318,15 +333,15 @@ const FranchisePage = () => {
                 type="button"
                 className="btn btn-danger me-3"
                 onClick={async () => {
-                  if (currentTransaction?.id) {
-                    await deleteTransaction(currentTransaction.id)
+                  if (currentEmployerTransaction?.id) {
+                    await deleteTransaction(currentEmployerTransaction.id)
                   }
                   setShow(false)
-                  toast.success("Başvuru silindi.")
-                  fetchApplications()
+                  toast.success("İşlem silindi.")
+                  fetchEmployerTransactions()
                 }}
               >
-                Başvuruyu Sil
+                İşlemi Sil
               </button>
               <button
                 type="button"
@@ -347,4 +362,4 @@ const FranchisePage = () => {
   )
 }
 
-export default FranchisePage
+export default EmployerTransactionsPage
