@@ -3,15 +3,40 @@ import React, { useEffect, useState } from "react"
 
 import { Property } from "../../../../../modules/apps/property-management/_core/_models"
 import { getPropertiesBySearchTerm } from "../../../../../modules/apps/property-management/_core/_requests"
+import {
+  City,
+  Country,
+  State,
+} from "../../../../../../_metronic/helpers/address-helper/_models"
+import {
+  getCitiesByState,
+  getCountries,
+  getStatesByCountry,
+  toTurkishUpperCase,
+} from "../../../../../../_metronic/helpers/kyHelpers"
+import { KYSelect } from "../../../../components/KYForm/KYSelect/KYSelect"
+
+interface Option {
+  value: string
+  text: string
+}
 
 const KYHeroSearchInput = () => {
+  const [searchLoading, setSearchLoading] = useState(true)
+  const [searchResult, setSearchResult] = useState<Property[]>([])
+  const [searchTerm, setSearchTerm] = useState("")
+
   const [isHovered, setIsHovered] = useState(false)
   const [isFocused, setIsFocused] = useState(false)
   const [hasValue, setHasValue] = useState(false)
 
-  const [searchLoading, setSearchLoading] = useState(true)
-  const [searchResult, setSearchResult] = useState<Property[]>([])
-  const [searchTerm, setSearchTerm] = useState("")
+  const [filterListActive, setFilterListActive] = useState(false)
+
+  const [countries, setCountries] = useState<Option[]>([])
+  const [states, setStates] = useState<Option[]>([])
+  const [cities, setCities] = useState<Option[]>([])
+  const [statesDisabled, setStatesDisabled] = useState(true)
+  const [citiesDisabled, setCitiesDisabled] = useState(true)
 
   const onHeroSearchKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     e.preventDefault()
@@ -25,7 +50,126 @@ const KYHeroSearchInput = () => {
 
   const onHeroSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
+    let link = "/ilanlar"
+    const params = new URLSearchParams()
+
+    const form = e?.currentTarget || document.querySelector("form.ky-form")
+    const title = toTurkishUpperCase(searchTerm)
+    const country = (
+      form?.querySelector("#filter_properties_country") as HTMLSelectElement
+    )?.selectedOptions[0]?.innerHTML
+    const state = (
+      form?.querySelector("#filter_properties_state") as HTMLSelectElement
+    )?.selectedOptions[0]?.innerHTML
+    const city = (
+      form?.querySelector("#filter_properties_city") as HTMLSelectElement
+    )?.selectedOptions[0]?.innerHTML
+    const forSaleRent = (
+      form?.querySelector(
+        "#filter_properties_for_sale_rent"
+      ) as HTMLSelectElement
+    )?.selectedOptions[0]?.value
+    const type = (
+      form?.querySelector("#filter_properties_type") as HTMLSelectElement
+    )?.selectedOptions[0]?.value
+    const room = (
+      form?.querySelector("#filter_properties_room") as HTMLSelectElement
+    )?.selectedOptions[0]?.value
+
+    if (title) {
+      params.append("baslik", title)
+    }
+    if (country) {
+      params.append("ulke", country)
+    }
+    if (state) {
+      params.append("il", state)
+    }
+    if (city) {
+      params.append("ilce", city)
+    }
+    if (forSaleRent) {
+      params.append("satilik_kiralik", forSaleRent)
+    }
+    if (type) {
+      params.append("gayrimenkul_tipi", type)
+    }
+    if (room) {
+      params.append("oda_sayisi", room)
+    }
+
+    const queryString = params.toString()
+    if (queryString) {
+      link += "?" + queryString
+    }
+
+    window.location.href = link
   }
+
+  const fetchCountries = async () => {
+    setCountries([])
+    setStates([])
+    setStatesDisabled(true)
+
+    const countriesArr: Option[] = []
+    const restCountries: Country[] = await getCountries()
+
+    if (restCountries) {
+      restCountries.forEach((country: Country) => {
+        countriesArr.push({
+          value: country.id.toString(),
+          text: country.translations.tr || country.name,
+        })
+      })
+      setCountries(countriesArr)
+    }
+  }
+
+  const fetchStates = async (countryId: string) => {
+    setStates([])
+    setStatesDisabled(true)
+    setCities([])
+    setCitiesDisabled(true)
+
+    const statesArr: Option[] = []
+    const restStates: State[] = await getStatesByCountry(countryId)
+
+    if (restStates) {
+      restStates.forEach((state: State) => {
+        statesArr.push({
+          value: state.id.toString(),
+          text: state.name,
+        })
+      })
+      setStates(statesArr)
+      setStatesDisabled(false)
+    }
+  }
+
+  const fetchCities = async (stateId: string) => {
+    setCities([])
+    setCitiesDisabled(true)
+
+    const citiesArr: Option[] = []
+    const restCities: City[] = await getCitiesByState(stateId)
+
+    if (restCities) {
+      restCities.forEach((city: City) => {
+        citiesArr.push({
+          value: city.id.toString(),
+          text: city.name,
+        })
+      })
+      setCities(citiesArr)
+      setCitiesDisabled(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchCountries()
+    fetchStates("225")
+  }, [])
 
   useEffect(() => {
     setSearchLoading(true)
@@ -75,10 +219,11 @@ const KYHeroSearchInput = () => {
           fill="#8c8c8c"
         />
       </svg>
+
       <button
         type="button"
         id="KYHeroSearchFilter"
-        onClick={() => console.log("Filtreler")}
+        onClick={() => setFilterListActive(!filterListActive)}
       >
         <svg
           width="20"
@@ -96,9 +241,71 @@ const KYHeroSearchInput = () => {
           />
         </svg>
       </button>
+
       <button type="submit" id="KYHeroSearchButton">
         <span>Ara</span>
       </button>
+
+      <div
+        className={`ky-hero-search-filter-list${
+          filterListActive ? " active" : ""
+        }`}
+      >
+        {countries.length > 0 && (
+          <div className="row">
+            <div className="col">
+              <KYSelect
+                id="filter_properties_country"
+                defaultValue="225"
+                options={countries}
+                onChange={(e) => fetchStates(e.target.value)}
+                placeholder="Ülke"
+              />
+            </div>
+            <div className="col">
+              <KYSelect
+                id="filter_properties_state"
+                options={states}
+                onChange={(e) => fetchCities(e.target.value)}
+                placeholder="Şehir"
+                disabled={statesDisabled}
+              />
+            </div>
+            <div className="col">
+              <KYSelect
+                id="filter_properties_city"
+                options={cities}
+                placeholder="İlçe"
+                disabled={citiesDisabled}
+              />
+            </div>
+          </div>
+        )}
+
+        <div className="row">
+          <div className="col">
+            <KYSelect
+              id="filter_properties_for_sale_rent"
+              options={filterForOptions}
+              placeholder="Satılık/Kiralık"
+            />
+          </div>
+          <div className="col">
+            <KYSelect
+              id="filter_properties_type"
+              options={filterTypeOptions}
+              placeholder="Gayrimenkul Tipi"
+            />
+          </div>
+          <div className="col">
+            <KYSelect
+              id="filter_properties_room"
+              options={filterRoomOptions}
+              placeholder="Oda Sayısı"
+            />
+          </div>
+        </div>
+      </div>
 
       <ul
         className={`ky-hero-search-list${
@@ -141,3 +348,64 @@ const KYHeroSearchInput = () => {
 }
 
 export { KYHeroSearchInput }
+
+const filterForOptions = [
+  { value: "sale", text: "Satılık" },
+  { value: "rent", text: "Kiralık" },
+  { value: "lease-sale", text: "Devren Satılık" },
+  { value: "lease-rent", text: "Devren Kiralık" },
+]
+
+const filterTypeOptions = [
+  { value: "residence", text: "Konut" },
+  { value: "land", text: "Arsa" },
+  { value: "office", text: "İş Yeri" },
+  { value: "project", text: "Proje" },
+]
+
+const filterRoomOptions = [
+  { value: "1+1", text: "1+1" },
+  { value: "1.5+1", text: "1.5+1" },
+  { value: "2+0", text: "2+0" },
+  { value: "2+1", text: "2+1" },
+  { value: "2.5+1", text: "2.5+1" },
+  { value: "2+2", text: "2+2" },
+  { value: "3+0", text: "3+0" },
+  { value: "3+1", text: "3+1" },
+  { value: "3.5+1", text: "3.5+1" },
+  { value: "3+2", text: "3+2" },
+  { value: "3+3", text: "3+3" },
+  { value: "4+0", text: "4+0" },
+  { value: "4+1", text: "4+1" },
+  { value: "4.5+1", text: "4.5+1" },
+  { value: "4.5+2", text: "4.5+2" },
+  { value: "4+2", text: "4+2" },
+  { value: "4+3", text: "4+3" },
+  { value: "4+4", text: "4+4" },
+  { value: "5+1", text: "5+1" },
+  { value: "5.5+1", text: "5.5+1" },
+  { value: "5+2", text: "5+2" },
+  { value: "5+3", text: "5+3" },
+  { value: "5+4", text: "5+4" },
+  { value: "6+1", text: "6+1" },
+  { value: "6+2", text: "6+2" },
+  { value: "6.5+1", text: "6.5+1" },
+  { value: "6+3", text: "6+3" },
+  { value: "6+4", text: "6+4" },
+  { value: "7+1", text: "7+1" },
+  { value: "7+2", text: "7+2" },
+  { value: "7+3", text: "7+3" },
+  { value: "8+1", text: "8+1" },
+  { value: "8+2", text: "8+2" },
+  { value: "8+3", text: "8+3" },
+  { value: "8+4", text: "8+4" },
+  { value: "9+1", text: "9+1" },
+  { value: "9+2", text: "9+2" },
+  { value: "9+3", text: "9+3" },
+  { value: "9+4", text: "9+4" },
+  { value: "9+5", text: "9+5" },
+  { value: "9+6", text: "9+6" },
+  { value: "10+1", text: "10+1" },
+  { value: "10+2", text: "10+2" },
+  { value: "10++", text: "10++" },
+]

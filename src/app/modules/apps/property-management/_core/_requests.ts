@@ -18,6 +18,7 @@ import {
   deleteDoc,
   limit,
 } from "firebase/firestore"
+import { toTurkishUpperCase } from "../../../../../_metronic/helpers/kyHelpers"
 
 initializeApp(firebaseConfig)
 const db = getFirestore()
@@ -26,7 +27,7 @@ const getProperties = async (
   queryString: string
 ): Promise<PropertiesQueryResponse> => {
   try {
-    const params = new URLSearchParams(queryString.toUpperCase())
+    const params = new URLSearchParams(toTurkishUpperCase(queryString))
     const page = parseInt(params.get("page") || "1", 10)
     const itemsPerPage = parseInt(params.get("items_per_page") || "10", 10) as
       | 10
@@ -160,8 +161,8 @@ const searchProperties = async (queryStr: string) => {
 
     const q = query(
       propertiesCollectionRef,
-      where("title", ">=", queryStr.toUpperCase()),
-      where("title", "<=", queryStr.toUpperCase() + "\uf8ff")
+      where("title", ">=", toTurkishUpperCase(queryStr)),
+      where("title", "<=", toTurkishUpperCase(queryStr) + "\uf8ff")
     )
 
     const propertyDocSnapshot = await getDocs(q)
@@ -189,8 +190,9 @@ const getPropertiesBySearchTerm = async (
 
     const q = query(
       propertyCollectionRef,
-      where("title", ">=", searchTerm.toUpperCase()),
-      where("title", "<=", searchTerm.toUpperCase() + "\uf8ff")
+      where("title", ">=", toTurkishUpperCase(searchTerm)),
+      where("title", "<=", toTurkishUpperCase(searchTerm) + "\uf8ff"),
+      limit(10)
     )
 
     const querySnapshot = await getDocs(q)

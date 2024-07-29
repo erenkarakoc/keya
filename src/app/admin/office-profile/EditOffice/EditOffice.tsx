@@ -272,14 +272,18 @@ const EditOffice: React.FC<Props> = ({ office, setOffice }) => {
       setCountries(data)
 
       if (office.address.country) {
-        const statesArr = await getStatesByCountry(office.address.country)
+        const statesArr = await getStatesByCountry(
+          office.address.country.split("|")[1]
+        )
         setStates(statesArr || [])
         setCurrentCountry(office.address.country)
         setCountrySelected(true)
       }
 
       if (office.address.state) {
-        const citiesArr = await getCitiesByState(office.address.state)
+        const citiesArr = await getCitiesByState(
+          office.address.state.split("|")[1]
+        )
         setCities(citiesArr || [])
         setCurrentState(office.address.state)
         setStateSelected(true)
@@ -774,7 +778,7 @@ const EditOffice: React.FC<Props> = ({ office, setOffice }) => {
                           countries.map((country) => (
                             <option
                               value={
-                                country.translations.tr ||
+                                country.translations.tr + "|" + country.id ||
                                 country.name + "|" + country.id
                               }
                               key={country.id}

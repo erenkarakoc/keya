@@ -95,14 +95,19 @@ export function AsideMenuMain() {
           </div>
 
           <AsideMenuItem
+            to="ilan-basvurulari"
+            icon="black-right"
+            title="İlan"
+            fontIcon="bi-layers"
+          />
+          <AsideMenuItem
             to=""
             icon="black-right"
             title="Danışman"
             fontIcon="bi-layers"
           />
-
           <AsideMenuItem
-            to="franchise-yonetimi"
+            to="franchise-basvurulari"
             icon="black-right"
             title="Franchise"
             fontIcon="bi-layers"

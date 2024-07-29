@@ -49,7 +49,7 @@ const validationSchema = Yup.object().shape({
 const Franchise = () => {
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
-  const [phone, setPhone] = useState("")
+  const [phoneNumber, setPhoneNumber] = useState("")
   const [occupation, setOccupation] = useState("")
   const [agreement, setAgreement] = useState("false")
   const [promotion, setPromotion] = useState("false")
@@ -213,9 +213,9 @@ const Franchise = () => {
                       type="phone"
                       placeholder="Telefon"
                       phoneInput="+90"
-                      value={phone}
+                      value={phoneNumber}
                       onChange={(e) => {
-                        setPhone(e.target.value)
+                        setPhoneNumber(e.target.value)
                         setFieldValue("phoneNumber", e.target.value)
                       }}
                       required

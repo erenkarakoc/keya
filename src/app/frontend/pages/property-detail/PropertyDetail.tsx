@@ -614,6 +614,10 @@ const PropertyDetail = () => {
                                   </Map>
                                 </APIProvider>
                               </div>
+
+                              <div className="ky-caption opacity-50 mt-2">
+                                {property.propertyDetails.address.label}
+                              </div>
                             </div>
                           ) : (
                             ""

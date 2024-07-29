@@ -21,6 +21,9 @@ const PrivateRoutes = () => {
     () => import("../modules/apps/office-management/OfficesPage")
   )
 
+  const PropertyApplicationPage = lazy(
+    () => import("../modules/apps/property-application-management/PropertyApplicationPage")
+  )
   const FranchisePage = lazy(
     () => import("../modules/apps/franchise-management/FranchisePage")
   )
@@ -52,14 +55,6 @@ const PrivateRoutes = () => {
         <Route index element={<DashboardWrapper />} />
 
         {/* Lazy Modules */}
-        {/* <Route
-          path="crafted/pages/profile/*"
-          element={
-            <SuspensedView>
-              <ProfilePage />
-            </SuspensedView>
-          }
-        /> */}
         <Route
           path="crafted/pages/wizards/*"
           element={
@@ -110,8 +105,18 @@ const PrivateRoutes = () => {
             </SuspensedView>
           }
         />
+
+        {/* Applications */}
         <Route
-          path="franchise-yonetimi/*"
+          path="ilan-basvurulari/*"
+          element={
+            <SuspensedView>
+              <PropertyApplicationPage />
+            </SuspensedView>
+          }
+        />
+        <Route
+          path="franchise-basvurulari/*"
           element={
             <SuspensedView>
               <FranchisePage />

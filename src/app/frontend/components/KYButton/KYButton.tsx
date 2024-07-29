@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import "./KYButton.css"
 import { useLocation } from "react-router"
 import { Link } from "react-router-dom"
@@ -8,7 +9,7 @@ import { ReactPropTypes } from "react"
 interface KYButtonProps {
   link?: boolean
   to?: string
-  action?: () => void
+  action?: any
   text: string
   secondary?: boolean
   width?: string

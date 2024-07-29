@@ -68,3 +68,8 @@
   opacity: 0;
   left: 0;
 }
+
+.ky-select,
+.ky-select * {
+  user-select: none !important;
+}

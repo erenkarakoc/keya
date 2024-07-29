@@ -95,7 +95,7 @@ const getCityById = async (cityId: string) => {
 const getUserRoleText = (text: string) => {
   switch (text) {
     case "admin":
-      return "Yönetici"
+      return "Broker & Owner"
     case "broker":
       return "Broker"
     case "assistant":
@@ -394,6 +394,15 @@ const convertPropertyDeedStatusText = (deedStatusText: string) => {
   else return ""
 }
 
+const toTurkishUpperCase = (string: string) => {
+  return string
+    .replace(/ı/g, "I")
+    .replace(/i/g, "İ")
+    .toUpperCase()
+    .replace(/I/g, "İ")
+    .replace(/İ/g, "İ")
+}
+
 export {
   getCountryById,
   getCountries,
@@ -419,4 +428,5 @@ export {
   convertPropertyHeatingText,
   convertPropertyParkingLotText,
   convertPropertyDeedStatusText,
+  toTurkishUpperCase,
 }

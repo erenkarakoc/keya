@@ -30,6 +30,7 @@ import {
   generateRandomName,
   getUserRoleText,
   timestampToISODate,
+  toTurkishUpperCase,
   urlify,
 } from "../../../../_metronic/helpers/kyHelpers"
 
@@ -449,7 +450,7 @@ const EditProperty: React.FC<Props> = ({ property, setProperty }) => {
       }
 
       values.propertyDetails.photoURLs = uploadedImageUrls
-      values.title = values.title.toUpperCase()
+      values.title = toTurkishUpperCase(values.title)
 
       await updateProperty(values)
       setProperty(values)

@@ -42,7 +42,7 @@ const KYServices = () => {
                   fill="currentColor"
                 />
               </svg>
-              <Link to="/ilanlar&search?=konut">Konut</Link>
+              <Link to="/ilanlar?gayrimenkul_tipi=residence">Konut</Link>
             </div>
           </motion.div>
           <motion.div
@@ -69,7 +69,7 @@ const KYServices = () => {
                   fill="currentColor"
                 />
               </svg>
-              <Link to="/ilanlar&search?=proje">Proje</Link>
+              <Link to="/ilanlar?gayrimenkul_tipi=project">Proje</Link>
             </div>
           </motion.div>
           <motion.div
@@ -110,7 +110,7 @@ const KYServices = () => {
                   fill="currentColor"
                 />
               </svg>
-              <Link to="/ilanlar&search?=ticari">Ticari</Link>
+              <Link to="/ilanlar?gayrimenkul_tipi=office">Ticari</Link>
             </div>
           </motion.div>
           <motion.div
@@ -137,7 +137,7 @@ const KYServices = () => {
                   fill="currentColor"
                 />
               </svg>
-              <Link to="/ilanlar&search?=arsa">Arsa</Link>
+              <Link to="/ilanlar?gayrimenkul_tipi=land">Arsa</Link>
             </div>
           </motion.div>
         </div>

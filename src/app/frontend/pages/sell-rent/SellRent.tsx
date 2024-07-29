@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import "./SellRent.css"
 
 import { useEffect, useState } from "react"
@@ -7,8 +8,9 @@ import { KYPageHeader } from "../../components/KYPageHeader/KYPageHeader"
 import { KYButton } from "../../components/KYButton/KYButton"
 import { KYInput } from "../../components/KYForm/KTInput/KYInput"
 import { KYCheckbox } from "../../components/KYForm/KYCheckbox/KYCheckbox"
-import { KYRadio } from "../../components/KYForm/KYRadio/KYRadio"
 import { KYSelect } from "../../components/KYForm/KYSelect/KYSelect"
+
+import * as Yup from "yup"
 
 import {
   getCitiesByState,
@@ -22,19 +24,54 @@ import {
   Country,
   State,
 } from "../../../../_metronic/helpers/address-helper/_models"
+import { Form, Formik } from "formik"
+import { newPropertyApplication } from "../../../modules/apps/property-application-management/_core/_requests"
+import toast from "react-hot-toast"
 
 interface Option {
   value: string
   text: string
 }
 
+const validationSchema = Yup.object().shape({
+  firstName: Yup.string().required("Ad alanı zorunludur"),
+  lastName: Yup.string().required("Soyad alanı zorunludur"),
+  phoneNumber: Yup.string().required("Telefon alanı zorunludur"),
+  for: Yup.string(),
+  type: Yup.string(),
+  address: Yup.object({
+    country: Yup.string(),
+    state: Yup.string(),
+    city: Yup.string(),
+  }),
+  agreement: Yup.string().required(),
+  promotion: Yup.string(),
+})
+
 const SellRent = () => {
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [phoneNumber, setPhoneNumber] = useState("")
+  const [agreement, setAgreement] = useState("false")
+  const [promotion, setPromotion] = useState("false")
+
   const [countries, setCountries] = useState<Option[]>([])
   const [states, setStates] = useState<Option[]>([])
   const [cities, setCities] = useState<Option[]>([])
 
   const [statesDisabled, setStatesDisabled] = useState(true)
   const [citiesDisabled, setCitiesDisabled] = useState(true)
+
+  const handleSubmit = async (values: any) => {
+    await newPropertyApplication(values)
+    console.log(values)
+    toast.success(
+      "İlan bilgilerinizi aldık! Sizinle en kısa zamanda iletişime geçeceğiz."
+    )
+    setTimeout(() => {
+      window.location.reload()
+    }, 1000)
+  }
 
   const fetchCountries = async () => {
     setCountries([])
@@ -108,179 +145,224 @@ const SellRent = () => {
       />
 
       <div className="ky-page-content">
-        <form action="" id="sell_rent_form" className="ky-form">
-          <div className="ky-form-group">
-            <motion.div
-              className="ky-form-section"
-              initial={{ opacity: 0, y: 25 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-            >
-              <label className="ky-form-label">Kişisel Bilgileriniz</label>
+        <Formik
+          initialValues={{
+            firstName: "",
+            lastName: "",
+            phoneNumber: "",
+            for: "",
+            type: "",
+            address: {
+              country: "225",
+              state: "",
+              city: "",
+            },
+            agreement: "false",
+            promotion: "false",
+          }}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ isValid, setFieldValue }) => {
+            return (
+              <Form id="sell_rent_form" className="ky-form" placeholder={null}>
+                <div className="ky-form-group">
+                  <motion.div
+                    className="ky-form-section"
+                    initial={{ opacity: 0, y: 25 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.2 }}
+                  >
+                    <label className="ky-form-label">
+                      Kişisel Bilgileriniz
+                    </label>
 
-              <div className="ky-form-row">
-                <KYInput
-                  id="sell_rent_firstname"
-                  type="firstname"
-                  placeholder="Ad"
-                  required
-                />
-                <KYInput
-                  id="sell_rent_lastname"
-                  type="lastname"
-                  placeholder="Soyad"
-                  required
-                />
-              </div>
+                    <div className="ky-form-row">
+                      <KYInput
+                        id="sell_rent_firstname"
+                        type="firstname"
+                        placeholder="Ad"
+                        value={firstName}
+                        onChange={(e) => {
+                          setFirstName(e.target.value)
+                          setFieldValue("firstName", e.target.value)
+                        }}
+                        required
+                      />
+                      <KYInput
+                        id="sell_rent_lastname"
+                        type="lastname"
+                        placeholder="Soyad"
+                        value={lastName}
+                        onChange={(e) => {
+                          setLastName(e.target.value)
+                          setFieldValue("lastName", e.target.value)
+                        }}
+                      />
+                    </div>
 
-              <KYInput
-                id="sell_rent_phone"
-                type="phone"
-                placeholder="Telefon"
-                phoneInput="+90"
-                required
-              />
-
-              <span className="ky-form-note">
-                Lütfen numaranın başında ülke kodu bulundurun. Örn. +90
-              </span>
-            </motion.div>
-
-            <motion.div
-              className="ky-form-section"
-              initial={{ opacity: 0, y: 25 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4 }}
-            >
-              <label className="ky-form-label">Gayrimenkul Bilgileri</label>
-
-              <KYSelect
-                id="sell_rent_for"
-                options={[
-                  { value: "for-sale", text: "Satmak İstiyorum" },
-                  { value: "for-rent", text: "Kiralamak İstiyorum" },
-                ]}
-                placeholder="Satılık/Kiralık"
-                required
-              />
-
-              <KYSelect
-                id="sell_rent_for"
-                options={[
-                  { value: "sell_rent_house", text: "Konut" },
-                  { value: "sell_rent_project", text: "Proje" },
-                  { value: "sell_rent_shop", text: "Ticari" },
-                  { value: "sell_rent_land", text: "Arsa" },
-                ]}
-                placeholder="Konut Tipi"
-                required
-              />
-
-              <div className="ky-form-row mt-6">
-                <KYRadio
-                  id="sell_rent_house"
-                  name="sell_rent_type"
-                  label="Konut"
-                />
-                <KYRadio
-                  id="sell_rent_project"
-                  name="sell_rent_type"
-                  label="Proje"
-                />
-                <KYRadio
-                  id="sell_rent_shop"
-                  name="sell_rent_type"
-                  label="Ticari"
-                />
-                <KYRadio
-                  id="sell_rent_land"
-                  name="sell_rent_type"
-                  label="Arsa"
-                />
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="ky-form-section"
-              initial={{ opacity: 0, y: 25 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.6 }}
-            >
-              <div className="ky-form-section">
-                <label className="ky-form-label">Gayrimenkul Adresi</label>
-
-                {countries && countries?.length ? (
-                  <>
-                    <KYSelect
-                      id="sell_rent_country"
-                      defaultValue="225"
-                      options={countries}
+                    <KYInput
+                      id="sell_rent_phone"
+                      type="phone"
+                      placeholder="Telefon"
+                      phoneInput="+90"
+                      value={phoneNumber}
                       onChange={(e) => {
-                        fetchStates(e.target.value)
+                        setPhoneNumber(e.target.value)
+                        setFieldValue("phoneNumber", e.target.value)
                       }}
-                      placeholder="Ülke"
-                    />
-                    <KYSelect
-                      id="sell_rent_state"
-                      options={states}
-                      onChange={(e) => {
-                        fetchCities(e.target.value)
-                      }}
-                      placeholder="Şehir"
-                      disabled={statesDisabled}
-                    />
-                    <KYSelect
-                      id="sell_rent_city"
-                      options={cities}
                       required
-                      placeholder="İlçe"
-                      disabled={citiesDisabled}
                     />
-                  </>
-                ) : (
-                  ""
-                )}
-              </div>
-            </motion.div>
 
-            <motion.div
-              className="ky-form-section"
-              initial={{ opacity: 0, y: 25 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4 }}
-            >
-              <KYCheckbox
-                id="sell_rent_agreement"
-                label={
-                  <>
-                    <a href="#" target="_blank">
-                      KVKK Metni
-                    </a>
-                    'ni okudum ve onaylıyorum.
-                  </>
-                }
-                required
-              />
-              <KYCheckbox
-                id="sell_rent_promotion"
-                label="Keya Real Estate’in hizmetlerine ilişkin tanıtım amaçlı elektronik iletilere, SMS gönderilerine ve telefon aramalarına izin veriyorum."
-              />
-            </motion.div>
+                    <span className="ky-form-note">
+                      Lütfen numaranın başında ülke kodu bulundurun. Örn. +90
+                    </span>
+                  </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 25 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.6 }}
-            >
-              <KYButton secondary type="submit" text="Gönder" />
-            </motion.div>
-          </div>
-        </form>
+                  <motion.div
+                    className="ky-form-section"
+                    initial={{ opacity: 0, y: 25 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.4 }}
+                  >
+                    <label className="ky-form-label">
+                      Gayrimenkul Bilgileri
+                    </label>
+
+                    <KYSelect
+                      id="sell_rent_for"
+                      options={[
+                        { value: "sale", text: "Satmak İstiyorum" },
+                        { value: "rent", text: "Kiralamak İstiyorum" },
+                      ]}
+                      placeholder="Satılık/Kiralık"
+                      onChange={(e) => {
+                        setFieldValue("for", e.target.value)
+                      }}
+                      required
+                    />
+
+                    <KYSelect
+                      id="sell_rent_for"
+                      options={[
+                        { value: "residence", text: "Konut" },
+                        { value: "office", text: "Ticari" },
+                        { value: "land", text: "Arsa" },
+                        { value: "project", text: "Proje" },
+                      ]}
+                      placeholder="Gayrimenkul Tipi"
+                      onChange={(e) => {
+                        setFieldValue("type", e.target.value)
+                      }}
+                      required
+                    />
+                  </motion.div>
+
+                  <motion.div
+                    className="ky-form-section"
+                    initial={{ opacity: 0, y: 25 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.6 }}
+                  >
+                    <div className="ky-form-section">
+                      <label className="ky-form-label">
+                        Gayrimenkul Adresi
+                      </label>
+
+                      {countries && countries?.length ? (
+                        <>
+                          <KYSelect
+                            id="franchise_country"
+                            defaultValue="225"
+                            options={countries}
+                            onChange={(e) => {
+                              fetchStates(e.target.value)
+                              setFieldValue("address.country", e.target.value)
+                            }}
+                            placeholder="Ülke"
+                          />
+                          <KYSelect
+                            id="franchise_state"
+                            options={states}
+                            placeholder="Şehir"
+                            disabled={statesDisabled}
+                            onChange={(e) => {
+                              fetchCities(e.target.value)
+                              setFieldValue("address.state", e.target.value)
+                            }}
+                          />
+                          <KYSelect
+                            id="sell_rent_city"
+                            options={cities}
+                            required
+                            placeholder="İlçe"
+                            disabled={citiesDisabled}
+                            onChange={(e) => {
+                              setFieldValue("address.city", e.target.value)
+                            }}
+                          />
+                        </>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                  </motion.div>
+
+                  <motion.div
+                    className="ky-form-section"
+                    initial={{ opacity: 0, y: 25 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.6 }}
+                  >
+                    <KYCheckbox
+                      id="franchise_agreement"
+                      label={
+                        <>
+                          <a href="#" target="_blank">
+                            KVKK Metni
+                          </a>
+                          'ni okudum ve onaylıyorum.
+                        </>
+                      }
+                      value={agreement}
+                      setValue={(e: any) => {
+                        setAgreement(e.target.value)
+                        setFieldValue("agreement", e.target.value)
+                      }}
+                    />
+                    <KYCheckbox
+                      id="franchise_promotion"
+                      label="Keya Real Estate’in hizmetlerine ilişkin tanıtım amaçlı elektronik iletilere, SMS gönderilerine ve telefon aramalarına izin veriyorum."
+                      value={promotion}
+                      setValue={(e: any) => {
+                        setPromotion(e.target.value)
+                        setFieldValue("promotion", e.target.value)
+                      }}
+                    />
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 25 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.6 }}
+                  >
+                    <KYButton
+                      secondary
+                      type="submit"
+                      text="Gönder"
+                      disabled={!isValid}
+                    />
+                  </motion.div>
+                </div>
+              </Form>
+            )
+          }}
+        </Formik>
       </div>
     </main>
   )

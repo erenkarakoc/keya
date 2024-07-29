@@ -364,7 +364,12 @@ const FranchisePage = () => {
                             currentTransaction.officeId.includes(office.id)
                           )
                           .map((office, i) => (
-                            <KYOfficeImage officeName={office.name} key={i} />
+                            <a
+                              href={`ofis-detayi/${office.id}`}
+                              target="_blank"
+                            >
+                              <KYOfficeImage officeName={office.name} key={i} />
+                            </a>
                           ))}
                     </div>
                   </div>

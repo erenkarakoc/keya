@@ -200,12 +200,14 @@ const AgentDetail = () => {
                 <div className="col-lg-10">
                   <nav className="ky-agent-tab-nav">
                     <ul>
-                      <li
-                        className={`${activeTab === "about" && "active"}`}
-                        onClick={() => setActiveTab("about")}
-                      >
-                        <span>Hakkında</span>
-                      </li>
+                      {user.about && (
+                        <li
+                          className={`${activeTab === "about" && "active"}`}
+                          onClick={() => setActiveTab("about")}
+                        >
+                          <span>Hakkında</span>
+                        </li>
+                      )}
                       <li
                         className={`${
                           activeTab === "properties" ? "active" : ""

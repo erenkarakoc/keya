@@ -63,7 +63,7 @@ const KYFooter = () => {
 
           <nav className="ky-footer-right">
             <ul className="ky-footer-list">
-              <li className="ky-footer-item">Genel Bilgiler</li>
+              <li className="ky-footer-item">Genel</li>
               <li className="ky-footer-item">
                 <Link to="/hakkimizda">Hakkımızda</Link>
               </li>

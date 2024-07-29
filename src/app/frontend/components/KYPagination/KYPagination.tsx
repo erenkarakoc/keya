@@ -14,6 +14,7 @@ const KYPagination: React.FC<KYPaginationProps> = ({
   const pages = []
 
   const handleClickPage = (pageNumber: number) => {
+    document.querySelector(".ky-layout")?.scroll(0, 0)
     setCurrentPage(pageNumber)
   }
 

@@ -40,7 +40,7 @@ const KYAgentCard: React.FC<KYAgentCardProps> = ({
     }
 
     fetchOfficeName()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.officeId])
 
   return (
@@ -77,7 +77,13 @@ const KYAgentCard: React.FC<KYAgentCardProps> = ({
             {user.firstName} {user.lastName}
           </div>
           <div className="ky-agent-card-title">
-            {getUserRoleText(user.role as string)}
+            {user.role === "admin" ? (
+              <span className="text-white">
+                {getUserRoleText(user.role as string)}
+              </span>
+            ) : (
+              getUserRoleText(user.role as string)
+            )}
           </div>
         </div>
         <div className="ky-agent-card-actions">

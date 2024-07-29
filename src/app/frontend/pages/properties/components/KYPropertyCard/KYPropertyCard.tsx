@@ -61,13 +61,17 @@ const KYPropertyCard: React.FC<KYPropertyCardProps> = ({ property }) => {
   return (
     <div className="ky-property-card">
       <div className="ky-property-card-image">
-        <img
-          src={property.propertyDetails.photoURLs[0]}
-          alt={`${property.title}`}
-          style={{ opacity: opacity }}
-          onLoad={() => setOpacity(1)}
-          loading="lazy"
-        />
+        {property.propertyDetails.photoURLs.length ? (
+          <img
+            src={property.propertyDetails.photoURLs[0]}
+            alt={property.title}
+            style={{ opacity: opacity }}
+            onLoad={() => setOpacity(1)}
+            loading="lazy"
+          />
+        ) : (
+          ""
+        )}
       </div>
 
       {propertyUsers.length ? (

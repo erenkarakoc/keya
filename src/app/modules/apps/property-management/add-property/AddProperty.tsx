@@ -38,7 +38,10 @@ import toast from "react-hot-toast"
 import { getOfficeIdByUserId } from "../../user-management/_core/_requests"
 import { Modal } from "react-bootstrap"
 import { getPropertyFromSahibinden } from "../_core/_requests"
-import { timestampToISODate } from "../../../../../_metronic/helpers/kyHelpers"
+import {
+  timestampToISODate,
+  toTurkishUpperCase,
+} from "../../../../../_metronic/helpers/kyHelpers"
 
 initializeApp(firebaseConfig)
 const db = getFirestore(firebaseApp)
@@ -119,7 +122,7 @@ const AddProperty = () => {
         await updateDoc(newPropertyRef, {
           id: newPropertyRef.id,
           officeId,
-          title: values.title.toUpperCase(),
+          title: toTurkishUpperCase(values.title),
           ownerDetails: {
             ownerFullName: values.ownerDetails?.ownerFullName,
             ownerPhoneNumber: values.ownerDetails?.ownerPhoneNumber,
