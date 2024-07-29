@@ -16,6 +16,7 @@ import {
 } from "../../../../_metronic/helpers/kyHelpers"
 import { Property } from "../../../modules/apps/property-management/_core/_models"
 import { getPropertiesByUserIds } from "../../../modules/apps/property-management/_core/_requests"
+import { useAuth } from "../../../modules/auth"
 
 interface OverviewProps {
   user: User
@@ -30,6 +31,7 @@ const Overview: React.FC<OverviewProps> = ({
   currentAbout,
   setCurrentAbout,
 }) => {
+  const { currentUser } = useAuth()
   const [showAddAboutModal, setShowAddAboutModal] = useState<boolean>(false)
   const [userAddress, setUserAddress] = useState("")
   const [properties, setProperties] = useState<Property[]>()
@@ -91,14 +93,16 @@ const Overview: React.FC<OverviewProps> = ({
             <span className="text-gray-600 fw-bold fs-6">
               Kullanıcıya ait hakkında bilgisi yok.
             </span>
-            <button
-              type="button"
-              className="btn btn-light-primary w-fit-content mt-5"
-              onClick={() => setShowAddAboutModal(true)}
-            >
-              <KTIcon iconName="plus" className="fs-2" />
-              Ekle
-            </button>
+            {currentUser && currentUser.id === user.id && (
+              <button
+                type="button"
+                className="btn btn-light-primary w-fit-content mt-5"
+                onClick={() => setShowAddAboutModal(true)}
+              >
+                <KTIcon iconName="plus" className="fs-2" />
+                Ekle
+              </button>
+            )}
           </div>
         )}
       </div>

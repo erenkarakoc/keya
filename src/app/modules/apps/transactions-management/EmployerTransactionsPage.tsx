@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react"
 import { PageLink, PageTitle } from "../../../../_metronic/layout/core"
 import { EmployerTransaction } from "./_core/_models"
 import {
   deleteTransaction,
   getAllEmployerTransactions,
+  newEmployerTransaction,
 } from "./_core/_requests"
 import { Button, Modal } from "react-bootstrap"
 import { KTIcon } from "../../../../_metronic/helpers"
@@ -12,8 +14,10 @@ import {
   convertToTurkishDate,
   formatPrice,
 } from "../../../../_metronic/helpers/kyHelpers"
-import { User } from "../user-management/_core/_models"
-import { getAllUsers } from "../user-management/_core/_requests"
+import { ErrorMessage, Field, Form, Formik } from "formik"
+import CurrencyInput from "react-currency-input-field"
+import * as Yup from "yup"
+import { useAuth } from "../../auth"
 
 const franchiseBreadcrumbs: Array<PageLink> = [
   {
@@ -28,6 +32,7 @@ const PAGE_SIZE = 10
 
 const EmployerTransactionsPage = () => {
   const [show, setShow] = useState(false)
+  const [addTransactionShow, setAddTransactionShow] = useState(false)
 
   const [employerTransactionsLoaded, setEmployerTransactionsLoaded] =
     useState(false)
@@ -36,8 +41,6 @@ const EmployerTransactionsPage = () => {
 
   const [currentEmployerTransaction, setCurrentEmployerTransaction] =
     useState<EmployerTransaction>()
-
-  const [users, setUsers] = useState<User[]>()
 
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(0)
@@ -68,14 +71,6 @@ const EmployerTransactionsPage = () => {
 
   useEffect(() => {
     fetchEmployerTransactions()
-  }, [])
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      setUsers(await getAllUsers())
-    }
-
-    fetchUsers()
   }, [])
 
   return (
@@ -159,7 +154,11 @@ const EmployerTransactionsPage = () => {
                 Dışa Aktar
               </button>
 
-              <button type="button" className="btn btn-light-primary me-3">
+              <button
+                type="button"
+                className="btn btn-light-primary me-3"
+                onClick={() => setAddTransactionShow(true)}
+              >
                 <KTIcon iconName="plus" className="fs-2" />
                 Oluştur
               </button>
@@ -173,10 +172,13 @@ const EmployerTransactionsPage = () => {
                 İşlem Sahibi
               </div>
               <div className="col-lg-3 ps-5 text-gray-500 fs-7 fw-bold">
+                İşlem Başlığı
+              </div>
+              <div className="col-lg-2 ps-5 text-gray-500 fs-7 fw-bold">
                 İşlem Tarihi
               </div>
-              <div className="col-lg-3 ps-5 text-gray-500 fs-7 fw-bold">
-                İşlem Miktarı
+              <div className="col-lg-2 ps-5 text-gray-500 fs-7 fw-bold">
+                İşlem Türü
               </div>
             </div>
             {employerTransactionsLoaded ? (
@@ -187,46 +189,22 @@ const EmployerTransactionsPage = () => {
                     className="row align-items-center bg-gray-100 rounded py-5 pe-5"
                   >
                     <div className="col-lg-3 ps-5 text-gray-700 fs-6 fw-bold">
-                      {users &&
-                        users
-                          .filter((user) =>
-                            employerTransaction.userId.includes(user.id)
-                          )
-                          .map((user, i) => (
-                            <div className="position-relative" key={i}>
-                              <a
-                                href={`/arayuz/kullanici-detayi/${user.id}/genel`}
-                                target="_blank"
-                                key={user.id}
-                                className="symbol symbol-circle symbol-30px with-tooltip overflow-hidden"
-                                style={{
-                                  marginRight: -20,
-                                  border: "2px solid #fff",
-                                }}
-                              >
-                                <div className="symbol-label">
-                                  <img
-                                    src={`${user.photoURL}`}
-                                    alt={user.firstName}
-                                    className="w-100"
-                                  />
-                                </div>
-                              </a>
-                              <span className="symbol-tooltip">
-                                {`${user.firstName} ${user.lastName}`}
-                              </span>
-                            </div>
-                          ))}
+                      {employerTransaction.userFullName}
                     </div>
                     <div className="col-lg-3 ps-5 text-gray-700 fs-6 fw-bold">
+                      {employerTransaction.title}
+                    </div>
+                    <div className="col-lg-2 ps-5 text-gray-700 fs-6 fw-bold">
                       {convertToTurkishDate(employerTransaction.createdAt)}
                     </div>
 
-                    <div className="col-lg-3 ps-5 text-gray-700 fs-6 fw-bold">
-                      {formatPrice(employerTransaction.amount)}
+                    <div className="col-lg-2 ps-5 text-gray-700 fs-6 fw-bold">
+                      {employerTransaction.payout === "true"
+                        ? "Gider"
+                        : "Gelir"}
                     </div>
 
-                    <div className="col-lg-3 d-flex justify-content-end">
+                    <div className="col-lg-2 d-flex justify-content-end">
                       <Button
                         type="button"
                         onClick={() => {
@@ -320,9 +298,70 @@ const EmployerTransactionsPage = () => {
                   className="fw-bolder fs-7 mb-2 text-gray-600 text-uppercase spacing"
                   style={{ letterSpacing: "1px" }}
                 >
-                  test
+                  İşlem Başlığı
                 </label>
-                <div className="fw-normal fs-6 mb-2">test</div>
+                <div className="fw-normal fs-6 mb-2">
+                  {currentEmployerTransaction?.title}
+                </div>
+              </div>
+              <div className="col-6 mb-3">
+                <label
+                  className="fw-bolder fs-7 mb-2 text-gray-600 text-uppercase spacing"
+                  style={{ letterSpacing: "1px" }}
+                >
+                  Adı Soyadı
+                </label>
+                <div className="fw-normal fs-6 mb-2">
+                  {currentEmployerTransaction?.userFullName}
+                </div>
+              </div>
+              <div className="col-6 mb-3">
+                <label
+                  className="fw-bolder fs-7 mb-2 text-gray-600 text-uppercase spacing"
+                  style={{ letterSpacing: "1px" }}
+                >
+                  TC Kimlik Numarası
+                </label>
+                <div className="fw-normal fs-6 mb-2">
+                  {currentEmployerTransaction?.userTC}
+                </div>
+              </div>
+              <div className="col-6 mb-3">
+                <label
+                  className="fw-bolder fs-7 mb-2 text-gray-600 text-uppercase spacing"
+                  style={{ letterSpacing: "1px" }}
+                >
+                  Miktarı
+                </label>
+                <div className="fw-normal fs-6 mb-2">
+                  {formatPrice(currentEmployerTransaction?.amount ?? "")}
+                </div>
+              </div>
+              <div className="col-6 mb-3">
+                <label
+                  className="fw-bolder fs-7 mb-2 text-gray-600 text-uppercase spacing"
+                  style={{ letterSpacing: "1px" }}
+                >
+                  Türü
+                </label>
+                <div className="fw-normal fs-6 mb-2">
+                  {currentEmployerTransaction?.payout === "true"
+                    ? "Gider"
+                    : "Gelir"}
+                </div>
+              </div>
+              <div className="col-6 mb-3">
+                <label
+                  className="fw-bolder fs-7 mb-2 text-gray-600 text-uppercase spacing"
+                  style={{ letterSpacing: "1px" }}
+                >
+                  Tarihi
+                </label>
+                <div className="fw-normal fs-6 mb-2">
+                  {convertToTurkishDate(
+                    currentEmployerTransaction?.createdAt ?? ""
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -351,14 +390,234 @@ const EmployerTransactionsPage = () => {
               >
                 Kapat
               </button>
-              <a className="btn btn-success ms-3" href={`#`}>
-                İşlem
-              </a>
             </div>
           </Modal.Footer>
         </Modal.Body>
       </Modal>
+
+      <AddTransactionModal
+        show={addTransactionShow}
+        onHide={setAddTransactionShow}
+      />
     </div>
+  )
+}
+
+export const AddTransactionModal = ({
+  show,
+  onHide,
+}: {
+  show: boolean
+  onHide: any
+}) => {
+  const { currentUser } = useAuth()
+  const [currentAmount, setCurrentAmount] = useState("")
+  const [isSubmitting, setSubmitting] = useState(false)
+
+  const validationSchema = Yup.object().shape({
+    title: Yup.string().required("Başlık alanı zorunludur."),
+    userId: Yup.string(),
+    officeId: Yup.string(),
+    amount: Yup.string().required("İşlem Miktarı alanı zorunludur."),
+    payout: Yup.string().required("İşlem Türü alanı zorunludur."),
+    createdAt: Yup.string().required("İşlem Tarihi alanı zorunludur."),
+  })
+
+  const handleSubmit = async (values: any) => {
+    if (!isSubmitting) {
+      try {
+        setSubmitting(true)
+        await newEmployerTransaction(values)
+
+        toast.success("Ofis işlemi eklendi.")
+        setTimeout(() => window.location.reload(), 1000)
+      } catch (err) {
+        setSubmitting(false)
+        console.error(err)
+        toast.error("Ofis işlemi eklenirken bir sorun yaşandı.")
+      }
+    }
+  }
+
+  return (
+    <Modal show={show} onHide={onHide}>
+      <Modal.Header>
+        <div className="d-flex justify-content-between align-items-center w-100">
+          <Modal.Title>İşlem Oluştur</Modal.Title>
+          <div
+            className="btn btn-icon btn-sm btn-active-light-primary ms-2"
+            onClick={() => onHide(false)}
+            aria-label="Close"
+          >
+            <KTIcon iconName="cross" iconType="solid" className="fs-1" />
+          </div>
+        </div>
+      </Modal.Header>
+
+      <Modal.Body>
+        <div
+          className="d-flex flex-column me-n7 pe-7 pt-5"
+          id="kt_modal_franchise_application_scroll"
+          data-kt-scroll="true"
+          data-kt-scroll-activate="{default: false, lg: true}"
+          data-kt-scroll-max-height="auto"
+          data-kt-scroll-dependencies="#kt_modal_franchise_application_header"
+          data-kt-scroll-wrappers="#kt_modal_franchise_application_scroll"
+          data-kt-scroll-offset="300px"
+          style={{ maxHeight: "unset" }}
+        >
+          <Formik
+            id="kt_modal_add_office_form"
+            className="form"
+            onSubmit={handleSubmit}
+            initialValues={{ officeId: currentUser?.officeId }}
+            validationSchema={validationSchema}
+            enableReinitialize={true}
+            noValidate
+          >
+            {({ setFieldValue }) => (
+              <Form
+                noValidate
+                id="kt_modal_add_user_form"
+                placeholder={undefined}
+              >
+                <div
+                  className="d-flex flex-column me-n7 pe-7 pt-5"
+                  id="kt_modal_add_user_scroll"
+                  data-kt-scroll="true"
+                  data-kt-scroll-activate="{default: false, lg: true}"
+                  data-kt-scroll-max-height="auto"
+                  data-kt-scroll-dependencies="#kt_modal_add_user_header"
+                  data-kt-scroll-wrappers="#kt_modal_add_user_scroll"
+                  data-kt-scroll-offset="300px"
+                >
+                  <div className="fv-row mb-7">
+                    <label className="required fw-bold fs-6 mb-2">
+                      İşlem Başlığı
+                    </label>
+
+                    <Field
+                      type="text"
+                      name="title"
+                      className="form-control form-control-solid mb-3 mb-lg-0"
+                      autoComplete="off"
+                    />
+
+                    <ErrorMessage name="title" />
+                  </div>
+
+                  <div className="fv-row mb-7">
+                    <label className="required fw-bold fs-6 mb-2">
+                      İşlem Miktarı
+                    </label>
+
+                    <CurrencyInput
+                      name="amount"
+                      className="form-control form-control-lg form-control-solid"
+                      allowDecimals={false}
+                      value={currentAmount}
+                      onValueChange={(value) => {
+                        const price = value ? value?.toString() : ""
+                        setCurrentAmount(price)
+                        setFieldValue("amount", price)
+                      }}
+                      intlConfig={{ locale: "tr-TR", currency: "TRY" }}
+                      style={{ fontSize: 16, fontWeight: 800 }}
+                    />
+
+                    <ErrorMessage name="amount" />
+                  </div>
+
+                  <div className="fv-row mb-7">
+                    <label className="required fw-bold fs-6 mb-2">
+                      İşlem Türü
+                    </label>
+
+                    <Field
+                      as="select"
+                      name="payout"
+                      className="form-select form-select-solid mb-3 mb-lg-0"
+                      required
+                    >
+                      <option value=""></option>
+                      <option value="true">Gider</option>
+                      <option value="false">Gelir</option>
+                    </Field>
+
+                    <ErrorMessage name="payout" />
+                  </div>
+
+                  <div className="fv-row mb-7">
+                    <label className="required fw-bold fs-6 mb-2">
+                      Personel Adı Soyadı
+                    </label>
+
+                    <Field
+                      type="text"
+                      name="userFullName"
+                      className="form-control form-control-solid mb-3 mb-lg-0"
+                      required
+                    />
+
+                    <ErrorMessage name="userFullName" />
+                  </div>
+
+                  <div className="fv-row mb-7">
+                    <label className="required fw-bold fs-6 mb-2">
+                      Personel TC Kimlik Numarası
+                    </label>
+
+                    <Field
+                      type="text"
+                      name="userTC"
+                      className="form-control form-control-solid mb-3 mb-lg-0"
+                      required
+                    />
+
+                    <ErrorMessage name="userTC" />
+                  </div>
+
+                  <div className="fv-row mb-7">
+                    <label className="required fw-bold fs-6 mb-2">
+                      İşlem Tarihi
+                    </label>
+
+                    <Field
+                      type="date"
+                      name="createdAt"
+                      className="form-control form-control-solid mb-3 mb-lg-0"
+                      required
+                    />
+
+                    <ErrorMessage name="date" />
+                  </div>
+
+                  <div className="text-center pt-15">
+                    <button
+                      type="reset"
+                      onClick={() => onHide(false)}
+                      className="btn btn-light me-3"
+                      data-kt-users-modal-action="cancel"
+                    >
+                      İptal
+                    </button>
+
+                    <button
+                      type="submit"
+                      className="btn btn-primary"
+                      data-kt-users-modal-action="submit"
+                      disabled={isSubmitting}
+                    >
+                      <span className="indicator-label">Kaydet</span>
+                    </button>
+                  </div>
+                </div>
+              </Form>
+            )}
+          </Formik>
+        </div>
+      </Modal.Body>
+    </Modal>
   )
 }
 

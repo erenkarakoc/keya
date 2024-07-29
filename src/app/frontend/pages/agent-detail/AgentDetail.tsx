@@ -101,7 +101,7 @@ const AgentDetail = () => {
           {!isUserLoading ? (
             user ? (
               <div className="row">
-                <div className="col-lg-2">
+                <div className="col-lg-3">
                   <div className="ky-agent-detail-image">
                     <img
                       src={user.photoURL ?? ""}
@@ -180,6 +180,27 @@ const AgentDetail = () => {
                     </div>
                   </a>
 
+                  <a
+                    href={`https://wa.me/${slugify(user.phoneNumber ?? "")}`}
+                    className="ky-agent-row"
+                    target="_blanks"
+                  >
+                    <div className="d-flex align-items-center">
+                      <KTIcon
+                        iconName="whatsapp"
+                        iconType="solid"
+                        className="fs-2 me-4"
+                      />
+
+                      <div className="d-flex flex-column">
+                        <div className="ky-agent-row-title">WhatsApp</div>
+                        <span className="ky-agent-row-label">
+                          {user.phoneNumber}
+                        </span>
+                      </div>
+                    </div>
+                  </a>
+
                   <div className="separator my-10"></div>
 
                   <div className="ky-button ky-button-secondary mb-4">
@@ -197,17 +218,15 @@ const AgentDetail = () => {
                   </KYText>
                 </div>
 
-                <div className="col-lg-10">
+                <div className="col-lg-9">
                   <nav className="ky-agent-tab-nav">
                     <ul>
-                      {user.about && (
-                        <li
-                          className={`${activeTab === "about" && "active"}`}
-                          onClick={() => setActiveTab("about")}
-                        >
-                          <span>Hakkında</span>
-                        </li>
-                      )}
+                      <li
+                        className={`${activeTab === "about" && "active"}`}
+                        onClick={() => setActiveTab("about")}
+                      >
+                        <span>Hakkında</span>
+                      </li>
                       <li
                         className={`${
                           activeTab === "properties" ? "active" : ""
@@ -232,7 +251,7 @@ const AgentDetail = () => {
                       activeTab != "about" ? " d-none" : ""
                     }`}
                   >
-                    {user.about && (
+                    {user.about ? (
                       <>
                         <div className="ky-agent-about-title">
                           {user.about.title}
@@ -241,6 +260,12 @@ const AgentDetail = () => {
                           {user.about.description}
                         </div>
                       </>
+                    ) : (
+                      <div className="row">
+                        <div className="text-white opacity-50 fw-semibold fs-7 py-20 rounded text-center border border-2 border-gray-200">
+                          Kullanıcıya ait hakkında bilgisi bulunamadı.
+                        </div>
+                      </div>
                     )}
                   </div>
 

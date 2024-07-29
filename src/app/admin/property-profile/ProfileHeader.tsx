@@ -21,12 +21,14 @@ import { Swiper as SwiperModel } from "swiper/types"
 import { KTIcon } from "../../../_metronic/helpers"
 import { User } from "../../modules/apps/user-management/_core/_models"
 import { getUserById } from "../../modules/apps/user-management/_core/_requests"
+import { useAuth } from "../../modules/auth"
 
 interface Props {
   property: Property
 }
 
 const ProfileHeader: React.FC<Props> = ({ property }) => {
+  const { currentUser } = useAuth()
   const location = useLocation()
   const [users, setUsers] = useState<User[]>([])
 
@@ -141,25 +143,27 @@ const ProfileHeader: React.FC<Props> = ({ property }) => {
                   </div>
                 </div>
 
-                <div className="d-flex my-4">
-                  <div className="me-0">
-                    <Link
-                      to={`/arayuz/ilan-detayi/${property.id}/duzenle`}
-                      className={
-                        `btn btn-sm btn-icon btn-bg-light btn-active-color-primary` +
-                        (location.pathname ===
-                        `/arayuz/ilan-detayi/${property.id}/duzenle`
-                          ? " btn-color-primary"
-                          : "")
-                      }
-                      data-kt-menu-trigger="click"
-                      data-kt-menu-placement="bottom-end"
-                      data-kt-menu-flip="top-end"
-                    >
-                      <i className="bi bi-gear-fill fs-6"></i>
-                    </Link>
+                {currentUser && property.userIds.includes(currentUser.id) && (
+                  <div className="d-flex my-4">
+                    <div className="me-0">
+                      <Link
+                        to={`/arayuz/ilan-detayi/${property.id}/duzenle`}
+                        className={
+                          `btn btn-sm btn-icon btn-bg-light btn-active-color-primary` +
+                          (location.pathname ===
+                          `/arayuz/ilan-detayi/${property.id}/duzenle`
+                            ? " btn-color-primary"
+                            : "")
+                        }
+                        data-kt-menu-trigger="click"
+                        data-kt-menu-placement="bottom-end"
+                        data-kt-menu-flip="top-end"
+                      >
+                        <i className="bi bi-gear-fill fs-6"></i>
+                      </Link>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
               <div className="d-flex flex-wrap flex-stack mb-2">

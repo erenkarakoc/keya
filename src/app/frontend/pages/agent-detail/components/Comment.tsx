@@ -14,16 +14,18 @@ const Comment: React.FC<Props> = ({ className, comment }) => {
       <div className="d-flex align-items-center mb-5">
         <div className="d-flex align-items-center flex-grow-1">
           <div className="d-flex flex-column">
-            <span className="text-gray-800 fs-6 fw-bold">
+            <span className="text-white fs-6 fw-bold">
               {comment.firstName} {comment.lastName}
             </span>
 
-            <span className="text-gray-500 fw-semibold">{comment.title}</span>
+            <span className="text-white opacity-50 fw-light">
+              {comment.title}
+            </span>
           </div>
         </div>
       </div>
 
-      <p className="text-gray-800 fw-normal">{comment.text}</p>
+      <p className="text-white fw-normal">{comment.text}</p>
     </div>
   )
 }

@@ -5,7 +5,7 @@ import { useAuth } from "../../../../app/modules/auth"
 
 export function AsideMenuMain() {
   const intl = useIntl()
-  const { currentUser } = useAuth()
+  const { currentUser, logout } = useAuth()
 
   return (
     <>
@@ -14,6 +14,7 @@ export function AsideMenuMain() {
         title={intl.formatMessage({ id: "MENU.DASHBOARD" })}
         fontIcon="bi-app-indicator"
       />
+
       <div className="menu-item">
         <div className="menu-content pt-8 pb-2">
           <span className="menu-section text-muted text-uppercase fs-8 ls-1">
@@ -34,12 +35,19 @@ export function AsideMenuMain() {
           title="Tüm Kullanıcılar"
           fontIcon="bi-layers"
         />
-        <AsideMenuItem
-          to="kullanici-yonetimi/kullanici-ekle"
-          icon="black-right"
-          title="Kullanıcı Ekle"
-          fontIcon="bi-layers"
-        />
+
+        {currentUser?.role === "admin" ||
+        currentUser?.role === "broker" ||
+        currentUser?.role === "assistant" ? (
+          <AsideMenuItem
+            to="kullanici-yonetimi/kullanici-ekle"
+            icon="black-right"
+            title="Kullanıcı Ekle"
+            fontIcon="bi-layers"
+          />
+        ) : (
+          ""
+        )}
       </AsideMenuItemWithSub>
 
       <AsideMenuItemWithSub
@@ -62,25 +70,31 @@ export function AsideMenuMain() {
         />
       </AsideMenuItemWithSub>
 
-      <AsideMenuItemWithSub
-        to="ofis-yonetimi/ofisler"
-        title="Ofis Yönetimi"
-        fontIcon="bi-sticky"
-        icon="black-right"
-      >
-        <AsideMenuItem
+      {currentUser?.role === "admin" ||
+      currentUser?.role === "broker" ||
+      currentUser?.role === "assistant" ? (
+        <AsideMenuItemWithSub
           to="ofis-yonetimi/ofisler"
+          title="Ofis Yönetimi"
+          fontIcon="bi-sticky"
           icon="black-right"
-          title="Tüm Ofisler"
-          fontIcon="bi-layers"
-        />
-        <AsideMenuItem
-          to="ofis-yonetimi/ofis-ekle"
-          icon="black-right"
-          title="Ofis Ekle"
-          fontIcon="bi-layers"
-        />
-      </AsideMenuItemWithSub>
+        >
+          <AsideMenuItem
+            to="ofis-yonetimi/ofisler"
+            icon="black-right"
+            title="Tüm Ofisler"
+            fontIcon="bi-layers"
+          />
+          <AsideMenuItem
+            to="ofis-yonetimi/ofis-ekle"
+            icon="black-right"
+            title="Ofis Ekle"
+            fontIcon="bi-layers"
+          />
+        </AsideMenuItemWithSub>
+      ) : (
+        ""
+      )}
 
       {currentUser?.role === "admin" ||
       currentUser?.role === "broker" ||
@@ -162,6 +176,37 @@ export function AsideMenuMain() {
               fontIcon="bi-layers"
             />
           </AsideMenuItemWithSub>
+        </>
+      ) : (
+        ""
+      )}
+
+      {currentUser?.role === "agent" ? (
+        <>
+          <div className="menu-item">
+            <div className="menu-content pt-8 pb-2">
+              <span className="menu-section text-muted text-uppercase fs-8 ls-1">
+                Hesap
+              </span>
+            </div>
+          </div>
+          <AsideMenuItem
+            to={`/arayuz/kullanici-detayi/${currentUser?.id}/genel`}
+            title="Profilim"
+          />
+          <AsideMenuItem
+            to={`/arayuz/kullanici-detayi/${currentUser?.id}/portfoyler`}
+            title="Portföylerim"
+          />
+          <AsideMenuItem
+            to={`/arayuz/kullanici-detayi/${currentUser?.id}/duzenle`}
+            title="Hesap Ayarları"
+          />
+          <div className="menu-item">
+            <a className="menu-link" onClick={logout}>
+              <span className="menu-title">Çıkış Yap</span>
+            </a>
+          </div>
         </>
       ) : (
         ""

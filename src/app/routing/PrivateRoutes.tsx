@@ -6,8 +6,11 @@ import { DashboardWrapper } from "../admin/dashboard/DashboardWrapper"
 import { getCSSVariableValue } from "../../_metronic/assets/ts/_utils"
 import { DisableSidebar } from "../../_metronic/layout/core"
 import { WithChildren } from "../../_metronic/helpers"
+import { useAuth } from "../modules/auth"
 
 const PrivateRoutes = () => {
+  const { currentUser } = useAuth()
+
   const WizardsPage = lazy(() => import("../modules/wizards/WizardsPage"))
   const AccountPage = lazy(() => import("../modules/accounts/AccountPage"))
   const WidgetsPage = lazy(() => import("../modules/widgets/WidgetsPage"))
@@ -22,7 +25,10 @@ const PrivateRoutes = () => {
   )
 
   const PropertyApplicationPage = lazy(
-    () => import("../modules/apps/property-application-management/PropertyApplicationPage")
+    () =>
+      import(
+        "../modules/apps/property-application-management/PropertyApplicationPage"
+      )
   )
   const FranchisePage = lazy(
     () => import("../modules/apps/franchise-management/FranchisePage")
@@ -159,14 +165,22 @@ const PrivateRoutes = () => {
             </SuspensedView>
           }
         />
-        <Route
-          path="ofis-detayi/:id/*"
-          element={
-            <SuspensedView>
-              <OfficeProfilePage />
-            </SuspensedView>
-          }
-        />
+        
+        {currentUser?.role === "admin" ||
+        currentUser?.role === "broker" ||
+        currentUser?.role === "assistant" ? (
+          <Route
+            path="ofis-detayi/:id/*"
+            element={
+              <SuspensedView>
+                <OfficeProfilePage />
+              </SuspensedView>
+            }
+          />
+        ) : (
+          ""
+        )}
+
         <Route
           path="ilan-detayi/:id/*"
           element={

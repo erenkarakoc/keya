@@ -50,7 +50,7 @@ const propertiesColumns: ReadonlyArray<Column<Property>> = [
       <PropertyCustomHeader tableProps={props} title='' className='text-end min-w-100px' />
     ),
     id: 'actions',
-    Cell: ({...props}) => <PropertyActionsCell id={props.data[props.row.index].id} />,
+    Cell: ({...props}) => <PropertyActionsCell id={props.data[props.row.index].id} userIds={props.data[props.row.index].userIds} />,
   },
 ]
 

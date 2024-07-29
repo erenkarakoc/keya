@@ -2,6 +2,7 @@ import { Route, Routes, Outlet, Navigate } from "react-router-dom"
 import { PageLink, PageTitle } from "../../../../_metronic/layout/core"
 import { UsersListWrapper } from "./users-list/UsersList"
 import { AddUser } from "./add-user/AddUser"
+import { useAuth } from "../../auth"
 
 const usersBreadcrumbs: Array<PageLink> = [
   {
@@ -22,6 +23,8 @@ const addUserBreadcrumbs: Array<PageLink> = [
 ]
 
 const UsersPage = () => {
+  const { currentUser } = useAuth()
+
   return (
     <Routes>
       <Route element={<Outlet />}>
@@ -35,17 +38,24 @@ const UsersPage = () => {
           }
         />
       </Route>
-      <Route
-        path="kullanici-ekle"
-        element={
-          <>
-            <PageTitle breadcrumbs={addUserBreadcrumbs}>
-              Kullanıcı Ekle
-            </PageTitle>
-            <AddUser />
-          </>
-        }
-      />
+
+      {currentUser?.role === "admin" ||
+      currentUser?.role === "broker" ||
+      currentUser?.role === "assistant" ? (
+        <Route
+          path="kullanici-ekle"
+          element={
+            <>
+              <PageTitle breadcrumbs={addUserBreadcrumbs}>
+                Kullanıcı Ekle
+              </PageTitle>
+              <AddUser />
+            </>
+          }
+        />
+      ) : (
+        ""
+      )}
 
       <Route
         index

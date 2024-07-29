@@ -15,6 +15,7 @@ import {
   getUserRoleText,
   slugify,
 } from "../../../../../../../_metronic/helpers/kyHelpers"
+import { useAuth } from "../../../../../auth"
 
 const exportUsersToExcel = async () => {
   const data: User[] = await getAllUsers()
@@ -158,6 +159,8 @@ const exportUsersToExcel = async () => {
 }
 
 const UsersListToolbar = () => {
+  const { currentUser } = useAuth()
+
   return (
     <div
       className="d-flex justify-content-end"
@@ -165,22 +168,31 @@ const UsersListToolbar = () => {
     >
       <UsersListFilter />
 
-      <button
-        type="button"
-        className="btn btn-light-primary me-3"
-        onClick={exportUsersToExcel}
-      >
-        <KTIcon iconName="exit-up" className="fs-2" />
-        Dışa Aktar
-      </button>
+      {currentUser?.role === "admin" ||
+      currentUser?.role === "broker" ||
+      currentUser?.role === "assistant" ||
+      currentUser?.role === "human-resources" ? (
+        <>
+          <button
+            type="button"
+            className="btn btn-light-primary me-3"
+            onClick={exportUsersToExcel}
+          >
+            <KTIcon iconName="exit-up" className="fs-2" />
+            Dışa Aktar
+          </button>
 
-      <Link
-        to="/arayuz/kullanici-yonetimi/kullanici-ekle"
-        className="btn btn-primary"
-      >
-        <KTIcon iconName="plus" className="fs-2" />
-        Ekle
-      </Link>
+          <Link
+            to="/arayuz/kullanici-yonetimi/kullanici-ekle"
+            className="btn btn-primary"
+          >
+            <KTIcon iconName="plus" className="fs-2" />
+            Ekle
+          </Link>
+        </>
+      ) : (
+        ""
+      )}
     </div>
   )
 }

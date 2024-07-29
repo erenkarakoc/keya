@@ -48,7 +48,7 @@ const OfficePropertiesList: React.FC<Props> = ({ office }) => {
     fetchProperties()
   }, [office])
 
-  const renderOffices = () => {
+  const renderProperties = () => {
     const startIndex = (currentPage - 1) * PAGE_SIZE
     const endIndex = startIndex + PAGE_SIZE
     return properties.slice(startIndex, endIndex).map((property, idx) => (
@@ -68,7 +68,13 @@ const OfficePropertiesList: React.FC<Props> = ({ office }) => {
   return (
     <>
       <div className="row ky-offices-list" style={{ marginBottom: "auto" }}>
-        {renderOffices()}
+        {properties.length ? (
+          renderProperties()
+        ) : (
+          <div className="text-white opacity-50 fw-semibold fs-7 py-20 rounded text-center border border-2 border-gray-200">
+            Ofise ait ilan bulunamadı.
+          </div>
+        )}
       </div>
       {propertiesLoaded && properties.length > PAGE_SIZE && (
         <KYPagination

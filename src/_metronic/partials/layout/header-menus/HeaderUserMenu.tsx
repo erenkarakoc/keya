@@ -20,7 +20,8 @@ const HeaderUserMenu: FC = () => {
                   ? currentUser?.photoURL
                   : toAbsoluteUrl("media/svg/avatars/blank.svg")
               }
-              alt="avatar"
+              alt={currentUser?.firstName + " " + currentUser?.lastName}
+              style={{ objectFit: "cover" }}
             />
           </div>
 

@@ -473,7 +473,7 @@ const getThisMonthsTransactionsByUserId = async (
   }
 }
 
-const getThisMonthsEmployerTransactionsByUserId = async (
+const getThisMonthsEmployerTransactionsByUserTC = async (
   userId: string
 ): Promise<EmployerTransaction[]> => {
   try {
@@ -496,7 +496,7 @@ const getThisMonthsEmployerTransactionsByUserId = async (
       (employerTransaction) => {
         const transactionDate = parseDateString(employerTransaction.createdAt)
         return (
-          employerTransaction.userId.includes(userId) &&
+          employerTransaction.userTC.includes(userId) &&
           transactionDate >= startOfMonth &&
           transactionDate <= endOfMonth
         )
@@ -632,7 +632,7 @@ const getLastMonthsTransactionsByUserId = async (
   }
 }
 
-const getLastMonthsEmployerTransactionsByUserId = async (
+const getLastMonthsEmployerTransactionsByUserTC = async (
   userId: string
 ): Promise<EmployerTransaction[]> => {
   try {
@@ -651,7 +651,7 @@ const getLastMonthsEmployerTransactionsByUserId = async (
       (employerTransaction) => {
         const transactionDate = parseDateString(employerTransaction.createdAt)
         return (
-          employerTransaction.userId.includes(userId) &&
+          employerTransaction.userTC.includes(userId) &&
           transactionDate >= startOfLastMonth &&
           transactionDate <= endOfLastMonth
         )
@@ -848,12 +848,12 @@ export {
   getThisMonthsEmployerTransactions,
   getThisMonthsOfficeTransactions,
   getThisMonthsTransactionsByUserId,
-  getThisMonthsEmployerTransactionsByUserId,
+  getThisMonthsEmployerTransactionsByUserTC,
   getLastMonthsTransactions,
   getLastMonthsEmployerTransactions,
   getLastMonthsOfficeTransactions,
   getLastMonthsTransactionsByUserId,
-  getLastMonthsEmployerTransactionsByUserId,
+  getLastMonthsEmployerTransactionsByUserTC,
   updateTransaction,
   updateEmployerTransaction,
   updateOfficeTransaction,

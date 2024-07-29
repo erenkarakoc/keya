@@ -21,7 +21,8 @@ export type Transaction = {
 export type EmployerTransaction = {
   id?: string
   title: string
-  userId: string[]
+  userFullName: string
+  userTC: string
   officeId: string
   amount: string
   payout: string

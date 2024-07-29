@@ -70,7 +70,13 @@ const OfficeUsersList: React.FC<Props> = ({ office }) => {
   return (
     <>
       <div className="row ky-offices-list" style={{ marginBottom: "auto" }}>
-        {renderOffices()}
+        {users.length ? (
+          renderOffices()
+        ) : (
+          <div className="text-white opacity-50 fw-semibold fs-7 py-20 rounded text-center border border-2 border-gray-200">
+            Ofise ait ilan bulunamadı.
+          </div>
+        )}
       </div>
       {usersLoaded && users.length > PAGE_SIZE && (
         <KYPagination

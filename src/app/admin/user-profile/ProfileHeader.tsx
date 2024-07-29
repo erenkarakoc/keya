@@ -15,12 +15,14 @@ import { Transaction } from "../../modules/apps/transactions-management/_core/_m
 import { getThisMonthsTransactionsByUserId } from "../../modules/apps/transactions-management/_core/_requests"
 import { Property } from "../../modules/apps/property-management/_core/_models"
 import { getPropertiesByUserIds } from "../../modules/apps/property-management/_core/_requests"
+import { useAuth } from "../../modules/auth"
 
 interface Props {
   user: User
 }
 
 const ProfileHeader: React.FC<Props> = ({ user }) => {
+  const { currentUser } = useAuth()
   const location = useLocation()
 
   const [office, setOffice] = useState<Office>()
@@ -104,25 +106,27 @@ const ProfileHeader: React.FC<Props> = ({ user }) => {
                 </div>
               </div>
 
-              <div className="d-flex my-4">
-                <div className="me-0">
-                  <Link
-                    to={`/arayuz/kullanici-detayi/${user.id}/duzenle`}
-                    className={
-                      `btn btn-sm btn-icon btn-bg-light btn-active-color-primary` +
-                      (location.pathname ===
-                      `/arayuz/kullanici-detayi/${user.id}/duzenle`
-                        ? " btn-color-primary"
-                        : "")
-                    }
-                    data-kt-menu-trigger="click"
-                    data-kt-menu-placement="bottom-end"
-                    data-kt-menu-flip="top-end"
-                  >
-                    <i className="bi bi-gear-fill fs-6"></i>
-                  </Link>
+              {currentUser && currentUser.id === user.id && (
+                <div className="d-flex my-4">
+                  <div className="me-0">
+                    <Link
+                      to={`/arayuz/kullanici-detayi/${user.id}/duzenle`}
+                      className={
+                        `btn btn-sm btn-icon btn-bg-light btn-active-color-primary` +
+                        (location.pathname ===
+                        `/arayuz/kullanici-detayi/${user.id}/duzenle`
+                          ? " btn-color-primary"
+                          : "")
+                      }
+                      data-kt-menu-trigger="click"
+                      data-kt-menu-placement="bottom-end"
+                      data-kt-menu-flip="top-end"
+                    >
+                      <i className="bi bi-gear-fill fs-6"></i>
+                    </Link>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             <div className="d-flex flex-wrap flex-stack">

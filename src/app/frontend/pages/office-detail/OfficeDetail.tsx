@@ -81,7 +81,7 @@ const OfficeDetail = () => {
         <div className="ky-card">
           {office ? (
             <div className="row">
-              <div className="col-lg-2">
+              <div className="col-lg-3">
                 <div className="ky-office-detail-image">
                   <Swiper
                     style={
@@ -207,7 +207,7 @@ const OfficeDetail = () => {
                 </KYText>
               </div>
 
-              <div className="col-lg-10">
+              <div className="col-lg-9">
                 <nav className="ky-office-tab-nav">
                   <ul>
                     <li

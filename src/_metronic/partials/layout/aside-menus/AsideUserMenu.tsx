@@ -10,9 +10,7 @@ const AsideUserMenu: FC = () => {
   return (
     <>
       <div className="d-flex flex-stack">
-        {/* begin::Wrapper */}
         <div className="d-flex align-items-center">
-          {/* begin::Avatar */}
           <div className="symbol symbol-circle symbol-40px">
             <img
               src={
@@ -24,8 +22,6 @@ const AsideUserMenu: FC = () => {
               style={{ objectFit: "cover" }}
             />
           </div>
-          {/* end::Avatar */}
-          {/* begin::User info */}
           <div className="ms-2">
             <a
               href={`/arayuz/kullanici-detayi/${currentUser?.id}/genel`}
@@ -37,23 +33,23 @@ const AsideUserMenu: FC = () => {
               {getUserRoleText(currentUser?.role as string)}
             </span>
           </div>
-          {/* end::User info */}
         </div>
-        {/* end::Wrapper */}
 
-        {/* begin::User menu */}
-        <div className="ms-1">
-          <div
-            className="btn btn-sm btn-icon btn-active-color-primary position-relative me-n2"
-            data-kt-menu-trigger="click"
-            data-kt-menu-overflow="false"
-            data-kt-menu-placement="top-end"
-          >
-            <KTIcon iconName="setting-2" className="fs-1" />
+        {currentUser?.role != "agent" ? (
+          <div className="ms-1">
+            <div
+              className="btn btn-sm btn-icon btn-active-color-primary position-relative me-n2"
+              data-kt-menu-trigger="click"
+              data-kt-menu-overflow="false"
+              data-kt-menu-placement="top-end"
+            >
+              <KTIcon iconName="setting-2" className="fs-1" />
+            </div>
+            <UserMenu />
           </div>
-          <UserMenu />
-        </div>
-        {/* end::User menu */}
+        ) : (
+          ""
+        )}
       </div>
     </>
   )

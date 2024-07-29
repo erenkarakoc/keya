@@ -296,7 +296,7 @@ const EditUser: React.FC<Props> = ({ user, setUser }) => {
           user.address.country.split("|")[1]
         )
         setStates(statesArr || [])
-        setCurrentCountry(user.address.country.split("|")[0])
+        setCurrentCountry(user.address.country)
         setCountrySelected(true)
       }
 
@@ -305,12 +305,12 @@ const EditUser: React.FC<Props> = ({ user, setUser }) => {
           user.address.state.split("|")[1]
         )
         setCities(citiesArr || [])
-        setCurrentState(user.address.state.split("|")[0])
+        setCurrentState(user.address.state)
         setStateSelected(true)
       }
 
       if (user.address?.city) {
-        setCurrentCity(user.address.city.split("|")[0])
+        setCurrentCity(user.address.city)
       }
     }
 
@@ -491,8 +491,6 @@ const EditUser: React.FC<Props> = ({ user, setUser }) => {
                           if (/^\d*$/.test(value)) {
                             setCurrentIdNo(value)
                             setFieldValue("tc", value)
-                            setFieldValue("password", value)
-                            setFieldValue("confirmpassword", value)
                           }
                         }}
                       />

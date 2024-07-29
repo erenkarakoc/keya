@@ -493,8 +493,6 @@ const UserEditModalForm: FC<Props> = ({ user, isUserLoading }) => {
                     if (/^\d*$/.test(value)) {
                       setCurrentIdNo(value)
                       setFieldValue("tc", value)
-                      setFieldValue("password", value)
-                      setFieldValue("confirmpassword", value)
                     }
                   }}
                 />
