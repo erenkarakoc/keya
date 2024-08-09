@@ -38,7 +38,8 @@ export function AsideMenuMain() {
 
         {currentUser?.role === "admin" ||
         currentUser?.role === "broker" ||
-        currentUser?.role === "assistant" ? (
+        currentUser?.role === "assistant" ||
+        currentUser?.role === "human-resources" ? (
           <AsideMenuItem
             to="kullanici-yonetimi/kullanici-ekle"
             icon="black-right"
@@ -50,25 +51,31 @@ export function AsideMenuMain() {
         )}
       </AsideMenuItemWithSub>
 
-      <AsideMenuItemWithSub
-        to="ilan-yonetimi/ilanlar"
-        title="İlan Yönetimi"
-        fontIcon="bi-sticky"
-        icon="black-right"
-      >
-        <AsideMenuItem
+      {currentUser?.role === "admin" ||
+      currentUser?.role === "broker" ||
+      currentUser?.role === "assistant" ? (
+        <AsideMenuItemWithSub
           to="ilan-yonetimi/ilanlar"
+          title="İlan Yönetimi"
+          fontIcon="bi-sticky"
           icon="black-right"
-          title="Tüm İlanlar"
-          fontIcon="bi-layers"
-        />
-        <AsideMenuItem
-          to="ilan-yonetimi/ilan-ekle"
-          icon="black-right"
-          title="İlan Ekle"
-          fontIcon="bi-layers"
-        />
-      </AsideMenuItemWithSub>
+        >
+          <AsideMenuItem
+            to="ilan-yonetimi/ilanlar"
+            icon="black-right"
+            title="Tüm İlanlar"
+            fontIcon="bi-layers"
+          />
+          <AsideMenuItem
+            to="ilan-yonetimi/ilan-ekle"
+            icon="black-right"
+            title="İlan Ekle"
+            fontIcon="bi-layers"
+          />
+        </AsideMenuItemWithSub>
+      ) : (
+        ""
+      )}
 
       {currentUser?.role === "admin" ||
       currentUser?.role === "broker" ||
@@ -98,7 +105,9 @@ export function AsideMenuMain() {
 
       {currentUser?.role === "admin" ||
       currentUser?.role === "broker" ||
-      currentUser?.role === "human-resources" ? (
+      currentUser?.role === "assistant" ||
+      currentUser?.role === "human-resources" ||
+      currentUser?.role === "franchise-manager" ? (
         <>
           <div className="menu-item">
             <div className="menu-content pt-8 pb-2">
@@ -108,24 +117,44 @@ export function AsideMenuMain() {
             </div>
           </div>
 
-          <AsideMenuItem
-            to="ilan-basvurulari"
-            icon="black-right"
-            title="İlan"
-            fontIcon="bi-layers"
-          />
-          <AsideMenuItem
-            to=""
-            icon="black-right"
-            title="Danışman"
-            fontIcon="bi-layers"
-          />
-          <AsideMenuItem
-            to="franchise-basvurulari"
-            icon="black-right"
-            title="Franchise"
-            fontIcon="bi-layers"
-          />
+          {currentUser?.role === "admin" ||
+          currentUser?.role === "broker" ||
+          currentUser?.role === "assistant" ? (
+            <AsideMenuItem
+              to="ilan-basvurulari"
+              icon="black-right"
+              title="İlan"
+              fontIcon="bi-layers"
+            />
+          ) : (
+            ""
+          )}
+          {currentUser?.role === "admin" ||
+          currentUser?.role === "broker" ||
+          currentUser?.role === "assistant" ||
+          currentUser?.role === "human-resources" ? (
+            <AsideMenuItem
+              to=""
+              icon="black-right"
+              title="Danışman"
+              fontIcon="bi-layers"
+            />
+          ) : (
+            ""
+          )}
+          {currentUser?.role === "admin" ||
+          currentUser?.role === "broker" ||
+          currentUser?.role === "assistant" ||
+          currentUser?.role === "franchise-manager" ? (
+            <AsideMenuItem
+              to="franchise-basvurulari"
+              icon="black-right"
+              title="Franchise"
+              fontIcon="bi-layers"
+            />
+          ) : (
+            ""
+          )}
         </>
       ) : (
         ""

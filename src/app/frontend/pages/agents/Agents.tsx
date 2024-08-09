@@ -10,7 +10,7 @@ import {
 } from "../../../../_metronic/helpers/kyHelpers"
 import { KYAgentCard } from "./components/KYAgentCard/KYAgentCard"
 import { User } from "../../../modules/apps/user-management//_core/_models"
-import { getUsersByRole } from "../../../modules/apps/user-management//_core/_requests"
+import { getAllUsers } from "../../../modules/apps/user-management//_core/_requests"
 import { motion } from "framer-motion"
 import { KYPagination } from "../../components/KYPagination/KYPagination"
 import {
@@ -170,15 +170,7 @@ const Agents = () => {
 
   const fetchAgentsAndBrokers = async () => {
     try {
-      const admins = await getUsersByRole("admin")
-      const agents = await getUsersByRole("agent")
-      const brokers = await getUsersByRole("broker")
-
-      const usersArr = [
-        ...(admins || []),
-        ...(agents || []),
-        ...(brokers || []),
-      ]
+      const usersArr = await getAllUsers()
 
       usersArr.sort((a, b) => a.firstName.localeCompare(b.firstName))
 

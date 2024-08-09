@@ -71,7 +71,6 @@ const Step1: FC<Step1Props> = ({ currentPrice, setCurrentPrice, description, set
           <CurrencyInput
             name="propertyDetails.price"
             className="form-control form-control-lg form-control-solid"
-            allowDecimals={false}
             value={currentPrice}
             onValueChange={(value) => {
               const price = value ? value?.toString() : ""

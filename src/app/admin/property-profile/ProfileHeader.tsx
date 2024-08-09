@@ -143,7 +143,10 @@ const ProfileHeader: React.FC<Props> = ({ property }) => {
                   </div>
                 </div>
 
-                {currentUser && property.userIds.includes(currentUser.id) && (
+                {currentUser &&
+                (currentUser?.role === "admin" ||
+                  currentUser?.role === "assistant" ||
+                  property.userIds.includes(currentUser?.id)) ? (
                   <div className="d-flex my-4">
                     <div className="me-0">
                       <Link
@@ -163,6 +166,8 @@ const ProfileHeader: React.FC<Props> = ({ property }) => {
                       </Link>
                     </div>
                   </div>
+                ) : (
+                  ""
                 )}
               </div>
 

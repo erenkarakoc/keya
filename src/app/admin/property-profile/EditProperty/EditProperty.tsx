@@ -784,7 +784,6 @@ const EditProperty: React.FC<Props> = ({ property, setProperty }) => {
                     <CurrencyInput
                       name="propertyDetails.price"
                       className="form-control form-control-lg form-control-solid"
-                      allowDecimals={false}
                       value={currentPrice}
                       onValueChange={(value) => {
                         const price = value ? value?.toString() : ""
@@ -1143,7 +1142,6 @@ const EditProperty: React.FC<Props> = ({ property, setProperty }) => {
                           name="propertyDetails.dues"
                           value={currentDues}
                           className="form-control form-control-lg form-control-solid"
-                          allowDecimals={false}
                           onValueChange={(value) => {
                             const due = value ? value?.toString() : ""
                             setCurrentDues(due)
@@ -2075,7 +2073,6 @@ const EditProperty: React.FC<Props> = ({ property, setProperty }) => {
                           name="ownerDetails.permitPrice"
                           value={currentPermitPrice}
                           className="form-control form-control-lg form-control-solid"
-                          allowDecimals={false}
                           onValueChange={(value) => {
                             const permitPrice = value ? value?.toString() : ""
                             setCurrentPermitPrice(permitPrice)

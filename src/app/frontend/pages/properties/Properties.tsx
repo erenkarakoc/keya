@@ -128,7 +128,7 @@ const Properties = () => {
     const cityParamValue = query.get("ilce")
     const forSaleRentParamValue = query.get("satilik_kiralik")
     const typeParamValue = query.get("gayrimenkul_tipi")
-    const roomParamValue = query.get("oda_sayisi")
+    const roomParamValue = query.get("oda_sayisi")?.replace("%2B", "+")
 
     const form = document.querySelector("form.ky-form")
 

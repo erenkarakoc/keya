@@ -495,7 +495,6 @@ export const AddTransactionModal = ({
                     <CurrencyInput
                       name="amount"
                       className="form-control form-control-lg form-control-solid"
-                      allowDecimals={false}
                       value={currentAmount}
                       onValueChange={(value) => {
                         const price = value ? value?.toString() : ""

@@ -92,16 +92,16 @@ const KYFooter = () => {
             <ul className="ky-footer-list">
               <li className="ky-footer-item">İlanlar</li>
               <li className="ky-footer-item">
-                <Link to="/konut">Konut</Link>
+                <a href="javascript:;" onClick={() => window.location.href = "/ilanlar?gayrimenkul_tipi=residence"}>Konut</a>
               </li>
               <li className="ky-footer-item">
-                <Link to="/proje">Proje</Link>
+                <a href="javascript:;" onClick={() => window.location.href = "/ilanlar?gayrimenkul_tipi=project"}>Proje</a>
               </li>
               <li className="ky-footer-item">
-                <Link to="/ticari">Ticari</Link>
+                <a href="javascript:;" onClick={() => window.location.href = "/ilanlar?gayrimenkul_tipi=office"}>Ticari</a>
               </li>
               <li className="ky-footer-item">
-                <Link to="/arsa">Arsa</Link>
+                <a href="javascript:;" onClick={() => window.location.href = "/ilanlar?gayrimenkul_tipi=land"}>Arsa</a>
               </li>
             </ul>
             <ul className="ky-footer-list">

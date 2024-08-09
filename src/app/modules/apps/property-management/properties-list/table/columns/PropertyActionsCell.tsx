@@ -39,52 +39,52 @@ const PropertyActionsCell: FC<Props> = ({ id, userIds }) => {
 
   const openEditModal = () => setItemIdForUpdate(id)
 
-  return (
-    currentUser?.role === "admin" ||
+  return currentUser?.role === "admin" ||
     currentUser?.role === "broker" ||
     currentUser?.role === "assistant" ||
-    (currentUser && userIds.includes(currentUser.id) && (
-      <>
-        <PropertyDeleteModal
-          id="kt_modal_delete_confirmation_single"
-          title="Emin misiniz?"
-          description="Devam etmeniz halinde bu ilan kalıcı olarak silinecektir."
-          onApproval={async () => await deleteItem.mutateAsync()}
-        />
+    (currentUser && userIds.includes(currentUser.id)) ? (
+    <>
+      <PropertyDeleteModal
+        id="kt_modal_delete_confirmation_single"
+        title="Emin misiniz?"
+        description="Devam etmeniz halinde bu ilan kalıcı olarak silinecektir."
+        onApproval={async () => await deleteItem.mutateAsync()}
+      />
 
-        <a
-          href="#"
-          className="btn btn-light btn-active-light-primary btn-sm"
-          data-kt-menu-trigger="click"
-          data-kt-menu-placement="bottom-end"
-        >
-          <KTIcon iconName="gear" iconType="solid" className="fs-5 m-0 p-0" />
-        </a>
+      <a
+        href="#"
+        className="btn btn-light btn-active-light-primary btn-sm"
+        data-kt-menu-trigger="click"
+        data-kt-menu-placement="bottom-end"
+      >
+        <KTIcon iconName="gear" iconType="solid" className="fs-5 m-0 p-0" />
+      </a>
 
-        <div
-          className="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-125px py-4"
-          data-kt-menu="true"
-        >
-          <div className="menu-item px-3">
-            <a className="menu-link px-3" onClick={openEditModal}>
-              Düzenle
-            </a>
-          </div>
-
-          <div className="menu-item px-3">
-            <a
-              className="menu-link px-3"
-              data-kt-properties-table-filter="delete_row"
-              data-bs-toggle="modal"
-              data-bs-target="#kt_modal_delete_confirmation_single"
-              onClick={() => setItemIdForDelete(id)}
-            >
-              Sil
-            </a>
-          </div>
+      <div
+        className="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-125px py-4"
+        data-kt-menu="true"
+      >
+        <div className="menu-item px-3">
+          <a className="menu-link px-3" onClick={openEditModal}>
+            Düzenle
+          </a>
         </div>
-      </>
-    ))
+
+        <div className="menu-item px-3">
+          <a
+            className="menu-link px-3"
+            data-kt-properties-table-filter="delete_row"
+            data-bs-toggle="modal"
+            data-bs-target="#kt_modal_delete_confirmation_single"
+            onClick={() => setItemIdForDelete(id)}
+          >
+            Sil
+          </a>
+        </div>
+      </div>
+    </>
+  ) : (
+    ""
   )
 }
 

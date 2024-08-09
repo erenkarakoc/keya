@@ -184,8 +184,8 @@ const Step2: FC<Step2Props> = ({ setFieldValue, values }) => {
     const fetchAddress = async () => {
       const data = await getCountries()
       setCountries(data)
-      setCurrentCountry("225")
-      setFieldValue("address.country", "225")
+      setCurrentCountry("Türkiye|225")
+      setFieldValue("address.country", "Türkiye|225")
 
       const statesArr = await getStatesByCountry("225")
       setStates(statesArr || [])
@@ -379,10 +379,7 @@ const Step2: FC<Step2Props> = ({ setFieldValue, values }) => {
           <option></option>
           {countrySelected
             ? states.map((state) => (
-                <option
-                  value={state.name + "|" + state.id}
-                  key={state.id}
-                >
+                <option value={state.name + "|" + state.id} key={state.id}>
                   {state.name}
                 </option>
               ))
@@ -407,10 +404,7 @@ const Step2: FC<Step2Props> = ({ setFieldValue, values }) => {
           <option></option>
           {countrySelected && stateSelected
             ? cities.map((city) => (
-                <option
-                  value={city.name + "|" + city.id}
-                  key={city.id}
-                >
+                <option value={city.name + "|" + city.id} key={city.id}>
                   {city.name}
                 </option>
               ))

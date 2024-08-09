@@ -453,7 +453,6 @@ const Step2: FC<Step2Props> = ({ values, currentDues, setCurrentDues }) => {
           <CurrencyInput
             name="propertyDetails.dues"
             className="form-control form-control-lg form-control-solid"
-            allowDecimals={false}
             value={currentDues}
             onValueChange={(value) => {
               const due = value ? value?.toString() : ""

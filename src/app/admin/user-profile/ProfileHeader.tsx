@@ -106,27 +106,31 @@ const ProfileHeader: React.FC<Props> = ({ user }) => {
                 </div>
               </div>
 
-              {currentUser && currentUser.id === user.id && (
-                <div className="d-flex my-4">
-                  <div className="me-0">
-                    <Link
-                      to={`/arayuz/kullanici-detayi/${user.id}/duzenle`}
-                      className={
-                        `btn btn-sm btn-icon btn-bg-light btn-active-color-primary` +
-                        (location.pathname ===
-                        `/arayuz/kullanici-detayi/${user.id}/duzenle`
-                          ? " btn-color-primary"
-                          : "")
-                      }
-                      data-kt-menu-trigger="click"
-                      data-kt-menu-placement="bottom-end"
-                      data-kt-menu-flip="top-end"
-                    >
-                      <i className="bi bi-gear-fill fs-6"></i>
-                    </Link>
+              {currentUser &&
+                (currentUser.id === user.id ||
+                  currentUser.role === "admin" ||
+                  currentUser.role === "assistant" ||
+                  currentUser.role === "broker") && (
+                  <div className="d-flex my-4">
+                    <div className="me-0">
+                      <Link
+                        to={`/arayuz/kullanici-detayi/${user.id}/duzenle`}
+                        className={
+                          `btn btn-sm btn-icon btn-bg-light btn-active-color-primary` +
+                          (location.pathname ===
+                          `/arayuz/kullanici-detayi/${user.id}/duzenle`
+                            ? " btn-color-primary"
+                            : "")
+                        }
+                        data-kt-menu-trigger="click"
+                        data-kt-menu-placement="bottom-end"
+                        data-kt-menu-flip="top-end"
+                      >
+                        <i className="bi bi-gear-fill fs-6"></i>
+                      </Link>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </div>
 
             <div className="d-flex flex-wrap flex-stack">

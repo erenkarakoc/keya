@@ -63,7 +63,6 @@ const AddUser = () => {
 
   const submitStep = async (values: ICreateAccount, actions: FormikValues) => {
     if (!stepper) return
-    console.log(values)
 
     if (stepper.currentStepIndex !== stepper.totalStepsNumber) {
       stepper.goNext()

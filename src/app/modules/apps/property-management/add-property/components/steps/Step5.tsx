@@ -177,7 +177,6 @@ const Step5: FC<Step5Props> = ({ setFieldValue }) => {
             <CurrencyInput
               name="ownerDetails.permitPrice"
               className="form-control form-control-lg form-control-solid"
-              allowDecimals={false}
               onValueChange={(value) => {
                 const permitPrice = value ? value?.toString() : ""
                 setFieldValue("ownerDetails.permitPrice", permitPrice)

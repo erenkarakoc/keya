@@ -7,12 +7,14 @@ import { deleteOffice } from "../../../_core/_requests"
 import { OfficeDeleteModal } from "../../office-delete-modal/OfficeDeleteModal"
 
 import toast from "react-hot-toast"
+import { useAuth } from "../../../../../auth"
 
 type Props = {
   id: ID
 }
 
 const OfficeActionsCell: FC<Props> = ({ id }) => {
+  const { currentUser } = useAuth()
   const { setItemIdForUpdate, setItemIdForDelete, itemIdForDelete } =
     useListView()
 
@@ -35,7 +37,9 @@ const OfficeActionsCell: FC<Props> = ({ id }) => {
 
   const openEditModal = () => setItemIdForUpdate(id)
 
-  return (
+  return currentUser?.role === "admin" ||
+    (currentUser?.officeId === id &&
+      (currentUser?.role === "broker" || currentUser?.role === "assistant")) ? (
     <>
       <OfficeDeleteModal
         id="kt_modal_delete_confirmation_single"
@@ -76,6 +80,8 @@ const OfficeActionsCell: FC<Props> = ({ id }) => {
         </div>
       </div>
     </>
+  ) : (
+    ""
   )
 }
 

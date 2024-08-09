@@ -165,7 +165,7 @@ const PrivateRoutes = () => {
             </SuspensedView>
           }
         />
-        
+
         {currentUser?.role === "admin" ||
         currentUser?.role === "broker" ||
         currentUser?.role === "assistant" ? (

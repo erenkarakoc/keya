@@ -41,7 +41,8 @@ const UsersPage = () => {
 
       {currentUser?.role === "admin" ||
       currentUser?.role === "broker" ||
-      currentUser?.role === "assistant" ? (
+      currentUser?.role === "assistant" ||
+      currentUser?.role === "human-resources" ? (
         <Route
           path="kullanici-ekle"
           element={

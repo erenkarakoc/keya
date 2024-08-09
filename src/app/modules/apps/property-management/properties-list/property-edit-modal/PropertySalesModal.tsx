@@ -44,7 +44,10 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
     setFieldValue("saleDetails.soldPrice", currentSoldPrice)
 
     const date = new Date(currentSoldDate)
-    setFieldValue("saleDetails.soldDate", timestampToISODate(date.getTime().toString()))
+    setFieldValue(
+      "saleDetails.soldDate",
+      timestampToISODate(date.getTime().toString())
+    )
 
     setFieldValue("soldStatus.soldPrice", currentSoldPrice)
     setFieldValue("soldStatus.officeProfit", currentOfficeFee)
@@ -142,7 +145,7 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
   return (
     <>
       <div
-        className={`property-sales-modal${show ? " show" : ""}`}
+        className={`modal property-sales-modal${show ? " show" : ""}`}
         id="kt_modal_add_property"
       >
         <div className="property-sales-modal-wrapper mw-500px">
@@ -163,7 +166,6 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
               <CurrencyInput
                 name="saleDetails.salePrice"
                 className="form-control form-control-lg form-control-solid"
-                allowDecimals={false}
                 value={currentSoldPrice}
                 onValueChange={(value) => {
                   const price = value ? value?.toString() : ""
@@ -185,7 +187,6 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
                 <CurrencyInput
                   name="saleDetails.officeFee"
                   className="form-control form-control-lg form-control-solid"
-                  allowDecimals={false}
                   value={currentOfficeFee}
                   onValueChange={(value) => {
                     const price = value ? value?.toString() : ""
@@ -206,7 +207,6 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
                 <CurrencyInput
                   name="saleDetails.agentFee"
                   className="form-control form-control-lg form-control-solid"
-                  allowDecimals={false}
                   value={currentAgentFee}
                   onValueChange={(value) => {
                     const price = value ? value?.toString() : ""
@@ -226,7 +226,6 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
               <CurrencyInput
                 name="soldStatus.teamLeaderProfit"
                 className="form-control form-control-lg form-control-solid"
-                allowDecimals={false}
                 value={currentTeamLeaderProfit}
                 onValueChange={(value) => {
                   const price = value ? value?.toString() : ""
@@ -245,7 +244,6 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
               <CurrencyInput
                 name="soldStatus.otherExpenses"
                 className="form-control form-control-lg form-control-solid"
-                allowDecimals={false}
                 value={currentOtherExpenses}
                 onValueChange={(value) => {
                   const price = value ? value?.toString() : ""
