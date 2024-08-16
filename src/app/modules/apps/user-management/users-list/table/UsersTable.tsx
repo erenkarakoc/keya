@@ -1,32 +1,54 @@
-import { useEffect, useMemo } from "react"
-import { useTable, ColumnInstance, Row } from "react-table"
-import { CustomHeaderColumn } from "./columns/CustomHeaderColumn"
-import { CustomRow } from "./columns/CustomRow"
-import { usersColumns } from "./columns/_columns"
+import { useEffect, useState } from "react"
 import { User } from "../../_core/_models"
 import { UsersListLoading } from "../components/loading/UsersListLoading"
-import { UsersListPagination } from "../components/pagination/UsersListPagination"
 import { KTCardBody } from "../../../../../../_metronic/helpers"
-import {
-  useQueryResponseData,
-  useQueryResponseLoading,
-} from "../../_core/QueryResponseProvider"
 import { MenuComponent } from "../../../../../../_metronic/assets/ts/components"
+import { UserActionsCell } from "./columns/UserActionsCell"
+import { UserInfoCell } from "./columns/UserInfoCell"
+import { getAllUsers, getUsersByOfficeId } from "../../_core/_requests"
+import { UserSelectionCell } from "./columns/UserSelectionCell"
+import { UserBadgeCell } from "./columns/UserBadgeCell"
+import { UsersListPagination } from "../components/pagination/UsersListPagination"
+import { useAuth } from "../../../../auth"
 
 const UsersTable = () => {
-  const users = useQueryResponseData()
-  const isLoading = useQueryResponseLoading()
-  const data = useMemo(() => users, [users])
-  const columns = useMemo(() => usersColumns, [])
-  const { getTableProps, getTableBodyProps, headers, rows, prepareRow } =
-    useTable({
-      columns,
-      data,
-    })
+  const { currentUser } = useAuth()
+
+  const [users, setUsers] = useState<User[]>([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      if (currentUser?.role === "admin") {
+        const allUsers = await getAllUsers()
+        setUsers(allUsers ?? [])
+      } else if (currentUser?.officeId) {
+        const officeUsers = await getUsersByOfficeId(currentUser.officeId)
+        setUsers(officeUsers ?? [])
+      }
+    }
+
+    if (currentUser) {
+      fetchUsers()
+    }
+  }, [currentUser])
 
   useEffect(() => {
     MenuComponent.reinitialization()
-  }, [data])
+  }, [users])
+
+  const paginatedUsers = users.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  )
+  const totalPages = Math.ceil(users.length / itemsPerPage)
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page)
+    }
+  }
 
   return (
     <KTCardBody className="py-4">
@@ -34,35 +56,68 @@ const UsersTable = () => {
         <table
           id="kt_table_users"
           className="table align-middle table-row-dashed fs-6 gy-5 dataTable no-footer"
-          {...getTableProps()}
         >
           <thead>
             <tr className="text-start text-muted fw-bolder fs-7 text-uppercase gs-0">
-              {headers.map((column: ColumnInstance<User>) => (
-                <CustomHeaderColumn key={column.id} column={column} />
-              ))}
+              <th colSpan={1} role="columnheader" className="w-10px pe-2"></th>
+              <th colSpan={1} role="columnheader" className="min-w-125px">
+                Kullanıcı
+              </th>
+              <th colSpan={1} role="columnheader" className="min-w-125px">
+                Ünvan
+              </th>
+              <th colSpan={1} role="columnheader" className="min-w-125px">
+                Ofis
+              </th>
+              <th
+                colSpan={1}
+                role="columnheader"
+                className="text-end min-w-100px"
+              ></th>
             </tr>
           </thead>
-          <tbody className="text-gray-600 fw-bold" {...getTableBodyProps()}>
-            {rows.length > 0 ? (
-              rows.map((row: Row<User>, i) => {
-                prepareRow(row)
-                return <CustomRow row={row} key={`row-${i}-${row.id}`} />
-              })
+          <tbody className="text-gray-600 fw-bold">
+            {paginatedUsers.length ? (
+              paginatedUsers.map((user) => (
+                <tr role="row" key={user.id}>
+                  <td role="cell">
+                    <UserSelectionCell id={user.id} />
+                  </td>
+                  <td role="cell">
+                    <UserInfoCell user={user} />
+                  </td>
+                  <td role="cell">
+                    <UserBadgeCell text={user.role} type="role" />
+                  </td>
+                  <td role="cell">
+                    <UserBadgeCell text={user.officeId} type="officeId" />
+                  </td>
+                  <td className="text-end min-w-100px actions" role="cell">
+                    <UserActionsCell id={user.id} />
+                  </td>
+                </tr>
+              ))
             ) : (
-              <tr>
-                <td colSpan={7}>
-                  <div className="d-flex text-center w-100 align-content-center justify-content-center">
-                    Bu filtrelere uygun kullanıcı bulunamadı.
-                  </div>
-                </td>
-              </tr>
+              <UsersListLoading />
+              // <tr>
+              //   <td colSpan={7}>
+              //     <div className="d-flex text-center w-100 align-content-center justify-content-center">
+              //       Bu filtrelere uygun kullanıcı bulunamadı.
+              //     </div>
+              //   </td>
+              // </tr>
             )}
           </tbody>
         </table>
       </div>
-      <UsersListPagination />
-      {isLoading && <UsersListLoading />}
+
+      <UsersListPagination
+        usersLength={users.length}
+        paginatedUsersLength={paginatedUsers.length}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
     </KTCardBody>
   )
 }

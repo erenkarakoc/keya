@@ -1,156 +1,99 @@
+import clsx from "clsx"
 
-import clsx from 'clsx'
-import {useQueryResponseLoading, useQueryResponsePagination} from '../../../_core/QueryResponseProvider'
-import {useQueryRequest} from '../../../_core/QueryRequestProvider'
-import {PaginationState} from '../../../../../../../_metronic/helpers'
-import {useMemo} from 'react'
-
-const mappedLabel = (label: string): string => {
-  if (label === '&laquo; Previous') {
-    return 'Önceki'
-  }
-
-  if (label === 'Next &raquo;') {
-    return 'Sonraki'
-  }
-
-  return label
+interface PaginationProps {
+  usersLength: number
+  paginatedUsersLength: number
+  currentPage: number
+  totalPages: number
+  onPageChange: (page: number) => void
 }
 
-const UsersListPagination = () => {
-  const pagination = useQueryResponsePagination()
-  const isLoading = useQueryResponseLoading()
-  const {updateState} = useQueryRequest()
-  const updatePage = (page: number | undefined | null) => {
-    if (!page || isLoading || pagination.page === page) {
-      return
-    }
+const UsersListPagination: React.FC<PaginationProps> = ({
+  usersLength,
+  paginatedUsersLength,
+  currentPage,
+  totalPages,
+  onPageChange,
+}) => {
+  const handlePrevious = () => onPageChange(currentPage - 1)
+  const handleNext = () => onPageChange(currentPage + 1)
+  const handleFirstPage = () => onPageChange(1)
+  const handleLastPage = () => onPageChange(totalPages)
 
-    updateState({page, items_per_page: pagination.items_per_page || 10})
-  }
-
-  const PAGINATION_PAGES_COUNT = 5
-  const sliceLinks = (pagination?: PaginationState) => {
-    if (!pagination?.links?.length) {
-      return []
-    }
-
-    const scopedLinks = [...pagination.links]
-
-    let pageLinks: Array<{
-      label: string
-      active: boolean
-      url: string | null
-      page: number | null
-    }> = []
-    const previousLink: {label: string; active: boolean; url: string | null; page: number | null} =
-      scopedLinks.shift()!
-    const nextLink: {label: string; active: boolean; url: string | null; page: number | null} =
-      scopedLinks.pop()!
-
-    const halfOfPagesCount = Math.floor(PAGINATION_PAGES_COUNT / 2)
-
-    pageLinks.push(previousLink)
-
-    if (
-      pagination.page <= Math.round(PAGINATION_PAGES_COUNT / 2) ||
-      scopedLinks.length <= PAGINATION_PAGES_COUNT
-    ) {
-      pageLinks = [...pageLinks, ...scopedLinks.slice(0, PAGINATION_PAGES_COUNT)]
-    }
-
-    if (
-      pagination.page > scopedLinks.length - halfOfPagesCount &&
-      scopedLinks.length > PAGINATION_PAGES_COUNT
-    ) {
-      pageLinks = [
-        ...pageLinks,
-        ...scopedLinks.slice(scopedLinks.length - PAGINATION_PAGES_COUNT, scopedLinks.length),
-      ]
-    }
-
-    if (
-      !(
-        pagination.page <= Math.round(PAGINATION_PAGES_COUNT / 2) ||
-        scopedLinks.length <= PAGINATION_PAGES_COUNT
-      ) &&
-      !(pagination.page > scopedLinks.length - halfOfPagesCount)
-    ) {
-      pageLinks = [
-        ...pageLinks,
-        ...scopedLinks.slice(
-          pagination.page - 1 - halfOfPagesCount,
-          pagination.page + halfOfPagesCount
-        ),
-      ]
-    }
-
-    pageLinks.push(nextLink)
-
-    return pageLinks
-  }
-
-  const paginationLinks = useMemo(() => sliceLinks(pagination), [pagination])
+  const paginationLinks = Array.from(
+    { length: totalPages },
+    (_, i) => i + 1
+  ).slice(Math.max(0, currentPage - 3), Math.min(totalPages, currentPage + 2))
 
   return (
-    <div className='row'>
-      <div className='col-sm-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start'></div>
-      <div className='col-sm-12 col-md-7 d-flex align-items-center justify-content-center justify-content-md-end'>
-        <div id='kt_table_users_paginate'>
-          <ul className='pagination'>
-            <li
-              className={clsx('page-item', {
-                disabled: isLoading || pagination.page === 1,
-              })}
+    <div id="kt_table_users_paginate" className="mt-10">
+      <ul className="pagination items-center flex-end">
+        <li className="me-auto">
+          <span className="text-muted fs-7 fw-bold">
+            {usersLength} kullanıcıdan {paginatedUsersLength} gösteriliyor.
+          </span>
+        </li>
+        <li className={clsx("page-item", { disabled: currentPage === 1 })}>
+          <a
+            onClick={handleFirstPage}
+            style={{ cursor: "pointer" }}
+            className="page-link"
+          >
+            İlk Sayfa
+          </a>
+        </li>
+        <li className={clsx("page-item", { disabled: currentPage === 1 })}>
+          <a
+            onClick={handlePrevious}
+            style={{ cursor: "pointer" }}
+            className="page-link"
+          >
+            Önceki
+          </a>
+        </li>
+        {paginationLinks.map((page) => (
+          <li
+            key={page}
+            className={clsx("page-item", { active: currentPage === page })}
+          >
+            <a
+              onClick={() => onPageChange(page)}
+              style={{ cursor: "pointer" }}
+              className="page-link"
             >
-              <a onClick={() => updatePage(1)} style={{cursor: 'pointer'}} className='page-link'>
-                İlk Sayfa
-              </a>
-            </li>
-            {paginationLinks
-              ?.map((link) => {
-                return {...link, label: mappedLabel(link.label)}
-              })
-              .map((link) => (
-                <li
-                  key={link.label}
-                  className={clsx('page-item', {
-                    active: pagination.page === link.page,
-                    disabled: isLoading,
-                    previous: link.label === 'Önceki',
-                    next: link.label === 'Sonraki',
-                  })}
-                >
-                  <a
-                    className={clsx('page-link', {
-                      'page-text': link.label === 'Önceki' || link.label === 'Sonraki',
-                      'me-5': link.label === 'Önceki',
-                    })}
-                    onClick={() => updatePage(link.page)}
-                    style={{cursor: 'pointer'}}
-                  >
-                    {mappedLabel(link.label)}
-                  </a>
-                </li>
-              ))}
-            <li
-              className={clsx('page-item', {
-                disabled: isLoading || pagination.page === (pagination.links?.length || 3) - 2,
-              })}
-            >
-              <a
-                onClick={() => updatePage((pagination.links?.length || 3) - 2)}
-                style={{cursor: 'pointer'}}
-                className='page-link'
-              >
-                Son Sayfa
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
+              {page}
+            </a>
+          </li>
+        ))}
+        <li
+          className={clsx("page-item", {
+            disabled: currentPage === totalPages,
+          })}
+        >
+          <a
+            onClick={handleNext}
+            style={{ cursor: "pointer" }}
+            className="page-link"
+          >
+            Sonraki
+          </a>
+        </li>
+        <li
+          className={clsx("page-item", {
+            disabled: currentPage === totalPages,
+          })}
+        >
+          <a
+            onClick={handleLastPage}
+            style={{ cursor: "pointer" }}
+            className="page-link"
+          >
+            Son Sayfa
+          </a>
+        </li>
+      </ul>
     </div>
   )
 }
 
-export {UsersListPagination}
+export { UsersListPagination }

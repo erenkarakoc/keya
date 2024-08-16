@@ -1,6 +1,4 @@
 import { ListViewProvider, useListView } from "./../_core/ListViewProvider"
-import { QueryRequestProvider } from "./../_core/QueryRequestProvider"
-import { QueryResponseProvider } from "./../_core/QueryResponseProvider"
 import { UsersListHeader } from "./components/header/UsersListHeader"
 import { UsersTable } from "./table/UsersTable"
 import { UserEditModal } from "./user-edit-modal/UserEditModal"
@@ -20,13 +18,9 @@ const UsersList = () => {
 }
 
 const UsersListWrapper = () => (
-  <QueryRequestProvider>
-    <QueryResponseProvider>
-      <ListViewProvider>
-        <UsersList />
-      </ListViewProvider>
-    </QueryResponseProvider>
-  </QueryRequestProvider>
+  <ListViewProvider>
+    <UsersList />
+  </ListViewProvider>
 )
 
 export { UsersListWrapper }

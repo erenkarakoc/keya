@@ -351,7 +351,7 @@ const Last6Months: FC<Props> = ({
           </span>
         </div>
 
-        <span className="text-gray-700 fw-bold fs-6">
+        <span className="text-gray-700 fw-bold fs-7">
           Geçen aya göre{" "}
           {lastMonthsTotalIncome > thisMonthsTotalIncome ? "-" : "+"}
           {lastMonthsTotalIncome === 0

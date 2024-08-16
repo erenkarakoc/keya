@@ -25,6 +25,8 @@ const DashboardPage = () => {
   const [users, setUsers] = useState<User[]>()
   const [offices, setOffices] = useState<Office[]>()
   const [transactions, setTransactions] = useState<Transaction[]>()
+  const [thisMonthsTransactions, setThisMonthsTransactions] =
+    useState<Transaction[]>()
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -53,6 +55,22 @@ const DashboardPage = () => {
     fetchTransactions()
   }, [])
 
+  useEffect(() => {
+    if (transactions) {
+      const now = new Date()
+      const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1)
+
+      const parseDate = (dateString: string) => new Date(dateString)
+
+      setThisMonthsTransactions(
+        transactions.filter((transaction) => {
+          const transactionDate = parseDate(transaction.createdAt)
+          return transactionDate >= thisMonthStart && transactionDate < now
+        })
+      )
+    }
+  }, [transactions])
+
   return (
     <>
       <div className="row gy-5 g-xl-10">
@@ -68,7 +86,7 @@ const DashboardPage = () => {
         <div className="col-xl-4">
           <ThisMonth
             className="card-xl-stretch mb-xl-10"
-            transactions={transactions}
+            thisMonthsTransactions={thisMonthsTransactions}
           />
         </div>
 
@@ -76,7 +94,7 @@ const DashboardPage = () => {
           <Summary
             className="card-xl-stretch mb-xl-10"
             backGroundColor="#CBD4F4"
-            transactionsLength={transactions?.length}
+            thisMonthsTransactionsLength={thisMonthsTransactions?.length}
             propertiesLength={properties?.length}
             usersLength={users?.filter((user) => user.role === "agent").length}
             officesLength={offices?.length}

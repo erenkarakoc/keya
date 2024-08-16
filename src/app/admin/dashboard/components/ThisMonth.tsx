@@ -4,48 +4,38 @@ import { Transaction } from "../../../modules/apps/transactions-management/_core
 
 type Props = {
   className: string
-  transactions: Transaction[] | undefined
+  thisMonthsTransactions: Transaction[] | undefined
 }
 
-const ThisMonth: FC<Props> = ({ className, transactions }) => {
+const ThisMonth: FC<Props> = ({ className, thisMonthsTransactions }) => {
   const [officeProfit, setOfficeProfit] = useState(0)
   const [agentProfit, setAgentProfit] = useState(0)
   const [teamLeaderProfit, setTeamLeaderProfit] = useState(0)
   const [totalProfit, setTotalProfit] = useState(0)
 
   useEffect(() => {
-    if (transactions) {
+    if (thisMonthsTransactions) {
       const calculateTransactions = async () => {
-        const now = new Date()
-        const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1)
-
-        const parseDate = (dateString: string) => new Date(dateString)
-
-        const thisMonthTransactions = transactions.filter((transaction) => {
-          const transactionDate = parseDate(transaction.createdAt)
-          return transactionDate >= thisMonthStart && transactionDate < now
-        })
-
         setOfficeProfit(
-          thisMonthTransactions.reduce((sum, item) => {
+          thisMonthsTransactions.reduce((sum, item) => {
             const profit = parseFloat(item.officeProfit)
             return sum + (isNaN(profit) ? 0 : profit)
           }, 0)
         )
         setAgentProfit(
-          thisMonthTransactions.reduce((sum, item) => {
+          thisMonthsTransactions.reduce((sum, item) => {
             const profit = parseFloat(item.agentProfit)
             return sum + (isNaN(profit) ? 0 : profit)
           }, 0)
         )
         setTeamLeaderProfit(
-          thisMonthTransactions.reduce((sum, item) => {
+          thisMonthsTransactions.reduce((sum, item) => {
             const profit = parseFloat(item.teamLeaderProfit)
             return sum + (isNaN(profit) ? 0 : profit)
           }, 0)
         )
         setTotalProfit(
-          thisMonthTransactions.reduce((sum, item) => {
+          thisMonthsTransactions.reduce((sum, item) => {
             const profit = parseFloat(item.totalProfit)
             return sum + (isNaN(profit) ? 0 : profit)
           }, 0)
@@ -54,8 +44,7 @@ const ThisMonth: FC<Props> = ({ className, transactions }) => {
 
       calculateTransactions()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [transactions])
+  }, [thisMonthsTransactions])
 
   return (
     <div className={`card ${className}`}>
@@ -68,14 +57,14 @@ const ThisMonth: FC<Props> = ({ className, transactions }) => {
           <div className="col">
             <div className="fs-6 text-gray-500">Ofis</div>
             <div className="fs-2 fw-bold text-gray-800">
-              {officeProfit ? formatPrice(officeProfit.toString()) : 0}
+              {officeProfit ? formatPrice(officeProfit.toString()) : "0₺"}
             </div>
           </div>
 
           <div className="col">
             <div className="fs-6 text-gray-500">Danışmanlar</div>
             <div className="fs-2 fw-bold text-gray-800">
-              {agentProfit ? formatPrice(agentProfit.toString()) : 0}
+              {agentProfit ? formatPrice(agentProfit.toString()) : "0₺"}
             </div>
           </div>
         </div>
@@ -84,14 +73,16 @@ const ThisMonth: FC<Props> = ({ className, transactions }) => {
           <div className="col">
             <div className="fs-6 text-gray-500">Takım Liderleri</div>
             <div className="fs-2 fw-bold text-gray-800">
-              {teamLeaderProfit ? formatPrice(teamLeaderProfit.toString()) : 0}
+              {teamLeaderProfit
+                ? formatPrice(teamLeaderProfit.toString())
+                : "0₺"}
             </div>
           </div>
 
           <div className="col">
             <div className="fs-6 text-gray-500">Toplam Hizmet Bedeli</div>
             <div className="fs-2 fw-bold text-gray-800">
-              {totalProfit ? formatPrice(totalProfit.toString()) : 0}
+              {totalProfit ? formatPrice(totalProfit.toString()) : "0₺"}
             </div>
           </div>
         </div>

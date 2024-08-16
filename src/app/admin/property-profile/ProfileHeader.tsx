@@ -146,7 +146,8 @@ const ProfileHeader: React.FC<Props> = ({ property }) => {
                 {currentUser &&
                 (currentUser?.role === "admin" ||
                   currentUser?.role === "assistant" ||
-                  property.userIds.includes(currentUser?.id)) ? (
+                  property.userIds.includes(currentUser?.id)) &&
+                property.officeId === currentUser?.officeId ? (
                   <div className="d-flex my-4">
                     <div className="me-0">
                       <Link

@@ -6,7 +6,6 @@ import { HeaderWrapper } from "./components/header/HeaderWrapper"
 import { ScrollTop } from "./components/ScrollTop"
 import { Content } from "./components/Content"
 import { PageDataProvider } from "./core"
-import { ActivityDrawer, InviteUsers, UpgradePlan } from "../partials"
 import { MenuComponent } from "../assets/ts/components"
 
 const MasterLayout = () => {
@@ -42,14 +41,6 @@ const MasterLayout = () => {
         </div>
       </div>
 
-      {/* begin:: Drawers */}
-      <ActivityDrawer />
-      {/* end:: Drawers */}
-
-      {/* begin:: Modals */}
-      <InviteUsers />
-      <UpgradePlan />
-      {/* end:: Modals */}
       <ScrollTop />
     </PageDataProvider>
   )

@@ -11,12 +11,15 @@ import { getUserRoleText } from "../../../helpers/kyHelpers"
 import { searchProperties } from "../../../../app/modules/apps/property-management/_core/_requests"
 import { searchOffices } from "../../../../app/modules/apps/office-management/_core/_requests"
 import { KYOfficeImage } from "../../../../app/frontend/components/KYOfficeImage/KYOfficeImage"
+import { useAuth } from "../../../../app/modules/auth"
 
 type Props = {
   className?: string
   mobileToggleBtnClass?: string
 }
 const Search: FC<Props> = ({ className = "", mobileToggleBtnClass = "" }) => {
+  const { currentUser } = useAuth()
+
   const element = useRef<HTMLDivElement | null>(null)
   const wrapperElement = useRef<HTMLDivElement | null>(null)
   const resultsElement = useRef<HTMLDivElement | null>(null)
@@ -37,9 +40,20 @@ const Search: FC<Props> = ({ className = "", mobileToggleBtnClass = "" }) => {
     suggestionsElement.current!.classList.add("d-none")
 
     setIsSearching(true)
-    setUsers(await searchUsers(query))
-    setOffices(await searchOffices(query))
-    setProperties(await searchProperties(query))
+
+    if (currentUser?.role === "admin") {
+      const searchedUsers = await searchUsers(query)
+      const searchedOffices = await searchOffices(query)
+      const searchedProperties = await searchProperties(query)
+
+      setUsers(searchedUsers)
+      setOffices(searchedOffices)
+      setProperties(searchedProperties)
+    } else {
+      const searchedProperties = await searchProperties(query)
+      setProperties(searchedProperties)
+    }
+
     setIsSearching(false)
 
     if (users.length || offices.length || properties?.length) {
@@ -333,9 +347,15 @@ const Search: FC<Props> = ({ className = "", mobileToggleBtnClass = "" }) => {
               <span className="text-muted fs-6 me-2">Arama yapın</span>
             </div>
 
-            <div className="d-flex align-items-center text-muted fw-normal">
-              Site genelinde kullanıcı, ilan, ofis veya işlem arayabilirsiniz.
-            </div>
+            {currentUser?.role === "admin" ? (
+              <div className="d-flex align-items-center text-muted fw-normal">
+                Site genelinde kullanıcı, ilan, ofis veya işlem arayabilirsiniz.
+              </div>
+            ) : (
+              <div className="d-flex align-items-center text-muted fw-normal">
+                Site genelinde ilan arayabilirsiniz.
+              </div>
+            )}
           </div>
 
           <div

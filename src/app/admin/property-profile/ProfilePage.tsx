@@ -7,6 +7,7 @@ import {
   useNavigate,
   useParams,
 } from "react-router-dom"
+import { useAuth } from "../../modules/auth"
 
 import { PageLink, PageTitle } from "../../../_metronic/layout/core"
 
@@ -22,6 +23,8 @@ import { EditProperty } from "./EditProperty/EditProperty"
 
 const ProfilePage = () => {
   const navigate = useNavigate()
+
+  const { currentUser } = useAuth()
 
   const { id } = useParams()
   const [property, setProperty] = useState<Property>()
@@ -91,15 +94,22 @@ const ProfilePage = () => {
               </>
             }
           />
-          <Route
-            path="duzenle"
-            element={
-              <>
-                <PageTitle breadcrumbs={profileBreadCrumbs}>Düzenle</PageTitle>
-                <EditProperty property={property} setProperty={setProperty} />
-              </>
-            }
-          />
+          {currentUser?.role != "admin" &&
+          currentUser?.officeId === property.officeId ? (
+            <Route
+              path="duzenle"
+              element={
+                <>
+                  <PageTitle breadcrumbs={profileBreadCrumbs}>
+                    Düzenle
+                  </PageTitle>
+                  <EditProperty property={property} setProperty={setProperty} />
+                </>
+              }
+            />
+          ) : (
+            ""
+          )}
 
           <Route index element={<Navigate to="genel" />} />
         </Route>

@@ -1,4 +1,4 @@
-import { ID } from "../../../../../_metronic/helpers"
+import { ID, PaginationState } from "../../../../../_metronic/helpers"
 import { User, UsersQueryResponse } from "./_models"
 
 import { slugify } from "../../../../../_metronic/helpers/kyHelpers"
@@ -19,7 +19,6 @@ import {
   limit,
   deleteField,
   deleteDoc,
-  // deleteDoc,
 } from "firebase/firestore"
 import { getFunctions, httpsCallable } from "firebase/functions"
 
@@ -44,13 +43,14 @@ const getAllUsers = async (): Promise<User[]> => {
 
     return users
   } catch (error) {
-    console.error("Error fetching offices:", error)
+    console.error("Error fetching users:", error)
     return []
   }
 }
 
 const getUsers = async (queryString: string): Promise<UsersQueryResponse> => {
   try {
+    const db = getFirestore()
     const params = new URLSearchParams(queryString)
     const page = parseInt(params.get("page") || "1", 10)
     const itemsPerPage = parseInt(params.get("items_per_page") || "10", 10) as
@@ -58,105 +58,128 @@ const getUsers = async (queryString: string): Promise<UsersQueryResponse> => {
       | 30
       | 50
       | 100
-    const sortField = params.get("sort") || "createdAt" // Default sort field
-    const sortOrder = params.get("order") || "asc" // Default sort order
-    const searchQuery = params.get("search") || "" // Search input value
+    const sortField = params.get("sort") || "createdAt"
+    const sortOrder = params.get("order") === "desc" ? "desc" : "asc"
+    const searchQuery = params.get("search") || ""
 
-    const usersCollection = collection(db, "users")
+    let usersQuery = query(collection(db, "users"))
 
-    let q = query(usersCollection)
-
-    // Apply search filter if search query is provided
+    // Apply search filter
     if (searchQuery) {
       const slugifiedSearchQuery = slugify(searchQuery)
-
-      q = query(
-        usersCollection,
+      usersQuery = query(
+        usersQuery,
         where("email", ">=", slugifiedSearchQuery),
         where("email", "<=", slugifiedSearchQuery + "\uf8ff")
       )
+
+      console.log(usersQuery)
     }
 
     // Apply sorting
-    q = query(q, orderBy(sortField, sortOrder as "asc" | "desc"))
+    usersQuery = query(usersQuery, orderBy(sortField, sortOrder))
+
+    // Get all documents for pagination purposes
+    const allDocsSnapshot = await getDocs(usersQuery)
+    const totalUsers = allDocsSnapshot.size
+    const totalPages = Math.ceil(totalUsers / itemsPerPage)
 
     // Paginate results
     const offset = (page - 1) * itemsPerPage
-    if (offset > 0) {
-      const lastVisibleDoc = await getDocs(q).then(
-        (snapshot) => snapshot.docs[offset - 1]
+    if (offset > 0 && offset < totalUsers) {
+      const lastVisibleDoc = allDocsSnapshot.docs[offset - 1]
+      usersQuery = query(
+        usersQuery,
+        startAfter(lastVisibleDoc),
+        limit(itemsPerPage)
       )
-      q = query(q, startAfter(lastVisibleDoc), limit(itemsPerPage))
     } else {
-      q = query(q, limit(itemsPerPage))
+      usersQuery = query(usersQuery, limit(itemsPerPage))
     }
 
-    const snapshot = await getDocs(q)
-
-    const users: User[] = []
-    snapshot.forEach((doc) => {
-      if (doc.exists()) {
-        users.push(doc.data() as User)
-      }
-    })
-
-    // Calculate pagination metadata
-    const totalUsersQuery = await getDocs(collection(db, "users"))
-    const totalUsers = totalUsersQuery.size
-    const totalPages = Math.ceil(totalUsers / itemsPerPage)
-    const nextPage = page < totalPages ? page + 1 : null
-    const prevPage = page > 1 ? page - 1 : null
+    const snapshot = await getDocs(usersQuery)
+    const users: User[] = snapshot.docs.map(
+      (doc) => ({ ...doc.data(), id: doc.id } as User)
+    )
 
     // Generate pagination links
-    const links = []
-    if (prevPage !== null) {
-      links.push({
-        url: `/?page=${prevPage}&items_per_page=${itemsPerPage}&sort=${sortField}&order=${sortOrder}&search=${searchQuery}`,
-        label: "&laquo; Previous",
-        active: false,
-        page: prevPage,
-      })
-    }
-    for (let i = 1; i <= totalPages; i++) {
-      links.push({
-        url: `/?page=${i}&items_per_page=${itemsPerPage}&sort=${sortField}&order=${sortOrder}&search=${searchQuery}`,
-        label: `${i}`,
-        active: i === page,
-        page: i,
-      })
-    }
-    if (nextPage !== null) {
-      links.push({
-        url: `/?page=${nextPage}&items_per_page=${itemsPerPage}&sort=${sortField}&order=${sortOrder}&search=${searchQuery}`,
-        label: "Next &raquo;",
-        active: false,
-        page: nextPage,
-      })
-    }
+    const links = generatePaginationLinks(
+      page,
+      totalPages,
+      itemsPerPage,
+      sortField,
+      sortOrder,
+      searchQuery
+    )
 
-    return {
+    const response: UsersQueryResponse = {
       data: users,
       payload: {
         pagination: {
-          page: page,
+          page,
           items_per_page: itemsPerPage,
-          links: links,
+          links,
         },
+        message: "Users fetched successfully",
       },
     }
+
+    return response
   } catch (error) {
     console.error("Error fetching users:", error)
     return {
       data: [],
       payload: {
-        pagination: {
-          page: 1,
-          items_per_page: 10,
-          links: [],
-        },
+        message: "Error fetching users",
+        errors: { general: [] },
+        pagination: { page: 1, items_per_page: 10, links: [] },
       },
     }
   }
+}
+
+const generatePaginationLinks = (
+  page: number,
+  totalPages: number,
+  itemsPerPage: number,
+  sortField: string,
+  sortOrder: string,
+  searchQuery: string
+): PaginationState["links"] => {
+  const links = []
+
+  if (page > 1) {
+    links.push({
+      url: `/?page=${
+        page - 1
+      }&items_per_page=${itemsPerPage}&sort=${sortField}&order=${sortOrder}&search=${searchQuery}`,
+      label: "&laquo; Previous",
+      active: false,
+      page: page - 1,
+    })
+  }
+
+  for (let i = 1; i <= totalPages; i++) {
+    links.push({
+      url: `/?page=${i}&items_per_page=${itemsPerPage}&sort=${sortField}&order=${sortOrder}&search=${searchQuery}`,
+      label: `${i}`,
+      active: i === page,
+      page: i,
+    })
+  }
+
+  if (page < totalPages) {
+    links.push({
+      url: `/?page=${
+        page + 1
+      }&items_per_page=${itemsPerPage}&sort=${sortField}&order=${sortOrder}&search=${searchQuery}`,
+      label: "Next &raquo;",
+      active: false,
+      page: page + 1,
+    })
+  }
+
+  return links
 }
 
 const searchUsers = async (queryStr: string) => {
@@ -248,6 +271,28 @@ const getUsersByRole = async (role: string): Promise<User[] | undefined> => {
     return users
   } catch (error) {
     console.error("Error fetching users by role:", error)
+    return undefined
+  }
+}
+
+const getUsersByOfficeId = async (officeId: string): Promise<User[] | undefined> => {
+  try {
+    const usersCollection = collection(db, "users")
+
+    const q = query(usersCollection, where("officeId", "==", officeId))
+
+    const snapshot = await getDocs(q)
+
+    const users: User[] = []
+    snapshot.forEach((doc) => {
+      if (doc.exists()) {
+        users.push(doc.data() as User)
+      }
+    })
+
+    return users
+  } catch (error) {
+    console.error("Error fetching users by officeId:", error)
     return undefined
   }
 }
@@ -415,6 +460,7 @@ export {
   getUserById,
   getUsersById,
   getUsersByRole,
+  getUsersByOfficeId,
   getUserEmails,
   getOfficeIdByUserId,
   addUsersToOffice,

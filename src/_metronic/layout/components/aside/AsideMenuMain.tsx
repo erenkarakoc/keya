@@ -29,23 +29,24 @@ export function AsideMenuMain() {
         fontIcon="bi-sticky"
         icon="black-right"
       >
-        <AsideMenuItem
-          to="kullanici-yonetimi/kullanicilar"
-          icon="black-right"
-          title="Tüm Kullanıcılar"
-          fontIcon="bi-layers"
-        />
-
         {currentUser?.role === "admin" ||
         currentUser?.role === "broker" ||
         currentUser?.role === "assistant" ||
         currentUser?.role === "human-resources" ? (
-          <AsideMenuItem
-            to="kullanici-yonetimi/kullanici-ekle"
-            icon="black-right"
-            title="Kullanıcı Ekle"
-            fontIcon="bi-layers"
-          />
+          <>
+            <AsideMenuItem
+              to="kullanici-yonetimi/kullanicilar"
+              icon="black-right"
+              title="Tüm Kullanıcılar"
+              fontIcon="bi-layers"
+            />
+            <AsideMenuItem
+              to="kullanici-yonetimi/kullanici-ekle"
+              icon="black-right"
+              title="Kullanıcı Ekle"
+              fontIcon="bi-layers"
+            />
+          </>
         ) : (
           ""
         )}
@@ -79,25 +80,65 @@ export function AsideMenuMain() {
 
       {currentUser?.role === "admin" ||
       currentUser?.role === "broker" ||
-      currentUser?.role === "assistant" ? (
+      currentUser?.role === "assistant" ||
+      currentUser?.role === "franchise-manager" ? (
         <AsideMenuItemWithSub
           to="ofis-yonetimi/ofisler"
           title="Ofis Yönetimi"
           fontIcon="bi-sticky"
           icon="black-right"
         >
-          <AsideMenuItem
-            to="ofis-yonetimi/ofisler"
-            icon="black-right"
-            title="Tüm Ofisler"
-            fontIcon="bi-layers"
-          />
-          <AsideMenuItem
-            to="ofis-yonetimi/ofis-ekle"
-            icon="black-right"
-            title="Ofis Ekle"
-            fontIcon="bi-layers"
-          />
+          {currentUser?.role === "broker" ||
+          currentUser?.role === "assistant" ? (
+            <>
+              <AsideMenuItem
+                to={`ofis-detayi/${currentUser.officeId}/genel`}
+                icon="black-right"
+                title="Genel"
+                fontIcon="bi-layers"
+              />
+              <AsideMenuItem
+                to={`ofis-detayi/${currentUser.officeId}/portfoyler`}
+                icon="black-right"
+                title="Portföyler"
+                fontIcon="bi-layers"
+              />
+              <AsideMenuItem
+                to={`ofis-detayi/${currentUser.officeId}/yorumlar`}
+                icon="black-right"
+                title="Müşteri Yorumları"
+                fontIcon="bi-layers"
+              />
+              <AsideMenuItem
+                to={`ofis-detayi/${currentUser.officeId}/duzenle`}
+                icon="black-right"
+                title="Düzenle"
+                fontIcon="bi-layers"
+              />
+            </>
+          ) : (
+            ""
+          )}
+
+          {currentUser?.role === "admin" ||
+          currentUser?.role === "franchise-manager" ? (
+            <>
+              <AsideMenuItem
+                to="ofis-yonetimi/ofisler"
+                icon="black-right"
+                title="Tüm Ofisler"
+                fontIcon="bi-layers"
+              />
+              <AsideMenuItem
+                to="ofis-yonetimi/ofis-ekle"
+                icon="black-right"
+                title="Ofis Ekle"
+                fontIcon="bi-layers"
+              />
+            </>
+          ) : (
+            ""
+          )}
         </AsideMenuItemWithSub>
       ) : (
         ""
