@@ -14,10 +14,10 @@ const KYFeatures = () => {
       <div className="ky-features-wrapper">
         <div className="ky-section-header-left">
           <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
-          <KYText className="ky-section-title-left" variant="title">
-            <span className="ky-text-highlight">Keya</span> güvencesi ile
-            kazançlı yatırımlar yapın.
-          </KYText>
+            <KYText className="ky-section-title-left" variant="title">
+              <span className="ky-text-highlight">Keya</span> güvencesi ile
+              kazançlı yatırımlar yapın.
+            </KYText>
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4 }}>

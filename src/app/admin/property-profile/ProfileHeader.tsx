@@ -141,13 +141,22 @@ const ProfileHeader: React.FC<Props> = ({ property }) => {
                       {property.propertyDetails.address.label}
                     </a>
                   </div>
+
+                  {property.saleDetails?.soldDate ? (
+                    <div className="d-flex align-items-center border border-danger rounded-1 mb-4 p-1 px-2 fs-8 fw-bold text-danger w-fit-content">
+                      {convertToTurkishDate(property.saleDetails.soldDate)}{" "}
+                      tarihinde satıldı
+                    </div>
+                  ) : (
+                    ""
+                  )}
                 </div>
 
-                {currentUser &&
-                (currentUser?.role === "admin" ||
-                  currentUser?.role === "assistant" ||
-                  property.userIds.includes(currentUser?.id)) &&
-                property.officeId === currentUser?.officeId ? (
+                {currentUser?.role === "admin" ||
+                (currentUser?.role === "assistant" &&
+                  currentUser?.officeId === property?.officeId) ||
+                (currentUser?.id &&
+                  property.userIds.includes(currentUser.id)) ? (
                   <div className="d-flex my-4">
                     <div className="me-0">
                       <Link
@@ -262,7 +271,7 @@ const ProfileHeader: React.FC<Props> = ({ property }) => {
 
                 {property.sahibindenNo && (
                   <a
-                    href={`https://shbd.io/${property.sahibindenNo}`}
+                    href={`https://shbd.io/${property.sahibindenNo.trim()}`}
                     target="_blank"
                     className="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3"
                   >
@@ -279,7 +288,7 @@ const ProfileHeader: React.FC<Props> = ({ property }) => {
 
                 {property.emlakJetNo && (
                   <a
-                    href={`https://www.emlakjet.com/ilan/${property.emlakJetNo}`}
+                    href={`https://www.emlakjet.com/ilan/${property.emlakJetNo.trim()}`}
                     target="_blank"
                     className="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3"
                   >

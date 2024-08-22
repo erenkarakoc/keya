@@ -10,11 +10,15 @@ import { UserSelectionCell } from "./columns/UserSelectionCell"
 import { UserBadgeCell } from "./columns/UserBadgeCell"
 import { UsersListPagination } from "../components/pagination/UsersListPagination"
 import { useAuth } from "../../../../auth"
+import { useListView } from "../../_core/ListViewProvider"
+import { slugify } from "../../../../../../_metronic/helpers/kyHelpers"
 
 const UsersTable = () => {
   const { currentUser } = useAuth()
+  const { searchTerm } = useListView()
 
   const [users, setUsers] = useState<User[]>([])
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 10
 
@@ -35,14 +39,27 @@ const UsersTable = () => {
   }, [currentUser])
 
   useEffect(() => {
-    MenuComponent.reinitialization()
-  }, [users])
+    if (searchTerm) {
+      setFilteredUsers(
+        users.filter((user) =>
+          slugify(user.email).includes(slugify(searchTerm.toLowerCase()))
+        )
+      )
+    } else {
+      setFilteredUsers(users)
+    }
+    setCurrentPage(1)
+  }, [searchTerm, users])
 
-  const paginatedUsers = users.slice(
+  useEffect(() => {
+    MenuComponent.reinitialization()
+  }, [searchTerm, currentPage, filteredUsers])
+
+  const paginatedUsers = filteredUsers.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   )
-  const totalPages = Math.ceil(users.length / itemsPerPage)
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage)
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
@@ -77,42 +94,45 @@ const UsersTable = () => {
             </tr>
           </thead>
           <tbody className="text-gray-600 fw-bold">
-            {paginatedUsers.length ? (
-              paginatedUsers.map((user) => (
-                <tr role="row" key={user.id}>
-                  <td role="cell">
-                    <UserSelectionCell id={user.id} />
-                  </td>
-                  <td role="cell">
-                    <UserInfoCell user={user} />
-                  </td>
-                  <td role="cell">
-                    <UserBadgeCell text={user.role} type="role" />
-                  </td>
-                  <td role="cell">
-                    <UserBadgeCell text={user.officeId} type="officeId" />
-                  </td>
-                  <td className="text-end min-w-100px actions" role="cell">
-                    <UserActionsCell id={user.id} />
+            {users.length ? (
+              paginatedUsers.length ? (
+                paginatedUsers.map((user) => (
+                  <tr role="row" key={user.id}>
+                    <td role="cell">
+                      <UserSelectionCell id={user.id} />
+                    </td>
+                    <td role="cell">
+                      <UserInfoCell user={user} />
+                    </td>
+                    <td role="cell">
+                      <UserBadgeCell text={user.role} type="role" />
+                    </td>
+                    <td role="cell">
+                      <UserBadgeCell text={user.officeId} type="officeId" />
+                    </td>
+                    <td className="text-end min-w-100px actions" role="cell">
+                      <UserActionsCell id={user.id} />
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={7}>
+                    <div className="d-flex text-center w-100 align-content-center justify-content-center">
+                      Bu filtrelere uygun kullanıcı bulunamadı.
+                    </div>
                   </td>
                 </tr>
-              ))
+              )
             ) : (
               <UsersListLoading />
-              // <tr>
-              //   <td colSpan={7}>
-              //     <div className="d-flex text-center w-100 align-content-center justify-content-center">
-              //       Bu filtrelere uygun kullanıcı bulunamadı.
-              //     </div>
-              //   </td>
-              // </tr>
             )}
           </tbody>
         </table>
       </div>
 
       <UsersListPagination
-        usersLength={users.length}
+        usersLength={filteredUsers.length}
         paginatedUsersLength={paginatedUsers.length}
         currentPage={currentPage}
         totalPages={totalPages}

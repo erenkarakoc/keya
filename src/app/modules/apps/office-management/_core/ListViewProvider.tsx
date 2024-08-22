@@ -32,6 +32,7 @@ const ListViewProvider: FC<WithChildren> = ({ children }) => {
     () => calculateIsAllDataSelected(data, selected),
     [data, selected]
   )
+  const [searchTerm, setSearchTerm] = useState("")
 
   return (
     <ListViewContext.Provider
@@ -52,6 +53,8 @@ const ListViewProvider: FC<WithChildren> = ({ children }) => {
         clearSelected: () => {
           setSelected([])
         },
+        searchTerm,
+        setSearchTerm,
       }}
     >
       {children}

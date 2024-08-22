@@ -237,10 +237,10 @@ const PropertyDetail = () => {
                                         <span>Sahibinden</span>
                                         <span>
                                           <a
-                                            href={`https://shbd.io/${property.sahibindenNo}`}
+                                            href={`https://shbd.io/${property.sahibindenNo.trim()}`}
                                             target="_blank"
                                           >
-                                            {property.sahibindenNo}
+                                            {property.sahibindenNo.trim()}
                                           </a>
                                         </span>
                                       </li>
@@ -250,10 +250,10 @@ const PropertyDetail = () => {
                                         <span>Emlakjet</span>
                                         <span>
                                           <a
-                                            href={`https://emlakjet.com/ilan/${property.emlakJetNo}`}
+                                            href={`https://emlakjet.com/ilan/${property.emlakJetNo.trim()}`}
                                             target="_blank"
                                           >
-                                            {property.emlakJetNo}
+                                            {property.emlakJetNo.trim()}
                                           </a>
                                         </span>
                                       </li>

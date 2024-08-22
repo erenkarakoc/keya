@@ -81,6 +81,8 @@ export type ListViewContextProps = {
   setItemIdForDelete: Dispatch<SetStateAction<ID>>
   isAllSelected: boolean
   disabled: boolean
+  searchTerm?: string
+  setSearchTerm: Dispatch<SetStateAction<string>>
 }
 
 export const initialListView: ListViewContextProps = {
@@ -92,4 +94,6 @@ export const initialListView: ListViewContextProps = {
   setItemIdForDelete: () => {},
   isAllSelected: false,
   disabled: false,
+  searchTerm: "",
+  setSearchTerm: () => {},
 }

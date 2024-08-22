@@ -94,8 +94,10 @@ const ProfilePage = () => {
               </>
             }
           />
-          {currentUser?.role != "admin" &&
-          currentUser?.officeId === property.officeId ? (
+          {currentUser?.role === "admin" ||
+          (currentUser?.role === "assistant" &&
+            currentUser?.officeId === property?.officeId) ||
+          (currentUser?.id && property.userIds.includes(currentUser.id)) ? (
             <Route
               path="duzenle"
               element={

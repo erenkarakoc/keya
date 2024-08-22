@@ -109,8 +109,6 @@ const PropertySalesModal: FC<PropertySalesModalProp> = ({
       if (transaction.id) await deleteTransaction(transaction.id)
     })
 
-    console.log(transactionToRemove)
-
     handleSubmit(values, true)
     setShow(false)
     toast.success("İlan satılmadı olarak işaretlendi.")
