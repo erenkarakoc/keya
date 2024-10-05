@@ -51,22 +51,28 @@ const AgentPropertiesList: React.FC<Props> = ({ user }) => {
   const renderOffices = () => {
     const startIndex = (currentPage - 1) * PAGE_SIZE
     const endIndex = startIndex + PAGE_SIZE
-    return properties.length ? (
-      properties.slice(startIndex, endIndex).map((property, idx) => (
-        <motion.div
-          initial={{ opacity: 0, y: 25 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 + idx * 0.1 }}
-          className="col-lg-3"
-          key={property.id}
-        >
-          <KYPropertyCard property={property} />
-        </motion.div>
-      ))
+    return propertiesLoaded ? (
+      properties.length ? (
+        properties.slice(startIndex, endIndex).map((property, idx) => (
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 + idx * 0.1 }}
+            className="col-lg-3"
+            key={property.id}
+          >
+            <KYPropertyCard property={property} />
+          </motion.div>
+        ))
+      ) : (
+        <div className="text-white opacity-50 fw-semibold fs-7 py-20 rounded text-center border border-2 border-gray-200">
+          Kullanıcıya ait ilan bulunamadı.
+        </div>
+      )
     ) : (
-      <div className="text-white opacity-50 fw-semibold fs-7 py-20 rounded text-center border border-2 border-gray-200">
-        Kullanıcıya ait ilan bulunamadı.
+      <div className="d-flex align-items-center justify-content-center fw-semibold fs-7 py-20 w-100 text-white opacity-50">
+        <span className="spinner-border spinner-border-lg"></span>
       </div>
     )
   }

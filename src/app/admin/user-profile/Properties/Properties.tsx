@@ -98,7 +98,6 @@ export function Properties() {
 
           <a
             href="/arayuz/ilan-yonetimi/ilan-ekle"
-            target="_blank"
             className="btn btn-sm btn-light-primary"
           >
             <KTIcon iconName="plus" className="fs-2" />

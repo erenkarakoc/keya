@@ -7,7 +7,7 @@ import { motion } from "framer-motion"
 
 interface KYPageHeaderProps {
   title: string
-  subtitle: string
+  subtitle?: string
 }
 
 const KYPageHeader: React.FC<KYPageHeaderProps> = ({ title, subtitle }) => {

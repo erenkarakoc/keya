@@ -51,6 +51,15 @@
   line-height: 1.3;
 }
 
+.ky-text.ky-uppercase-spaced {
+  color: var(--ky-midnight);
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  line-height: 1.3;
+}
+
 .ky-text-highlight {
   color: var(--ky-red);
   background: var(--ky-red-gradient);

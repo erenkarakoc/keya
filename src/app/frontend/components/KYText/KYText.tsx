@@ -2,7 +2,13 @@ import "./KYText.css"
 import { ReactNode } from "react"
 
 interface KYTextProps {
-  variant?: "heading" | "title" | "subtitle" | "caption" | "paragraph"
+  variant?:
+    | "heading"
+    | "title"
+    | "subtitle"
+    | "caption"
+    | "paragraph"
+    | "uppercase-spaced"
   className?: string
   children?: ReactNode
   color?: string

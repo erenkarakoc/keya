@@ -9,6 +9,7 @@ import { ReactPropTypes } from "react"
 interface KYButtonProps {
   link?: boolean
   to?: string
+  target?: string
   action?: any
   text: string
   secondary?: boolean
@@ -21,6 +22,7 @@ interface KYButtonProps {
 
 const KYButton: React.FC<KYButtonProps> = ({
   to,
+  target,
   action,
   text,
   secondary,
@@ -46,6 +48,7 @@ const KYButton: React.FC<KYButtonProps> = ({
             active: checkIsActive(pathname, to),
           })}
           to={to}
+          target={target}
         >
           {text}
         </Link>

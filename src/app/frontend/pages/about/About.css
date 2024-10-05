@@ -1,0 +1,80 @@
+.ky-about-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  margin: 100px 0;
+}
+
+.ky-about-row:first-of-type {
+  margin-top: 150px;
+}
+.ky-about-row:last-of-type {
+  margin-bottom: 150px;
+}
+
+.ky-about-left * {
+  text-align: left;
+}
+.ky-about-right * {
+  text-align: right;
+}
+
+.ky-about-row .ky-button {
+  margin-top: 60px;
+}
+.ky-about-row .ky-about-left .ky-button {
+  margin-right: auto;
+}
+.ky-about-row .ky-about-right .ky-button {
+  margin-left: auto;
+}
+
+.ky-about-row .ky-paragraph {
+  margin: 15px 0 0;
+}
+
+.ky-about-row .ky-uppercase-spaced {
+  margin-bottom: 15px;
+}
+
+@media (max-width: 1200px) {
+  .ky-about-row {
+    flex-direction: column;
+  }
+
+  .ky-about-row:nth-child(2) {
+    flex-direction: column-reverse;
+  }
+}
+
+@media (max-width: 768px) {
+  .ky-about-row:first-of-type {
+    margin-top: 100px;
+  }
+  .ky-about-row:last-of-type {
+    margin-top: 100px;
+  }
+
+  .ky-about-row img {
+    max-width: 200px;
+  }
+
+  .ky-about-left *,
+  .ky-about-right * {
+    text-align: center;
+  }
+
+  .ky-about-row .ky-about-left .ky-button,
+  .ky-about-row .ky-about-right .ky-button {
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .ky-about-row .ky-text.ky-title {
+    max-width: 280px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

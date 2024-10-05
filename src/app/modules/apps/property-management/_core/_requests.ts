@@ -23,12 +23,18 @@ import { toTurkishUpperCase } from "../../../../../_metronic/helpers/kyHelpers"
 initializeApp(firebaseConfig)
 const db = getFirestore()
 
-const getProperties = async (queryString: string): Promise<PropertiesQueryResponse> => {
+const getProperties = async (
+  queryString: string
+): Promise<PropertiesQueryResponse> => {
   try {
     const db = getFirestore()
     const params = new URLSearchParams(toTurkishUpperCase(queryString))
     const page = parseInt(params.get("page") || "1", 10)
-    const itemsPerPage = parseInt(params.get("items_per_page") || "10", 10) as 10 | 30 | 50 | 100
+    const itemsPerPage = parseInt(params.get("items_per_page") || "10", 10) as
+      | 10
+      | 30
+      | 50
+      | 100
     const sortField = params.get("sort") || "title"
     const sortOrder = params.get("order") === "desc" ? "desc" : "asc"
     const searchQuery = params.get("search") || ""
@@ -64,10 +70,19 @@ const getProperties = async (queryString: string): Promise<PropertiesQueryRespon
     }
 
     const snapshot = await getDocs(q)
-    const properties: Property[] = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as Property))
+    const properties: Property[] = snapshot.docs.map(
+      (doc) => ({ ...doc.data(), id: doc.id } as Property)
+    )
 
     // Generate pagination links
-    const links = generatePaginationLinks(page, totalPages, itemsPerPage, sortField, sortOrder, searchQuery)
+    const links = generatePaginationLinks(
+      page,
+      totalPages,
+      itemsPerPage,
+      sortField,
+      sortOrder,
+      searchQuery
+    )
 
     const response: PropertiesQueryResponse = {
       data: properties,
@@ -75,7 +90,7 @@ const getProperties = async (queryString: string): Promise<PropertiesQueryRespon
         pagination: {
           page,
           items_per_page: itemsPerPage,
-          links
+          links,
         },
         message: "Properties fetched successfully",
       },
@@ -89,8 +104,8 @@ const getProperties = async (queryString: string): Promise<PropertiesQueryRespon
       payload: {
         message: "Error fetching properties",
         errors: { general: [] },
-        pagination: { page: 1, items_per_page: 10, links: [] }
-      }
+        pagination: { page: 1, items_per_page: 10, links: [] },
+      },
     }
   }
 }
@@ -107,7 +122,9 @@ const generatePaginationLinks = (
 
   if (page > 1) {
     links.push({
-      url: `/?page=${page - 1}&items_per_page=${itemsPerPage}&sort=${sortField}&order=${sortOrder}&search=${searchQuery}`,
+      url: `/?page=${
+        page - 1
+      }&items_per_page=${itemsPerPage}&sort=${sortField}&order=${sortOrder}&search=${searchQuery}`,
       label: "&laquo; Previous",
       active: false,
       page: page - 1,
@@ -125,7 +142,9 @@ const generatePaginationLinks = (
 
   if (page < totalPages) {
     links.push({
-      url: `/?page=${page + 1}&items_per_page=${itemsPerPage}&sort=${sortField}&order=${sortOrder}&search=${searchQuery}`,
+      url: `/?page=${
+        page + 1
+      }&items_per_page=${itemsPerPage}&sort=${sortField}&order=${sortOrder}&search=${searchQuery}`,
       label: "Next &raquo;",
       active: false,
       page: page + 1,
@@ -213,7 +232,7 @@ const getPropertiesBySearchTerm = async (
 }
 
 const getPropertiesByUserIds = async (
-  userIds: string[]
+  userIds: ID[]
 ): Promise<Property[]> => {
   if (!Array.isArray(userIds) || userIds.length === 0) {
     console.error("Invalid or empty userIds array")

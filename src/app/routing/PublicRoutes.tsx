@@ -3,11 +3,12 @@ import { FrontendLayout } from "../frontend/FrontendLayout"
 
 import { Home } from "../frontend/pages/home/Home"
 import { Offices } from "../frontend/pages/offices/Offices"
+import { Agents } from "../frontend/pages/agents/Agents"
 import { Properties } from "../frontend/pages/properties/Properties"
 import { Franchise } from "../frontend/pages/franchise/Franchise"
 import { SellRent } from "../frontend/pages/sell-rent/SellRent"
 import { Career } from "../frontend/pages/career/Career"
-import { Agents } from "../frontend/pages/agents/Agents"
+import { About } from "../frontend/pages/about/About"
 
 import { AgentDetail } from "../frontend/pages/agent-detail/AgentDetail"
 import { OfficeDetail } from "../frontend/pages/office-detail/OfficeDetail"
@@ -24,6 +25,7 @@ const PublicRoutes = () => {
         <Route path="/danismanlarimiz" element={<Agents />} />
         <Route path="/kariyer" element={<Career />} />
         <Route path="/sat-kirala" element={<SellRent />} />
+        <Route path="/hakkimizda" element={<About />} />
 
         {/* Detail Pages */}
         <Route path="/kullanici-detayi/:id/" element={<AgentDetail />} />

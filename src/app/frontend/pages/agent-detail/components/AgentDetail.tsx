@@ -44,12 +44,9 @@ const AgentDetail = () => {
       const resUser = await getUserById(id)
       setUser(resUser)
       setIsUserLoading(false)
-
-      if (!user?.about) setActiveTab("properties")
     }
 
     fetchUser()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
   useEffect(() => {
@@ -224,16 +221,12 @@ const AgentDetail = () => {
                 <div className="col-lg-9">
                   <nav className="ky-agent-tab-nav">
                     <ul>
-                      {user.about ? (
-                        <li
-                          className={`${activeTab === "about" && "active"}`}
-                          onClick={() => setActiveTab("about")}
-                        >
-                          <span>Hakkında</span>
-                        </li>
-                      ) : (
-                        ""
-                      )}
+                      <li
+                        className={`${activeTab === "about" && "active"}`}
+                        onClick={() => setActiveTab("about")}
+                      >
+                        <span>Hakkında</span>
+                      </li>
                       <li
                         className={`${
                           activeTab === "properties" ? "active" : ""
@@ -316,7 +309,9 @@ const AgentDetail = () => {
               </div>
             )
           ) : (
-            ""
+            <div className="d-flex align-items-center justify-content-center fw-semibold fs-7 py-20 w-100">
+              <span className="spinner-border spinner-border-lg"></span>
+            </div>
           )}
         </div>
       </div>

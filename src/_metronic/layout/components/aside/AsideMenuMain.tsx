@@ -23,50 +23,53 @@ export function AsideMenuMain() {
         </div>
       </div>
 
-      <AsideMenuItemWithSub
-        to="kullanici-yonetimi/kullanicilar"
-        title="Kullanıcı Yönetimi"
-        fontIcon="bi-sticky"
-        icon="black-right"
-      >
-        {currentUser?.role === "admin" ||
-        currentUser?.role === "broker" ||
-        currentUser?.role === "assistant" ||
-        currentUser?.role === "human-resources" ? (
-          <>
-            <AsideMenuItem
-              to="kullanici-yonetimi/kullanicilar"
-              icon="black-right"
-              title="Tüm Kullanıcılar"
-              fontIcon="bi-layers"
-            />
-            <AsideMenuItem
-              to="kullanici-yonetimi/kullanici-ekle"
-              icon="black-right"
-              title="Kullanıcı Ekle"
-              fontIcon="bi-layers"
-            />
-          </>
-        ) : (
-          ""
-        )}
-      </AsideMenuItemWithSub>
+      {currentUser?.role === "admin" ||
+      currentUser?.role === "broker" ||
+      currentUser?.role === "assistant" ||
+      currentUser?.role === "human-resources" ? (
+        <AsideMenuItemWithSub
+          to="kullanici-yonetimi/kullanicilar"
+          title="Kullanıcı Yönetimi"
+          fontIcon="bi-sticky"
+          icon="black-right"
+        >
+          <AsideMenuItem
+            to="kullanici-yonetimi/kullanicilar"
+            icon="black-right"
+            title="Tüm Kullanıcılar"
+            fontIcon="bi-layers"
+          />
+          <AsideMenuItem
+            to="kullanici-yonetimi/kullanici-ekle"
+            icon="black-right"
+            title="Kullanıcı Ekle"
+            fontIcon="bi-layers"
+          />
+        </AsideMenuItemWithSub>
+      ) : (
+        ""
+      )}
 
       {currentUser?.role === "admin" ||
       currentUser?.role === "broker" ||
-      currentUser?.role === "assistant" ? (
+      currentUser?.role === "assistant" ||
+      currentUser?.role === "agent" ? (
         <AsideMenuItemWithSub
           to="ilan-yonetimi/ilanlar"
           title="İlan Yönetimi"
           fontIcon="bi-sticky"
           icon="black-right"
         >
-          <AsideMenuItem
-            to="ilan-yonetimi/ilanlar"
-            icon="black-right"
-            title="Tüm İlanlar"
-            fontIcon="bi-layers"
-          />
+          {currentUser?.role != "agent" ? (
+            <AsideMenuItem
+              to="ilan-yonetimi/ilanlar"
+              icon="black-right"
+              title="Tüm İlanlar"
+              fontIcon="bi-layers"
+            />
+          ) : (
+            ""
+          )}
           <AsideMenuItem
             to="ilan-yonetimi/ilan-ekle"
             icon="black-right"

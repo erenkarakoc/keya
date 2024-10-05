@@ -180,7 +180,9 @@ const KYBests = () => {
           transition={{ delay: 0.4 }}
         >
           <a
-            href={`/kullanici-detayi/${bestAgentOfTheMonth?.id}/`}
+            href={`/kullanici-detayi/${
+              bestAgentOfTheMonth?.id || "eVG5h7VPOeSJlVCs98x6olPyQ3l1"
+            }/`}
             className="ky-bests-item"
           >
             <KYText className="ky-bests-title" variant="subtitle">
@@ -193,7 +195,7 @@ const KYBests = () => {
                   src={
                     bestAgentOfTheMonth?.photoURL
                       ? bestAgentOfTheMonth?.photoURL
-                      : toAbsoluteUrl("media/avatars/blank.jpg")
+                      : "https://firebasestorage.googleapis.com/v0/b/keya-web.appspot.com/o/images%2Fusers%2Fgorkemaysert-cV5qwfVPCt77rPqYMyaLwpqFoUUTWX?alt=media&token=9fee95f5-13f3-47df-ba02-5de8d05b0227"
                   }
                   alt="Görkem Aysert"
                 />
